@@ -2,7 +2,7 @@ const STRING: string = 'Test';
 export { STRING };
 
 const ROUTES = {
-  HOMEPAGE: '/',
+  HOMEPAGE: '/homePage',
   LOGIN: '/login',
   REGISTER: '/register',
   ABOUT: '/about-us',
@@ -10,8 +10,8 @@ const ROUTES = {
 };
 
 const WILDCARD_ROUTES = {
-  PUBLIC: ROUTES.HOMEPAGE,
-  PRIVATE: ROUTES.LOGIN,
+  PUBLIC: ROUTES.LOGIN,
+  PRIVATE: ROUTES.HOMEPAGE,
 };
 
 const ROUTES_CONFIG = {
