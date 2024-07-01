@@ -8,11 +8,6 @@ import SignUp from '../Views/Authentication/SignUp';
 // eslint-disable-next-line import/prefer-default-export
 export const PUBLIC_ROUTES: Array<CustomRouter> = [
   {
-    path: ROUTES_CONFIG.HOMEPAGE.path,
-    element: <Dashboard />,
-    title: ROUTES_CONFIG.HOMEPAGE.title,
-  },
-  {
     path: `${ROUTES_CONFIG.LOGIN.path}`,
     title: ROUTES_CONFIG.LOGIN.title,
     element: <Login />,

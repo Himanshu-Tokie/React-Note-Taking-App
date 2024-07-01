@@ -1,9 +1,12 @@
+import { signInWithGoogle } from "../../Utils";
+
 function CustomGoogleButton(): JSX.Element {
   return (
-    <div className="my-2 px-12 py-1 text-center bg-[#ffffff] text-white rounded-md font-medium text-sm border-2">
       <button
         type="button"
-        className="w-full flex items-center justify-center text-[#344054] py-1"
+        className="w-full flex items-center justify-center text-[#344054] py-2 my-1 px-12 text-center bg-[#ffffff] rounded-md font-medium text-sm border-2"
+        id='Google'
+        onClick={signInWithGoogle}
       >
         <img
           src="src/assets/google.svg"
@@ -12,7 +15,6 @@ function CustomGoogleButton(): JSX.Element {
         />
         Sign in with Google
       </button>
-    </div>
   );
 }
 
