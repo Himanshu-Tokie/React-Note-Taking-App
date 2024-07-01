@@ -1,5 +1,5 @@
 import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { LogInSchema, logInUser } from './Utils';
+import { LogInSchema } from './Utils';
 import CustomGoogleButton from './Custom Component/Custom Google Button';
 
 function Login(): JSX.Element {
@@ -16,25 +16,29 @@ function Login(): JSX.Element {
         </div>
         <div>
           <Formik
-            initialValues={{ email: "", password: "" }}
+            initialValues={{ email: '', password: '' }}
             validationSchema={LogInSchema}
-            onSubmit={(values) => {
-              
+            onSubmit={() => {
               // logInUser(values.email,values.password);
+              // console.log(values.email, values.password);
             }}
           >
             <Form>
               <div className="my-2">
-                <label htmlFor='email'>Email</label>
+                <label htmlFor="email">Email</label>
                 <br />
                 <Field
                   className="my-1 py-1 px-2 rounded-md border-2 w-full"
                   type="email"
                   placeholder="Enter your email"
                   id="email"
-                  name='email'
+                  name="email"
                 />
-                <ErrorMessage name='email' component="div" className="text-red-500" />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-red-500"
+                />
               </div>
               <div className="my-2">
                 <label htmlFor="password">Password</label>
@@ -44,17 +48,25 @@ function Login(): JSX.Element {
                   type="password"
                   placeholder="Enter your password"
                   id="password"
-                  name='password'
+                  name="password"
                 />
-                <ErrorMessage name='password' component="div" className="text-red-500" />
+                <ErrorMessage
+                  name="password"
+                  component="div"
+                  className="text-red-500"
+                />
               </div>
               <p className="text-[#7F56D9] font-medium text-sm py-2">
                 Forgot password
               </p>
-                <button type="submit" className="w-full my-2 px-10 py-2 text-center bg-[#7F56D9] text-white rounded-md font-medium text-sm" id='Firebase'>
-                  Sign in
-                </button>
-                <CustomGoogleButton />
+              <button
+                type="submit"
+                className="w-full my-2 px-10 py-2 text-center bg-[#7F56D9] text-white rounded-md font-medium text-sm"
+                id="Firebase"
+              >
+                Sign in
+              </button>
+              <CustomGoogleButton />
             </Form>
           </Formik>
         </div>
