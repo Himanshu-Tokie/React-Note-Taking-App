@@ -5,9 +5,8 @@ function CustomInput({
   placeholderName,
   touched,
   error,
-  logIn = true
+  logIn = true,
 }: CustomInputProps): JSX.Element {
-
   return (
     <div className="my-2">
       <label htmlFor={labelName}>{labelName}</label>
@@ -18,7 +17,7 @@ function CustomInput({
         placeholder={placeholderName}
         id={labelName}
       />
-      {touched && error && logIn &&<p>*{error}</p>}
+      {touched && error && logIn && <p>*{error}</p>}
     </div>
   );
 }
