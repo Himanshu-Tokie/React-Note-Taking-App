@@ -1,8 +1,26 @@
+import { onAuthStateChanged } from 'firebase/auth';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { LogInSchema } from './Utils';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { auth } from '../../Services/Config/Firebase/firebase';
+import { updateAuthTokenRedux } from '../../Store/Common';
+import { setLoading } from '../../Store/Loader';
 import CustomGoogleButton from './Custom Component/Custom Google Button';
+import { LogInSchema, logInUser } from './Utils';
 
 function Login(): JSX.Element {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      currentUser?.getIdToken().then((token) => {
+        dispatch(updateAuthTokenRedux(token));
+        dispatch(setLoading(false));
+      });
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [dispatch]);
   return (
     <div className="py-28">
       <div className="flex flex-col flex-wrap place-content-center">
@@ -18,9 +36,8 @@ function Login(): JSX.Element {
           <Formik
             initialValues={{ email: '', password: '' }}
             validationSchema={LogInSchema}
-            onSubmit={() => {
-              // logInUser(values.email,values.password);
-              // console.log(values.email, values.password);
+            onSubmit={(values) => {
+              logInUser(values.email, values.password, dispatch);
             }}
           >
             <Form>

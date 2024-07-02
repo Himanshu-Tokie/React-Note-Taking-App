@@ -6,7 +6,7 @@ const common = createSlice({
   reducers: {
     updateAuthTokenRedux: (state, action) => ({
       ...state,
-      token: action.payload.token,
+      token: action.payload,
     }),
   },
 });
