@@ -1,7 +1,13 @@
+import { signOut } from 'firebase/auth';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { auth } from '../../../../Services/Config/Firebase/firebase';
+import { updateAuthTokenRedux } from '../../../../Store/Common';
+import { setLoading } from '../../../../Store/Loader';
 
 function NoteNavbar() {
   const [settingsVisible, setSettingsVisible] = useState(false);
+  const dispatch = useDispatch();
   function toggleSettings() {
     setSettingsVisible(!settingsVisible);
   }
@@ -10,9 +16,14 @@ function NoteNavbar() {
       toggleSettings();
     }
   }
+  const logOut = () => {
+    dispatch(setLoading(true));
+    signOut(auth);
+    dispatch(updateAuthTokenRedux(''));
+  };
   return (
     <>
-      <header className="opacity-65 flex justify-between pr-5 pl-4 pt-2">
+      <header className="opacity-65 flex justify-between pr-5 pl-4 pt-2 ">
         <div className="flex py-2">
           <img src="src/assets/menu.svg" alt="menu" className="p-2" />
           <img
@@ -46,7 +57,7 @@ function NoteNavbar() {
           {/* <img src="src/assets/grid_view.svg" alt="user"/> */}
         </div>
       </header>
-      <hr className="my-0" />
+      <hr />
       {settingsVisible && (
         <div className="absolute right-11 top-20 bg-white shadow-md z-50">
           <ul className="py-2">
@@ -56,9 +67,15 @@ function NoteNavbar() {
             <li className="py-2 hover:bg-gray-100 cursor-pointer px-5">
               Setting
             </li>
-            <li className="py-2 hover:bg-gray-100 cursor-pointer px-5">
-              SignOut
-            </li>
+            <div
+              className="px-5 py-2 hover:bg-gray-100 cursor-pointer"
+              onClick={logOut}
+              onKeyDown={handleKeyDown}
+              role="button"
+              tabIndex={0}
+            >
+              <li className="">SignOut</li>
+            </div>
           </ul>
         </div>
       )}

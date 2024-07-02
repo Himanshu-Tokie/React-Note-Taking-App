@@ -4,8 +4,8 @@ export { STRING };
 const ROUTES = {
   HOMEPAGE: '/homePage',
   LOGIN: '/login',
-  REGISTER: '/register',
-  ABOUT: '/about-us',
+  Reminder: '/reminder',
+  Label: '/label',
   SIGN_UP: '/signup',
 };
 
@@ -17,19 +17,19 @@ const WILDCARD_ROUTES = {
 const ROUTES_CONFIG = {
   HOMEPAGE: {
     path: ROUTES.HOMEPAGE,
-    title: 'Master Plan',
+    title: 'Home',
   },
   LOGIN: {
     path: ROUTES.LOGIN,
     title: 'Login',
   },
-  REGISTER: {
-    path: ROUTES.REGISTER,
-    title: 'Register',
+  Reminder: {
+    path: ROUTES.Reminder,
+    title: 'Reminder',
   },
-  ABOUT: {
-    path: ROUTES.ABOUT,
-    title: 'About us',
+  Label: {
+    path: ROUTES.Label,
+    title: 'label',
   },
   SIGN_UP: {
     path: ROUTES.SIGN_UP,
