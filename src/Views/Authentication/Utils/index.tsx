@@ -1,11 +1,12 @@
-import * as Yup from 'yup';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import YUP_STRINGS from '../Constants';
+import * as Yup from 'yup';
 import {
   auth,
   googleProvider,
 } from '../../../Services/Config/Firebase/firebase';
-// import { useNavigate } from "react-router-dom";
+import { AppDispatch } from '../../../Store';
+import { setLoading } from '../../../Store/Loader';
+import YUP_STRINGS from '../Constants';
 
 export const SignupSchema = Yup.object().shape({
   firstName: Yup.string()
@@ -37,13 +38,17 @@ export const LogInSchema = Yup.object({
   email: Yup.string()
     .email(YUP_STRINGS.INVALID_EMAIL)
     .required(YUP_STRINGS.ENTER_EMAIL),
-  password: Yup.string().min(8).required(YUP_STRINGS.ENTER_PASSWORD),
+  password: Yup.string().required(YUP_STRINGS.ENTER_PASSWORD),
 });
 
-export const logInUser = async (email: string, password: string) => {
-  // const navigate = useNavigate();
+export const logInUser = async (
+  email: string,
+  password: string,
+  dispatch: AppDispatch
+) => {
   try {
-    await signInWithEmailAndPassword(auth, email, password).then(() => {});
+    dispatch(setLoading(true));
+    await signInWithEmailAndPassword(auth, email, password);
   } catch (error) {
     // console.error(error);
   }
