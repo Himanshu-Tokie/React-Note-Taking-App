@@ -3,7 +3,7 @@ import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { auth } from '../../Services/Config/Firebase/firebase';
-import { updateAuthTokenRedux } from '../../Store/Common';
+import { setUidRedux, updateAuthTokenRedux } from '../../Store/Common';
 import { setLoading } from '../../Store/Loader';
 import CustomGoogleButton from './Custom Component/Custom Google Button';
 import { LogInSchema, logInUser } from './Utils';
@@ -15,6 +15,7 @@ function Login(): JSX.Element {
       currentUser?.getIdToken().then((token) => {
         dispatch(updateAuthTokenRedux(token));
         dispatch(setLoading(false));
+        dispatch(setUidRedux(currentUser.uid));
       });
     });
     return () => {
