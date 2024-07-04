@@ -1,3 +1,32 @@
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { fetchNotes } from '../../Shared/Firebase Utils';
+import { stateType } from '../Dashboard/types';
+import CustomBox from '../../Shared/CustomComponents/CustomBox';
+import { labelProps } from './types';
+
 export default function Lable() {
-  return <h1>Lable</h1>;
+  const data = useLocation();
+  const { label } = data.state;
+  const uid = useSelector((state: stateType) => state.common.uid);
+  const [notesData, setNotesData] = useState<labelProps[]>();
+  useEffect(() => {
+    fetchNotes(uid, label).then((fetchedNotesData) =>
+      setNotesData(fetchedNotesData)
+    );
+  }, [label, uid]);
+
+  return (
+    <div className="flex flex-wrap">
+      {notesData?.map((note) => (
+        <div
+          className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+          key={note.time_stamp}
+        >
+          <CustomBox title={note.title} content={note.content} />
+        </div>
+      ))}
+    </div>
+  );
 }
