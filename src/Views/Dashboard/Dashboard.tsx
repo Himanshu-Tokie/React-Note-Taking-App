@@ -1,3 +1,7 @@
 export default function Dashboard() {
-  return <h1>Home</h1>;
+  return (
+    <div className="flex flex-wrap">
+      <h1>Dash</h1>
+    </div>
+  );
 }
