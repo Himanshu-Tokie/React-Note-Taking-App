@@ -5,8 +5,13 @@ import { ROUTES } from '../../../../Shared/Constants';
 export function Navbar() {
   return (
     <header className="flex justify-between px-28 py-5">
-      <div>
-        <p className="font-bold text-2xl">Note Taker</p>
+      <div className="flex items-center">
+        <img
+          src="src/assets/diary.svg"
+          alt="menu"
+          className="h-16 opacity-100"
+        />
+        <p className="font-bold text-2xl">Note Taking App</p>
       </div>
       <div>
         <Link

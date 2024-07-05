@@ -13,7 +13,7 @@ function CustomModal({ setShowModal }: CustomModalProps) {
       const parentDocRef = doc(db, 'user', uid);
       const nestedCollectionRef = collection(parentDocRef, 'labels');
       const querySnapshot = await getDocs(nestedCollectionRef);
-      const labels = querySnapshot.docs.map((doc) => ({ id: doc.id }));
+      const labels = querySnapshot.docs.map((label) => ({ id: label.id }));
       setData(labels);
     };
     fetchData();
@@ -29,7 +29,11 @@ function CustomModal({ setShowModal }: CustomModalProps) {
   //   };
   //   createLabel();
   // console.log(document.getElementById('input'));
-
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      setShowModal(false);
+    }
+  }
   return (
     <div
       tabIndex={-1}
@@ -42,14 +46,22 @@ function CustomModal({ setShowModal }: CustomModalProps) {
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Edit Labels
             </h3>
-            <img
-              src="src/assets/close.svg"
-              alt=""
+            <div
+              className="px-5 py-2 hover:bg-gray-100 cursor-pointer"
+              onKeyDown={handleKeyDown}
+              role="button"
+              tabIndex={0}
+              aria-label="modal"
               onClick={() => {
                 setShowModal(false);
               }}
-              className="hover:bg-gray-200"
-            />
+            >
+              <img
+                src="src/assets/close.svg"
+                alt=""
+                className="hover:bg-gray-200"
+              />
+            </div>
           </div>
           <div className="p-4 md:p-5 flex flex-col">
             {data?.map((label) => (

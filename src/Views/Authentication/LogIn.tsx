@@ -2,7 +2,9 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { auth } from '../../Services/Config/Firebase/firebase';
+import { ROUTES } from '../../Shared/Constants';
 import { setUidRedux, updateAuthTokenRedux } from '../../Store/Common';
 import { setLoading } from '../../Store/Loader';
 import CustomGoogleButton from './Custom Component/Custom Google Button';
@@ -91,7 +93,9 @@ function Login(): JSX.Element {
         <div className="flex place-content-center">
           <p className="text-[#475467] text-sm py-2">
             Don&apos;t have an account?{' '}
-            <span className="text-[#7F56D9] font-medium">Sign Up</span>
+            <Link to={ROUTES.SIGN_UP} className="text-[#7F56D9] font-medium">
+              Sign Up
+            </Link>
           </p>
         </div>
       </div>

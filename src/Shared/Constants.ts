@@ -37,4 +37,27 @@ const ROUTES_CONFIG = {
   },
 };
 
-export { ROUTES, WILDCARD_ROUTES, ROUTES_CONFIG };
+const NOTES = {
+  PERSONAL: {
+    NAME: 'Personal',
+    TITLE: 'Meeting Notes',
+    CONTENT: 'Discussion points: project updates, deadlines, action items',
+  },
+  ACADEMICS: {
+    NAME: 'Academic',
+    TITLE: 'Meeting Notes',
+    CONTENT: 'Discussion points: project updates, deadlines, action items',
+  },
+  WORK: {
+    NAME: 'Work',
+    TITLE: 'Meeting Notes',
+    CONTENT: 'Discussion points: project updates, deadlines, action items',
+  },
+  OTHERS: {
+    NAME: 'Others',
+    TITLE: 'Meeting Notes',
+    CONTENT: 'Discussion points: project updates, deadlines, action items',
+  },
+};
+
+export { ROUTES, WILDCARD_ROUTES, ROUTES_CONFIG, NOTES };
