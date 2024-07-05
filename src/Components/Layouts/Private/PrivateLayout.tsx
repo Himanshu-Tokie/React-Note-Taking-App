@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import CustomModal from '../../../Shared/CustomComponents/CustomModal';
+import CustomModal from '../../../Shared/CustomComponents/CustomModal/EditLabel';
 import Notes from '../../../Views/Notes';
 import { AppLayoutProps } from '../AppLayout.d';
 import NoteNavbar from './Navbar';
