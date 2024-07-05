@@ -19,19 +19,17 @@ export const SignupSchema = Yup.object().shape({
     .email(YUP_STRINGS.INVALID_EMAIL)
     .required(YUP_STRINGS.EMAIL_WARNING),
   password: Yup.string()
-    .min(8)
     .required(YUP_STRINGS.PASSWORD_WARNING)
     .matches(
       /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
       YUP_STRINGS.INVALID_PASSWORD
     ),
-  confirmPassword: Yup.string().oneOf(
-    [Yup.ref(YUP_STRINGS.PASSWORD_SMALL)],
-    YUP_STRINGS.PASSWORD_NOT_MATCH
-  ),
-  number: Yup.string()
-    .matches(/^\d{10}$/, YUP_STRINGS.PHONE_NUMBER_WARNING1)
-    .required(YUP_STRINGS.PHONE_NUMBER_WARNING2),
+  confirmPassword: Yup.string()
+    .oneOf(
+      [Yup.ref(YUP_STRINGS.PASSWORD_SMALL)],
+      YUP_STRINGS.PASSWORD_NOT_MATCH
+    )
+    .required(YUP_STRINGS.CONFIRM_PASSWORD),
 });
 
 export const LogInSchema = Yup.object({

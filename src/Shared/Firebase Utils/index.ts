@@ -1,3 +1,4 @@
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import {
   addDoc,
   collection,
@@ -6,8 +7,11 @@ import {
   query,
   serverTimestamp,
   where,
+  writeBatch,
 } from 'firebase/firestore';
-import { db } from '../../Services/Config/Firebase/firebase';
+import { NavigateFunction } from 'react-router-dom';
+import { auth, db } from '../../Services/Config/Firebase/firebase';
+import { NOTES, ROUTES } from '../Constants';
 
 export async function fetchNotes(uid: string, label: string) {
   const parentDocRef = doc(db, 'user', uid);
@@ -39,4 +43,92 @@ export const createNote = async (
     title,
     time_stamp: serverTimestamp(),
   });
+};
+
+export const signUpUser = async (
+  uid: string,
+  navigate: (path: string) => void
+) => {
+  try {
+    const notes = [
+      {
+        label: NOTES.ACADEMICS.NAME,
+        title: NOTES.ACADEMICS.TITLE,
+        content: NOTES.ACADEMICS.CONTENT,
+        url: [],
+        time_stamp: serverTimestamp(),
+      },
+      {
+        label: NOTES.OTHERS.NAME,
+        title: NOTES.OTHERS.TITLE,
+        content: NOTES.OTHERS.CONTENT,
+        url: [],
+        time_stamp: serverTimestamp(),
+      },
+      {
+        label: NOTES.PERSONAL.NAME,
+        title: NOTES.PERSONAL.TITLE,
+        content: NOTES.PERSONAL.CONTENT,
+        url: [],
+        time_stamp: serverTimestamp(),
+      },
+      {
+        label: NOTES.WORK.NAME,
+        title: NOTES.WORK.TITLE,
+        content: NOTES.WORK.CONTENT,
+        url: [],
+        time_stamp: serverTimestamp(),
+      },
+    ];
+    const labels = [
+      NOTES.WORK.NAME,
+      NOTES.ACADEMICS.NAME,
+      NOTES.OTHERS.NAME,
+      NOTES.PERSONAL.NAME,
+    ];
+    const batch = writeBatch(db);
+    const newNoteRef = doc(db, 'user', uid);
+    const notesRef = collection(newNoteRef, 'notes');
+    const labelRef = collection(newNoteRef, 'labels');
+
+    notes.forEach((note) => {
+      const noteDoc = doc(notesRef);
+      batch.set(noteDoc, note);
+    });
+
+    labels.forEach((label) => {
+      const labelDoc = doc(labelRef, label);
+      batch.set(labelDoc, {
+        count: 1,
+        time_stamp: serverTimestamp(),
+      });
+    });
+    await batch.commit();
+    navigate(ROUTES.LOGIN);
+  } catch (error) {
+    // console.error('Error creating initial database:', error);
+  }
+};
+
+export const createUser = async (
+  email: string,
+  password: string,
+  name: string,
+  navigate: NavigateFunction
+) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    if (userCredential.user) {
+      await updateProfile(userCredential.user, {
+        displayName: name,
+      });
+    }
+    signUpUser(userCredential.user.uid, navigate);
+  } catch (error) {
+    // console.error('Error creating account:', error);
+  }
 };
