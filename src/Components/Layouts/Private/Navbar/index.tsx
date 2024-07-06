@@ -7,9 +7,13 @@ import { setLoading } from '../../../../Store/Loader';
 
 function NoteNavbar() {
   const [settingsVisible, setSettingsVisible] = useState(false);
+  const [profileVisible, setProfileVisible] = useState(false);
   const dispatch = useDispatch();
   function toggleSettings() {
     setSettingsVisible(!settingsVisible);
+  }
+  function toggleProfile() {
+    setProfileVisible(!profileVisible);
   }
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.key === 'Enter' || event.key === ' ') {
@@ -58,7 +62,16 @@ function NoteNavbar() {
                 className="h-full"
               />
             </div>
-            <img src="src/assets/user.svg" alt="user" className="h-7 px-5" />
+            <div
+              className="h-7 pl-5 cursor-pointer"
+              onClick={toggleProfile}
+              onKeyDown={handleKeyDown}
+              role="button"
+              tabIndex={0}
+            >
+              <img src="src/assets/user.svg" alt="user" className="h-7" />
+            </div>
+
             {/* <img src="src/assets/grid_view.svg" alt="user"/> */}
           </div>
         </header>
@@ -83,6 +96,19 @@ function NoteNavbar() {
               <li className="">SignOut</li>
             </div>
           </ul>
+        </div>
+      )}
+      {profileVisible && (
+        <div className="absolute right-2 top-20 bg-white shadow-md z-50">
+          <img
+            src="src/assets/default_profile.svg"
+            alt="default profile"
+            className="px-5 py-2"
+          />
+          <div className="px-5 py-2 cursor-pointer">
+            <h3>{auth.currentUser?.displayName}</h3>
+            <p>{auth.currentUser?.email}</p>
+          </div>
         </div>
       )}
     </>

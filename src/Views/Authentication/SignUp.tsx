@@ -10,7 +10,7 @@ function SignUp(): JSX.Element {
     <div>
       <div className="flex flex-col flex-wrap place-content-center pt-16">
         <h1 className="font-bold self-center text-2xl">Sign up</h1>
-        <p className="text-[#475467] py-2">
+        <p className="text-[#475467] py-2 self-center">
           Welcome! Happy to connect with you.
         </p>
         <div className="w-1/4">

@@ -2,10 +2,14 @@ import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   serverTimestamp,
+  setDoc,
+  updateDoc,
   where,
   writeBatch,
 } from 'firebase/firestore';
@@ -43,6 +47,19 @@ export const createNote = async (
     title,
     time_stamp: serverTimestamp(),
   });
+};
+
+export const updateNote = async (
+  uid: string,
+  noteId: string,
+  content: string,
+  title: string,
+  label: string
+) => {
+  const parentDocRef = doc(db, 'user', uid);
+  const nestedCollectionRef = collection(parentDocRef, 'notes');
+  const noteRef = doc(nestedCollectionRef, noteId);
+  updateDoc(noteRef, { content, title, label });
 };
 
 export const signUpUser = async (
@@ -131,4 +148,64 @@ export const createUser = async (
   } catch (error) {
     // console.error('Error creating account:', error);
   }
+};
+
+export const fetchLabels = async (uid: string) => {
+  const parentDocRef = doc(db, 'user', uid);
+  const nestedCollectionRef = collection(parentDocRef, 'labels');
+  const querySnapshot = await getDocs(nestedCollectionRef);
+  const labels = querySnapshot.docs.map((label) => ({ id: label.id }));
+  return labels;
+};
+
+export const createLabel = async (
+  uid: string,
+  label: string,
+  newLabel: boolean,
+  labelData?: unknown
+) => {
+  const parentDocRef = doc(db, 'user', uid);
+  const nestedCollectionRef = collection(parentDocRef, 'labels');
+  const labelDataRef = doc(nestedCollectionRef, label);
+  if (newLabel) {
+    await setDoc(labelDataRef, labelData);
+  } else await setDoc(labelDataRef, labelData);
+};
+
+export const updateLabel = async (
+  uid: string,
+  oldLabel: string,
+  newLabel: string
+) => {
+  const parentDocRef = doc(db, 'user', uid);
+  const labelCollectionRef = collection(parentDocRef, 'labels');
+  const noteCollectionRef = collection(parentDocRef, 'notes');
+  const labelDoc = doc(labelCollectionRef, oldLabel);
+  const prevLabelData = await getDoc(labelDoc).then((labelData) =>
+    labelData.data()
+  );
+  await deleteDoc(labelDoc);
+  createLabel(uid, newLabel, false, prevLabelData);
+  const batch = writeBatch(db);
+  const q = query(noteCollectionRef, where('label', '==', oldLabel));
+  const documents = await getDocs(q);
+  documents.forEach((note) => {
+    batch.update(note.ref, { label: newLabel });
+  });
+  await batch.commit();
+};
+
+export const deleteLabel = async (uid: string, label: string) => {
+  const parentDocRef = doc(db, 'user', uid);
+  const labelCollectionRef = collection(parentDocRef, 'labels');
+  const noteCollectionRef = collection(parentDocRef, 'notes');
+  const labelDoc = doc(labelCollectionRef, label);
+  await deleteDoc(labelDoc);
+  const batch = writeBatch(db);
+  const q = query(noteCollectionRef, where('label', '==', label));
+  const documents = await getDocs(q);
+  documents.forEach((note) => {
+    batch.delete(note.ref);
+  });
+  await batch.commit();
 };
