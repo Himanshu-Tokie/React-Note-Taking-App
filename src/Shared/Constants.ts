@@ -5,7 +5,7 @@ const ROUTES = {
   HOMEPAGE: '/homePage',
   LOGIN: '/login',
   Reminder: '/reminder',
-  Label: '/label',
+  Label: '/label/:labelId',
   SIGN_UP: '/signup',
 };
 

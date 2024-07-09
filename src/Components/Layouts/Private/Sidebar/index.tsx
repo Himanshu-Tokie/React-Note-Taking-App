@@ -1,72 +1,75 @@
-import { collection, doc, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ROUTES } from '../../../../Shared/Constants';
-import { db } from '../../../../Services/Config/Firebase/firebase';
 import { stateType } from '../../../../Views/Dashboard/types';
+import { fetchLabels } from '../../../../Shared/Firebase Utils';
+import { useUpdateLabel } from '../../../../Shared/CustomHooks';
+import ICONS from '../../../../assets';
 
 export default function Sidebar() {
   const [data, setData] = useState<{ id: string }[]>();
-  const navigate = useNavigate();
   const uid = useSelector((state: stateType) => state.common.uid);
   useEffect(() => {
-    const fetchLabels = async () => {
-      const parentDocRef = doc(db, 'user', uid);
-      const nestedCollectionRef = collection(parentDocRef, 'labels');
-      const querySnapshot = await getDocs(nestedCollectionRef);
-      const labels = querySnapshot.docs.map((label) => ({ id: label.id }));
-      setData(labels);
-    };
-    fetchLabels();
+    fetchLabels(uid).then((label) => setData(label));
   }, [uid]);
-
+  useUpdateLabel(uid, setData);
   return (
-    <div className="xl:w-2/12 mt-3 md:w-1/4 w-60" id="sidebar">
+    <div
+      className="xl:w-2/12 mt-3 md:w-1/4 w-60 transition-all duration-300 ease-in-out fixed overflow-y-scroll max-h-[88%]"
+      id="sidebar"
+    >
       <div className="rounded-r-full cursor-pointer hover:bg-gray-100">
-        <Link to={ROUTES.HOMEPAGE} className="flex p-4 items-center py-3">
-          <img src="src/assets/lightbulb.svg" alt="lightbulb" className="p-2" />
+        <NavLink
+          to={ROUTES.HOMEPAGE}
+          className={({ isActive }) =>
+            isActive
+              ? 'bg-[#7F56D9] flex items-center py-3 rounded-r-full text-white'
+              : 'flex items-center py-3'
+          }
+        >
+          <img src={ICONS.LIGHTBULB} alt="lightbulb" className="pl-4 p-2" />
           <p className="pl-6 text-base">Notes</p>
-        </Link>
+        </NavLink>
       </div>
       <div
         className="rounded-r-full cursor-pointer hover:bg-gray-100"
         id="Reminders"
       >
-        <Link to={ROUTES.Reminder} className="flex p-4 items-center py-3">
-          <img
-            src="src/assets/notifications.svg"
-            alt="notifications"
-            className="p-2"
-          />
+        <NavLink
+          to={ROUTES.Reminder}
+          className={({ isActive }) =>
+            isActive
+              ? 'bg-[#7F56D9] flex items-center py-3 rounded-r-full text-white'
+              : 'flex items-center py-3'
+          }
+        >
+          <img src={ICONS.NOTIFICATIONS} alt="Reminders" className="pl-4 p-2" />
           <p className="pl-6 text-base">Reminders</p>
-        </Link>
+        </NavLink>
       </div>
 
       {data?.map((item) => (
-        <div
+        <NavLink
           key={item.id}
-          className="flex p-4 items-center py-3 rounded-r-full cursor-pointer hover:bg-gray-100"
-          id={item.id}
-          onClick={() => navigate(ROUTES.Label, { state: { label: item.id } })}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              navigate(ROUTES.Label, { state: { label: item.id } });
-            }
-          }}
-          role="button"
-          tabIndex={0}
+          to={`/label/${item.id}`}
+          state={{ label: item.id }}
+          className={({ isActive }) =>
+            isActive
+              ? 'bg-[#7F56D9] flex items-center py-3 rounded-r-full text-white'
+              : 'flex items-center py-3 hover:bg-gray-100 rounded-r-full'
+          }
         >
-          <img src="src/assets/label.svg" alt="label" className="p-2" />
+          <img src={ICONS.LABEL} alt="label" className="pl-4 p-2" />
           <p className="pl-6 text-base">{item.id}</p>
-        </div>
+        </NavLink>
       ))}
 
       <div
-        className="flex p-4 items-center py-3 rounded-r-full cursor-pointer hover:bg-gray-100"
+        className="flex items-center py-3 rounded-r-full cursor-pointer hover:bg-gray-100"
         id="Edit Labels"
       >
-        <img src="src/assets/edit.svg" alt="edit" className="p-2" />
+        <img src={ICONS.EDIT} alt="edit" className="p-2" />
         <p className="pl-6 text-base">Edit Labels</p>
       </div>
     </div>

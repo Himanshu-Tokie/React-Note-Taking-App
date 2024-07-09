@@ -24,6 +24,7 @@ export async function fetchNotes(uid: string, label: string) {
   const querySnapshot = await getDocs(q);
   const notes = querySnapshot.docs.map((note) => {
     return {
+      noteId: note.id,
       content: note.data().content,
       label: note.data().label,
       title: note.data().title,
@@ -32,7 +33,25 @@ export async function fetchNotes(uid: string, label: string) {
   });
   return notes;
 }
+export async function fetchNote(uid: string, notesId: string | null) {
+  if (notesId) {
+    const parentDocRef = doc(db, 'user', uid);
+    const nestedCollectionRef = collection(parentDocRef, 'notes');
+    const noteRef = doc(nestedCollectionRef, notesId);
+    const noteData = await getDoc(noteRef);
+    return noteData;
+  }
+  return null;
+}
 
+export async function deleteNotes(uid: string, noteId: string) {
+  const parentDocRef = doc(db, 'user', uid);
+  const nestedCollectionRef = collection(parentDocRef, 'notes');
+  const noteDoc = doc(nestedCollectionRef, noteId);
+  await deleteDoc(noteDoc);
+  // const labelCollectionRef = collection(parentDocRef, 'labels');
+  // const labelDoc = doc(labelCollectionRef, labelId);
+}
 export const createNote = async (
   uid: string,
   content: string,

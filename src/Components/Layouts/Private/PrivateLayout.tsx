@@ -7,19 +7,20 @@ import Sidebar from './Sidebar';
 
 function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [sidebarWidth, setSidebarWidth] = useState<string>('25%');
   const handleClick = (e: MouseEvent) => {
     const nearestDiv = (e.target as Element).closest('div');
-    const sidebar = document.getElementById('sidebar');
+    // const sidebar = document.getElementById('sidebar');
     if (nearestDiv?.id === 'Edit Labels') {
       setShowModal((prevShowModal) => !prevShowModal);
     }
-    if (nearestDiv) {
-      document.querySelectorAll('#sidebar > div').forEach((div) => {
-        div.classList.remove('bg-[#7F56D9]', 'text-white');
-      });
-      if (sidebar?.contains(nearestDiv) && nearestDiv.id !== 'sidebar')
-        nearestDiv.classList.add('bg-[#7F56D9]', 'text-white');
-    }
+    // if (nearestDiv) {
+    //   document.querySelectorAll('#sidebar > div').forEach((div) => {
+    //     div.classList.remove('bg-[#7F56D9]', 'text-white');
+    //   });
+    //   if (sidebar?.contains(nearestDiv) && nearestDiv.id !== 'sidebar')
+    //     nearestDiv.classList.add('bg-[#7F56D9]', 'text-white');
+    // }
   };
   useEffect(() => {
     const tag = document.getElementById('sidebar');
@@ -28,13 +29,21 @@ function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
       tag?.removeEventListener('click', handleClick);
     };
   }, []);
-
+  useEffect(() => {
+    const body = document.getElementById('body');
+    if (body) {
+      body.style.marginLeft = sidebarWidth;
+    }
+  }, [sidebarWidth]);
   return (
     <>
-      <NoteNavbar />
-      <div className="flex h-screen mt-20">
+      <NoteNavbar setSidebarWidth={setSidebarWidth} />
+      <div className="flex h-full mt-20 dark:bg-gray-700">
         <Sidebar />
-        <div className="flex-1 flex flex-col">
+        <div
+          className="flex-1 flex flex-col transition-all duration-300 ease-in-out dark:bg-gray-600 dark:border-2"
+          id="body"
+        >
           <Notes />
           {children}
         </div>

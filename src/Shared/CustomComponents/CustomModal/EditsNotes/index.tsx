@@ -1,17 +1,42 @@
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { editNoteProps } from './type';
+import { stateType } from '../../../../Views/Dashboard/types';
+import { fetchNote } from '../../../Firebase Utils';
+import Notes from '../../../../Views/Notes';
 
-export default function EditNotes({ setShowNoteEditor }: editNoteProps) {
+export default function EditNotes({
+  setShowNoteEditor,
+  activeNoteId,
+}: editNoteProps) {
+  const uid = useSelector((state: stateType) => state.common.uid);
+  useEffect(() => {
+    fetchNote(uid, activeNoteId);
+  }, [uid, activeNoteId]);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape') {
+      setShowNoteEditor(false);
+    }
+  };
   return (
-    <div
-      id="medium-modal"
-      tabIndex={-1}
-      className="fixed top-0 left-0 right-0 z-50  w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
-    >
-      <div className="relative w-full max-w-lg max-h-full">
-        <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+    <div>
+      <div
+        className="fixed inset-0 bg-black bg-opacity-50 z-40"
+        onClick={() => setShowNoteEditor(false)}
+        onKeyDown={handleKeyDown}
+        role="button"
+        tabIndex={0}
+        aria-label="blur screen"
+      />
+      <div
+        id="medium-modal"
+        tabIndex={-1}
+        className="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center justify-center"
+      >
+        <div className="relative w-full max-w-lg max-h-full bg-white rounded-lg shadow dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
             <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-              Default modal
+              Edit Note
             </h3>
             <button
               type="button"
@@ -39,7 +64,7 @@ export default function EditNotes({ setShowNoteEditor }: editNoteProps) {
           </div>
           <div className="p-4 md:p-5 space-y-4">
             <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-              {/* <Notes /> */}
+              <Notes />
             </p>
           </div>
 
