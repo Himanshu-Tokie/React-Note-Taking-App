@@ -4,14 +4,21 @@ import { useSelector } from 'react-redux';
 import { createNote, fetchLabels } from '../../Shared/Firebase Utils';
 import { stateType } from '../Dashboard/types';
 import { editorConfig } from './Utils';
+import { useUpdateLabel } from '../../Shared/CustomHooks';
 
 function Notes() {
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
   const [label, setLabel] = useState('');
   const [labelData, setLabelData] = useState<{ id: string }[]>();
-  // const [showEditor, setShowEditor] = useState(true);
+  const [showEditor, setShowEditor] = useState(false);
   const uid = useSelector((state: stateType) => state.common.uid);
+  const labelId = useSelector(
+    (state: { label: { labelId: string } }) => state.label.labelId
+  );
+  useEffect(() => {
+    setLabel(labelId);
+  }, [labelId]);
   // function handleEditorClick(e: MouseEvent) {
   //   const editor = document.getElementById('editor');
   //   if (editor?.contains(e.target as Element)) {
@@ -29,16 +36,17 @@ function Notes() {
   useEffect(() => {
     fetchLabels(uid).then((labels) => setLabelData(labels));
   }, [uid]);
+  useUpdateLabel(uid, setLabelData);
   //   useEffect(()=>{
   // // createNotes
   //   },[])
   function onClickSave() {
     createNote(uid, content, label, title);
-    console.log('success');
+    // console.log('success');
   }
   return (
-    <div className="w-1/2 mt-4 self-center" id="editor">
-      <div className="flex items-center border-2 mb-2">
+    <div className="w-full self-center mt-8 max-w-xl" id="editor">
+      <div className="flex items-center border-2 mb-2 rounded-lg">
         <div className="flex-1 px-2">
           <input
             type="text"
@@ -48,29 +56,36 @@ function Notes() {
           />
         </div>
         <div>
-          <select
-            name="label"
-            id="labelId"
-            className="outline-none w-30"
-            onBlur={(event) => setLabel(event.target.value)}
-          >
-            {labelData?.map((item) => (
-              <option value={item.id} key={item.id}>
-                {item.id}
-              </option>
-            ))}
-          </select>
+          {labelId ? (
+            <>
+              {/* {setLabel(labelId)} */}
+              <p>{labelId}</p>
+            </>
+          ) : (
+            <select
+              name="label"
+              id="labelId"
+              className="outline-none w-30"
+              onBlur={(event) => setLabel(event.target.value)}
+            >
+              {labelData?.map((item) => (
+                <option value={item.id} key={item.id}>
+                  {item.id}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       </div>
 
-      {true && (
+      {showEditor && (
         <div className="App">
           <JoditEditor
             value={content}
             config={editorConfig}
             onBlur={(text) => {
               setContent(text);
-              // setShowEditor(false);
+              setShowEditor(false);
             }}
           />
         </div>

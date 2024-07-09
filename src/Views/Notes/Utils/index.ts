@@ -20,7 +20,7 @@ export const editorConfig = {
   toolbar: true,
   spellcheck: true,
   language: 'en',
-  toolbarAdaptive: true,
+  toolbarAdaptive: false,
   showCharsCounter: false,
   showWordsCounter: false,
   showXPathInStatusbar: false,

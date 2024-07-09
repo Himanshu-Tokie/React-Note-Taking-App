@@ -1,3 +1,4 @@
+import ICONS from '../../../../assets';
 import { signInWithGoogle } from '../../Utils';
 
 function CustomGoogleButton(): JSX.Element {
@@ -8,7 +9,7 @@ function CustomGoogleButton(): JSX.Element {
       id="Google"
       onClick={signInWithGoogle}
     >
-      <img src="src/assets/google.svg" alt="Google Icon" className="h-4 mr-2" />
+      <img src={ICONS.GOOGLE} alt="Google Icon" className="h-4 mr-2" />
       Sign in with Google
     </button>
   );
