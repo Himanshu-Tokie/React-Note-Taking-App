@@ -1,3 +1,6 @@
+import { useDispatch } from 'react-redux';
+import { useLabelUpdate } from '../../Shared/CustomHooks';
+
 export default function Reminders() {
   // useEffect(() => {
   //   const fetchReminder = async () => {
@@ -10,5 +13,7 @@ export default function Reminders() {
   //   };
   //   fetchReminder();
   // }, [reminder]);
-  return <h1>Reminder</h1>;
+  const dispatch = useDispatch();
+  useLabelUpdate(dispatch, '');
+  return <h1 className="text-center">Reminder</h1>;
 }

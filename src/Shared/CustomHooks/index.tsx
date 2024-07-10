@@ -1,6 +1,15 @@
-import { doc, collection, onSnapshot, query, where } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from 'firebase/firestore';
 import { useEffect } from 'react';
 import { db } from '../../Services/Config/Firebase/firebase';
+import { AppDispatch } from '../../Store';
+import { setLabel } from '../../Store/Label';
 import { labelProps } from '../../Views/Label/types';
 
 export const useUpdateLabel = (
@@ -28,7 +37,11 @@ export const useUpdateNotes = (
   useEffect(() => {
     const parentDocRef = doc(db, 'user', uid);
     const nestedCollectionRef = collection(parentDocRef, 'notes');
-    const q = query(nestedCollectionRef, where('label', '==', label));
+    const q = query(
+      nestedCollectionRef,
+      where('label', '==', label),
+      orderBy('time_stamp', 'desc')
+    );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const notes = querySnapshot.docs.map((note) => {
         return {
@@ -45,4 +58,10 @@ export const useUpdateNotes = (
       unsubscribe();
     };
   }, [label, setData, uid]);
+};
+
+export const useLabelUpdate = (dispatch: AppDispatch, labelId: string) => {
+  useEffect(() => {
+    dispatch(setLabel(labelId));
+  }, [dispatch, labelId]);
 };

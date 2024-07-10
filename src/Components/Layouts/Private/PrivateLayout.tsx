@@ -7,7 +7,7 @@ import Sidebar from './Sidebar';
 
 function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [sidebarWidth, setSidebarWidth] = useState<string>('25%');
+  const [sidebarWidth, setSidebarWidth] = useState<string>('250px');
   const handleClick = (e: MouseEvent) => {
     const nearestDiv = (e.target as Element).closest('div');
     // const sidebar = document.getElementById('sidebar');
@@ -38,14 +38,14 @@ function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
   return (
     <>
       <NoteNavbar setSidebarWidth={setSidebarWidth} />
-      <div className="flex h-full mt-20 dark:bg-gray-700">
+      <div className="flex mt-20 dark:bg-gray-700">
         <Sidebar />
         <div
           className="flex-1 flex flex-col transition-all duration-300 ease-in-out dark:bg-gray-600 dark:border-2"
           id="body"
         >
           <Notes />
-          {children}
+          <div className="h-dvh">{children}</div>
         </div>
       </div>
       {showModal && <CustomModal setShowModal={setShowModal} />}

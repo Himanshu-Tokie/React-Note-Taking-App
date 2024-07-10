@@ -1,22 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
+import CustomBox from '../../Shared/CustomComponents/CustomBox';
+import EditNotes from '../../Shared/CustomComponents/CustomModal/EditsNotes';
+import { useLabelUpdate, useUpdateNotes } from '../../Shared/CustomHooks';
 import { fetchNotes } from '../../Shared/Firebase Utils';
 import { stateType } from '../Dashboard/types';
-import CustomBox from '../../Shared/CustomComponents/CustomBox';
 import { labelProps } from './types';
-import EditNotes from '../../Shared/CustomComponents/CustomModal/EditsNotes';
-import { useUpdateNotes } from '../../Shared/CustomHooks';
-import { setLabel } from '../../Store/Label';
 
 export default function Lable() {
   const data = useLocation();
+  const params = useParams();
   const dispatch = useDispatch();
   const { label } = data.state;
   const uid = useSelector((state: stateType) => state.common.uid);
   const [notesData, setNotesData] = useState<labelProps[]>();
   const [showNoteEditor, setShowNoteEditor] = useState(false);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
+  const currentDivRef = useRef<HTMLDivElement | null>(null);
+  const noteIdSetter = (
+    e: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>
+  ) => {
+    setActiveNoteId(e.currentTarget?.id);
+    setShowNoteEditor((val) => !val);
+  };
   const toggleNoteEditor = () => {
     setShowNoteEditor((val) => !val);
   };
@@ -32,19 +39,21 @@ export default function Lable() {
   }, [label, uid]);
 
   useUpdateNotes(uid, setNotesData, label);
-  const params = useParams();
-  useEffect(() => {
-    dispatch(setLabel(params.labelId));
-  }, [params, dispatch]);
+  useLabelUpdate(dispatch, params.labelId ?? '');
   return (
     <div className="flex flex-wrap place-content-center">
       {notesData?.length ? (
         notesData?.map((note) => (
           <div
+            id={note.noteId}
             className="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 m-4"
             key={note.noteId}
-            // onClick={toggleNoteEditor}
-            // onKeyDown={toggleNoteEditor}
+            onClick={noteIdSetter}
+            onKeyDown={noteIdSetter}
+            tabIndex={0}
+            role="button"
+            aria-label="label"
+            ref={activeNoteId === note.noteId ? currentDivRef : null}
           >
             <CustomBox
               title={note.title}
