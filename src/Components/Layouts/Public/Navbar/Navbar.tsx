@@ -5,7 +5,7 @@ import ICONS from '../../../../assets';
 
 export function Navbar() {
   return (
-    <header className="flex justify-between px-28 py-5">
+    <header className="flex justify-between px-28 py-5 items-center">
       <div className="flex items-center">
         <img src={ICONS.DIARY} alt="menu" className="h-16 opacity-100" />
         <p className="font-bold text-2xl">Note Taking App</p>

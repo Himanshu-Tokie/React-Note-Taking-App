@@ -93,7 +93,7 @@ function CustomBox({
           </div>
         )}
       </div>
-      <div className="flex flex-col items-center pb-10">
+      <div className="flex flex-col items-center pb-8 px-2">
         <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
           {title}
         </h5>

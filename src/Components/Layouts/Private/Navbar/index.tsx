@@ -44,7 +44,7 @@ function NoteNavbar({ setSidebarWidth }: noteNavbarProps) {
   const logOut = () => {
     dispatch(setLoading(true));
     signOut(auth);
-    dispatch(updateAuthTokenRedux(''));
+    dispatch(updateAuthTokenRedux(null));
   };
   const setThemeHandler = (selectedTheme: THEME) => {
     setTheme(selectedTheme);
@@ -63,7 +63,7 @@ function NoteNavbar({ setSidebarWidth }: noteNavbarProps) {
   return (
     <>
       <div className="fixed w-full bg-white top-0 z-[100] dark:bg-gray-700">
-        <header className="flex justify-between pr-5 pl-4 pt-2 ">
+        <header className="flex justify-between pr-5 pl-4 pt-2">
           <div className="flex py-2 items-center">
             <div
               onClick={toggleSidebar}
@@ -85,7 +85,6 @@ function NoteNavbar({ setSidebarWidth }: noteNavbarProps) {
 
           <div className="flex items-center">
             <img src={ICONS.SEARCH} alt="user" className="h-7 pl-3 md:hidden" />
-            {/* <img src={ICONS.LIST_VIEW} alt="user" className="h-7 pl-5" /> */}
             <div
               className="h-7 pl-5 cursor-pointer"
               onClick={toggleSettings}
@@ -96,7 +95,7 @@ function NoteNavbar({ setSidebarWidth }: noteNavbarProps) {
               {getThemeIcon()}
             </div>
             <div
-              className="h-7 pl-5 cursor-pointer"
+              className="h-7 ml-5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer rounded-full"
               onClick={toggleProfile}
               onKeyDown={handleKeyDown}
               role="button"
