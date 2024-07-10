@@ -19,6 +19,9 @@ import SEARCH from './search.svg';
 import SETTINGS from './settings.svg';
 import TICK from './tick.svg';
 import USER from './user.svg';
+import LIGHT_MODE from './light_mode.svg';
+import DARK_MODE from './dark_mode.svg';
+import COMPUTER from './computer.svg';
 
 const ICONS = {
   BG_DESIGN,
@@ -42,6 +45,9 @@ const ICONS = {
   SETTINGS,
   TICK,
   USER,
+  LIGHT_MODE,
+  DARK_MODE,
+  COMPUTER,
 };
 
 export default ICONS;

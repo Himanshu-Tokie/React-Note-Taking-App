@@ -6,6 +6,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  orderBy,
   query,
   serverTimestamp,
   setDoc,
@@ -20,7 +21,11 @@ import { NOTES, ROUTES } from '../Constants';
 export async function fetchNotes(uid: string, label: string) {
   const parentDocRef = doc(db, 'user', uid);
   const nestedCollectionRef = collection(parentDocRef, 'notes');
-  const q = query(nestedCollectionRef, where('label', '==', label));
+  const q = query(
+    nestedCollectionRef,
+    where('label', '==', label),
+    orderBy('time_stamp')
+  );
   const querySnapshot = await getDocs(q);
   const notes = querySnapshot.docs.map((note) => {
     return {

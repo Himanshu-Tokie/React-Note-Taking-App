@@ -16,6 +16,7 @@ export const buttons = [
   'selectall',
 ];
 export const editorConfig = {
+  placeholder: '',
   readonly: false,
   toolbar: true,
   spellcheck: true,
@@ -30,6 +31,7 @@ export const editorConfig = {
   uploader: {
     insertImageAsBase64URI: true,
   },
-  height: 500,
+  height: 300,
+  maxHeight: 500,
   allowResizeY: false,
 };

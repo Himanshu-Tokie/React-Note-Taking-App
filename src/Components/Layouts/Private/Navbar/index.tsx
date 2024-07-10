@@ -6,14 +6,17 @@ import { updateAuthTokenRedux } from '../../../../Store/Common';
 import { setLoading } from '../../../../Store/Loader';
 import { noteNavbarProps } from './types';
 import ICONS from '../../../../assets';
+import Cards from '../../../../Shared/CustomCards';
+import { THEME } from '../../../../Shared/Constants';
 
 function NoteNavbar({ setSidebarWidth }: noteNavbarProps) {
-  const [settingsVisible, setSettingsVisible] = useState(false);
+  const [themeVisible, setThemeVisible] = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
   const [showSidebar, setShowSidebar] = useState(true);
   const dispatch = useDispatch();
+  const [theme, setTheme] = useState<THEME>(THEME.SYSTEM);
   function toggleSettings() {
-    setSettingsVisible(!settingsVisible);
+    setThemeVisible(!themeVisible);
   }
   function toggleProfile() {
     setProfileVisible(!profileVisible);
@@ -27,14 +30,14 @@ function NoteNavbar({ setSidebarWidth }: noteNavbarProps) {
     const sidebar = document.getElementById('sidebar');
     if (sidebar) {
       if (showSidebar) {
-        sidebar.style.width = '5%';
-        sidebar.style.overflow = 'hidden';
         setShowSidebar(false);
-        setSidebarWidth('5%');
+        sidebar.style.width = '60px';
+        setSidebarWidth('60px');
+        sidebar.style.overflow = 'hidden';
       } else {
-        sidebar.style.width = '20%';
+        sidebar.style.width = '250px';
         setShowSidebar(true);
-        setSidebarWidth('20%');
+        setSidebarWidth('250px');
       }
     }
   };
@@ -42,6 +45,20 @@ function NoteNavbar({ setSidebarWidth }: noteNavbarProps) {
     dispatch(setLoading(true));
     signOut(auth);
     dispatch(updateAuthTokenRedux(''));
+  };
+  const setThemeHandler = (selectedTheme: THEME) => {
+    setTheme(selectedTheme);
+    setThemeVisible(false);
+  };
+  const getThemeIcon = () => {
+    switch (theme) {
+      case THEME.LIGHT:
+        return <img src={ICONS.LIGHT_MODE} alt="light" className="h-full" />;
+      case THEME.DARK:
+        return <img src={ICONS.DARK_MODE} alt="dark" className="h-full" />;
+      default:
+        return <img src={ICONS.COMPUTER} alt="system" className="h-full" />;
+    }
   };
   return (
     <>
@@ -62,13 +79,13 @@ function NoteNavbar({ setSidebarWidth }: noteNavbarProps) {
           </div>
           <div className="hidden md:flex border-2 items-center px-2 rounded-lg h-fit self-center">
             <img src={ICONS.SEARCH} alt="settings" className="h-6" />
-            <input placeholder="Search" className="outline-0 px-3 w-72 py-3" />
+            <input placeholder="Search" className="outline-0 px-3 w-96 py-3" />
             <img src={ICONS.CLOSE} alt="settings" className="h-6" />
           </div>
 
           <div className="flex items-center">
             <img src={ICONS.SEARCH} alt="user" className="h-7 pl-3 md:hidden" />
-            <img src={ICONS.LIST_VIEW} alt="user" className="h-7 pl-5" />
+            {/* <img src={ICONS.LIST_VIEW} alt="user" className="h-7 pl-5" /> */}
             <div
               className="h-7 pl-5 cursor-pointer"
               onClick={toggleSettings}
@@ -76,7 +93,7 @@ function NoteNavbar({ setSidebarWidth }: noteNavbarProps) {
               role="button"
               tabIndex={0}
             >
-              <img src={ICONS.SETTINGS} alt="settings" className="h-full" />
+              {getThemeIcon()}
             </div>
             <div
               className="h-7 pl-5 cursor-pointer"
@@ -87,45 +104,61 @@ function NoteNavbar({ setSidebarWidth }: noteNavbarProps) {
             >
               <img src={ICONS.USER} alt="user" className="h-7" />
             </div>
-
-            {/* <img src="src/assets/grid_view.svg" alt="user"/> */}
           </div>
         </header>
         <hr />
       </div>
-      {settingsVisible && (
-        <div className="absolute right-11 top-20 bg-white shadow-md z-50">
+      {themeVisible && (
+        <div className="fixed right-6 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-30 dark:bg-gray-700">
           <ul className="py-2">
             <li className="py-2 hover:bg-gray-100 cursor-pointer px-5">
-              Theme
+              <div
+                className="flex"
+                id={THEME.LIGHT}
+                onClick={() => setThemeHandler(THEME.LIGHT)}
+                onKeyDown={handleKeyDown}
+                role="button"
+                tabIndex={0}
+              >
+                <img src={ICONS.LIGHT_MODE} alt="light" />
+                <p className="pl-2">Light</p>
+              </div>
             </li>
             <li className="py-2 hover:bg-gray-100 cursor-pointer px-5">
-              Setting
+              <div
+                className="flex"
+                id={THEME.DARK}
+                onClick={() => setThemeHandler(THEME.DARK)}
+                onKeyDown={handleKeyDown}
+                role="button"
+                tabIndex={0}
+              >
+                <img src={ICONS.DARK_MODE} alt="dark" />
+                <p className="pl-2">Dark</p>
+              </div>
             </li>
-            <div
-              className="px-5 py-2 hover:bg-gray-100 cursor-pointer"
-              onClick={logOut}
-              onKeyDown={handleKeyDown}
-              role="button"
-              tabIndex={0}
-            >
-              <li className="">SignOut</li>
-            </div>
+            <li className="py-2 hover:bg-gray-100 cursor-pointer px-5">
+              <div
+                className="flex"
+                id={THEME.SYSTEM}
+                onClick={() => setThemeHandler(THEME.SYSTEM)}
+                onKeyDown={handleKeyDown}
+                role="button"
+                tabIndex={0}
+              >
+                <img src={ICONS.COMPUTER} alt="system" />
+                <p className="pl-2">System</p>
+              </div>
+            </li>
           </ul>
         </div>
       )}
       {profileVisible && (
-        <div className="absolute right-2 top-20 bg-white shadow-md z-50">
-          <img
-            src={ICONS.DEFAULT_PROFILE}
-            alt="default profile"
-            className="px-5 py-2"
-          />
-          <div className="px-5 py-2 cursor-pointer">
-            <h3>{auth.currentUser?.displayName}</h3>
-            <p>{auth.currentUser?.email}</p>
-          </div>
-        </div>
+        <Cards
+          name={auth.currentUser?.displayName ?? ''}
+          user={auth.currentUser?.email ?? ''}
+          signOut={logOut}
+        />
       )}
     </>
   );
