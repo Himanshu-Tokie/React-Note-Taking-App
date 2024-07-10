@@ -8,12 +8,12 @@ function SignUp(): JSX.Element {
   const navigate = useNavigate();
   return (
     <div>
-      <div className="flex flex-col flex-wrap place-content-center pt-16">
+      <div className="flex flex-col flex-wrap place-content-center pt-16 ">
         <h1 className="font-bold self-center text-2xl">Sign up</h1>
         <p className="text-[#475467] py-2 self-center">
           Welcome! Happy to connect with you.
         </p>
-        <div className="w-1/4">
+        <div className="w-1/4 bg-opacity-50 bg-slate-300 p-4">
           <Formik
             initialValues={{
               firstName: '',
@@ -27,9 +27,8 @@ function SignUp(): JSX.Element {
               createUser(
                 values.email,
                 values.password,
-                values.firstName + values.lastName,
-                navigate
-              );
+                `${values.firstName} + ' ' + ${values.lastName}`
+              ).then(() => navigate('/login'));
             }}
           >
             <Form>
@@ -122,7 +121,7 @@ function SignUp(): JSX.Element {
             </Form>
           </Formik>
         </div>
-        <div>
+        <div className="self-center pt-2">
           <p>
             Already have an account?{' '}
             <Link to={ROUTES.LOGIN} className="text-[#7F56D9] font-medium">

@@ -61,7 +61,7 @@ function Notes({
   useUpdateLabel(uid, setLabelData);
 
   function onClickSave() {
-    if (title && content && label) {
+    if ((title || content) && label) {
       if (noteId && setShowNoteEditor) {
         updateNote(uid, noteId, content, title, label);
         setShowNoteEditor(false);
@@ -74,7 +74,7 @@ function Notes({
           setShowEditor(false);
         });
     } else {
-      // alert('Empty Notes');
+      alert('Empty Notes');
     }
   }
   function onClickCancel() {

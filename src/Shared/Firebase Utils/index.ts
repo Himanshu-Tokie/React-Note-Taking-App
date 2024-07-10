@@ -14,9 +14,8 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore';
-import { NavigateFunction } from 'react-router-dom';
 import { auth, db } from '../../Services/Config/Firebase/firebase';
-import { NOTES, ROUTES } from '../Constants';
+import { NOTES } from '../Constants';
 
 export async function fetchNotes(uid: string, label: string) {
   const parentDocRef = doc(db, 'user', uid);
@@ -86,10 +85,7 @@ export const updateNote = async (
   updateDoc(noteRef, { content, title, label });
 };
 
-export const signUpUser = async (
-  uid: string,
-  navigate: (path: string) => void
-) => {
+export const signUpUser = async (uid: string) => {
   try {
     const notes = [
       {
@@ -145,7 +141,6 @@ export const signUpUser = async (
       });
     });
     await batch.commit();
-    navigate(ROUTES.LOGIN);
   } catch (error) {
     // console.error('Error creating initial database:', error);
   }
@@ -154,8 +149,7 @@ export const signUpUser = async (
 export const createUser = async (
   email: string,
   password: string,
-  name: string,
-  navigate: NavigateFunction
+  name: string
 ) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
@@ -168,7 +162,7 @@ export const createUser = async (
         displayName: name,
       });
     }
-    signUpUser(userCredential.user.uid, navigate);
+    signUpUser(userCredential.user.uid);
   } catch (error) {
     // console.error('Error creating account:', error);
   }
