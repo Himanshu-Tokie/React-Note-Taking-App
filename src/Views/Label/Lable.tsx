@@ -7,6 +7,8 @@ import { useLabelUpdate, useUpdateNotes } from '../../Shared/CustomHooks';
 import { fetchNotes } from '../../Shared/Firebase Utils';
 import { stateType } from '../Dashboard/types';
 import { labelProps } from './types';
+import { setLoading } from '../../Store/Loader';
+import { RootState } from '../../Store';
 
 export default function Lable() {
   const data = useLocation();
@@ -18,6 +20,7 @@ export default function Lable() {
   const [showNoteEditor, setShowNoteEditor] = useState(false);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const currentDivRef = useRef<HTMLDivElement | null>(null);
+  const loading = useSelector((state: RootState) => state.loader.isLoading);
   const noteIdSetter = (
     e: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>
   ) => {
@@ -40,6 +43,13 @@ export default function Lable() {
 
   useUpdateNotes(uid, setNotesData, label);
   useLabelUpdate(dispatch, params.labelId ?? '');
+
+  if (showNoteEditor) {
+    dispatch(setLoading(true));
+    setTimeout(() => {
+      dispatch(setLoading(false));
+    }, 1000);
+  }
   return (
     <div className="flex flex-wrap place-content-center">
       {notesData?.length ? (
@@ -68,7 +78,7 @@ export default function Lable() {
       ) : (
         <p>Create new notes.....</p>
       )}
-      {showNoteEditor && (
+      {loading && showNoteEditor && (
         <EditNotes
           setShowNoteEditor={setShowNoteEditor}
           activeNoteId={activeNoteId}

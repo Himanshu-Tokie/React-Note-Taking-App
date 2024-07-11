@@ -10,6 +10,7 @@ import {
 import { stateType } from '../Dashboard/types';
 import { editorConfig } from './Utils';
 import { notesProps } from './types';
+import { setLoading } from '../../Store/Loader';
 
 function Notes({
   noteTitle,
@@ -24,10 +25,10 @@ function Notes({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (noteTitle && noteContent) {
+    if (noteTitle) {
       setTitle(noteTitle);
-      setContent(noteContent);
     }
+    if (noteContent) setContent(noteContent);
   }, [noteContent, noteTitle]);
   const [showEditor, setShowEditor] = useState(false);
   const uid = useSelector((state: stateType) => state.common.uid);
@@ -62,16 +63,20 @@ function Notes({
 
   function onClickSave() {
     if ((title || content) && label) {
+      dispatch(setLoading(true));
       if (noteId && setShowNoteEditor) {
-        updateNote(uid, noteId, content, title, label);
-        setShowNoteEditor(false);
-        setContent('');
-        setTitle('');
+        updateNote(uid, noteId, content, title, label).then(() => {
+          setShowNoteEditor(false);
+          setContent('');
+          setTitle('');
+          dispatch(setLoading(false));
+        });
       } else
         createNote(uid, content, label, title).then(() => {
           setContent('');
           setTitle('');
           setShowEditor(false);
+          dispatch(setLoading(false));
         });
     } else {
       alert('Empty Notes');

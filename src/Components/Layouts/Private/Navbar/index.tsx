@@ -2,14 +2,14 @@ import { signOut } from 'firebase/auth';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { auth } from '../../../../Services/Config/Firebase/firebase';
+import { THEME } from '../../../../Shared/Constants';
+import Cards from '../../../../Shared/CustomCards';
 import { updateAuthTokenRedux } from '../../../../Store/Common';
 import { setLoading } from '../../../../Store/Loader';
-import { noteNavbarProps } from './types';
 import ICONS from '../../../../assets';
-import Cards from '../../../../Shared/CustomCards';
-import { THEME } from '../../../../Shared/Constants';
+import { noteNavbarProps } from './types';
 
-function NoteNavbar({ setSidebarWidth }: noteNavbarProps) {
+function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   const [themeVisible, setThemeVisible] = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
   const [showSidebar, setShowSidebar] = useState(true);
@@ -62,7 +62,7 @@ function NoteNavbar({ setSidebarWidth }: noteNavbarProps) {
   };
   return (
     <>
-      <div className="fixed w-full bg-white top-0 z-[100] dark:bg-gray-700">
+      <div className="fixed w-full bg-white top-0 z-[35] dark:bg-gray-700">
         <header className="flex justify-between pr-5 pl-4 pt-2">
           <div className="flex py-2 items-center">
             <div
@@ -79,7 +79,12 @@ function NoteNavbar({ setSidebarWidth }: noteNavbarProps) {
           </div>
           <div className="hidden md:flex border-2 items-center px-2 rounded-lg h-fit self-center">
             <img src={ICONS.SEARCH} alt="settings" className="h-6" />
-            <input placeholder="Search" className="outline-0 px-3 w-96 py-3" />
+            <input
+              placeholder="Search"
+              className="outline-0 px-3 w-96 py-3"
+              // onChange={(e) => setSearchParams({ search: e.target.value })}
+              onChange={search}
+            />
             <img src={ICONS.CLOSE} alt="settings" className="h-6" />
           </div>
 

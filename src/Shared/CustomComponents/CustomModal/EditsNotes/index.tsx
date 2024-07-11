@@ -1,11 +1,11 @@
 import { DocumentData } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { setLoading } from '../../../../Store/Loader';
 import { stateType } from '../../../../Views/Dashboard/types';
 import Notes from '../../../../Views/Notes';
 import { fetchNote } from '../../../Firebase Utils';
-import { editNoteProps, stateTypeLoader } from './type';
-import { setLoading } from '../../../../Store/Loader';
+import { editNoteProps } from './type';
 
 export default function EditNotes({
   setShowNoteEditor,
@@ -13,9 +13,6 @@ export default function EditNotes({
 }: editNoteProps) {
   const [notesData, setNotesData] = useState<DocumentData>();
   const uid = useSelector((state: stateType) => state.common.uid);
-  const loading = useSelector(
-    (state: stateTypeLoader) => state.loader.isLoading
-  );
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setLoading(true));
@@ -45,9 +42,7 @@ export default function EditNotes({
         className="fixed top-0 left-0 right-0 z-[1000] w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center justify-center"
       >
         <div className="relative w-full max-w-lg max-h-full bg-white rounded-lg shadow dark:bg-gray-700">
-          {loading && notesData ? (
-            <div>Loader</div>
-          ) : (
+          {notesData && (
             <div className="p-2 md:px-4 md:py-0 space-y-4">
               <Notes
                 noteContent={notesData?.content}

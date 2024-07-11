@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { customBoxProps } from './types';
-import { deleteNotes } from '../../Firebase Utils';
 import { stateType } from '../../../Views/Dashboard/types';
+import { deleteNotes } from '../../Firebase Utils';
+import { customBoxProps } from './types';
 
 function CustomBox({
   title,
@@ -13,16 +12,12 @@ function CustomBox({
   toggleNoteEditor,
 }: customBoxProps) {
   const theObj = { __html: content };
+  // const [click, setClick] = useState(false);
   function handleClick() {
     handleToggle(noteId);
+    // setClick(true);
   }
   const uid = useSelector((state: stateType) => state.common.uid);
-  useEffect(() => {
-    // document.addEventListener('click', handleClick);
-    // return () => {
-    //   document.removeEventListener('click', handleClick);
-    // };
-  }, []);
   function handleKeyDownDelete(event: React.KeyboardEvent<HTMLButtonElement>) {
     if (event.key === 'Enter' || event.key === ' ') {
       deleteNotes(uid, noteId);
@@ -60,7 +55,7 @@ function CustomBox({
         {isActive && (
           <div
             id={noteId}
-            className="z-10 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute block top-14 right-2"
+            className="text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute block top-14 right-2"
           >
             <ul className="py-2" aria-labelledby="dropdownButton">
               <li className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
@@ -93,7 +88,7 @@ function CustomBox({
           </div>
         )}
       </div>
-      <div className="flex flex-col items-center pb-8 px-2">
+      <div className="flex flex-col items-center pb-8 px-2 max-h-52 overflow-hidden">
         <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
           {title}
         </h5>
