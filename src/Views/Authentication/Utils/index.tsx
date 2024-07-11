@@ -62,12 +62,14 @@ export const logInUser = async (
       }
     );
   } catch (error) {
-    // console.error(error);
+    dispatch(setLoading(true));
+    // ShowAlertMessage Dispatch
   }
 };
 
 export const signInWithGoogle = async (dispatch: AppDispatch) => {
   try {
+    dispatch(setLoading(true));
     const userDetail = await signInWithPopup(auth, googleProvider).then(
       async (user) => {
         const isNewUser: boolean =
@@ -82,6 +84,7 @@ export const signInWithGoogle = async (dispatch: AppDispatch) => {
     dispatch(setLoading(false));
     dispatch(setUidRedux(uid));
   } catch (error) {
+    dispatch(setLoading(false));
     // console.log(error);
   }
 };

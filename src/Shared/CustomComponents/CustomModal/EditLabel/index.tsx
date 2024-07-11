@@ -1,7 +1,8 @@
-import { serverTimestamp } from 'firebase/firestore';
 import { MouseEventHandler, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { stateType } from '../../../../Views/Dashboard/types';
+import ICONS from '../../../../assets';
+import { useUpdateLabel } from '../../../CustomHooks';
 import {
   createLabel,
   deleteLabel,
@@ -9,12 +10,15 @@ import {
   updateLabel,
 } from '../../../Firebase Utils';
 import { CustomModalProps } from './types';
-import { useUpdateLabel } from '../../../CustomHooks';
-import ICONS from '../../../../assets';
 
 function CustomModal({ setShowModal }: CustomModalProps) {
   const uid = useSelector((state: stateType) => state.common.uid);
-  const [data, setData] = useState<{ id: string }[]>();
+  const [data, setData] = useState<
+    {
+      labelId: string | undefined;
+      id: string;
+    }[]
+  >();
   const dispatch = useDispatch();
   useEffect(() => {
     fetchLabels(uid).then((label) => setData(label));
@@ -29,9 +33,9 @@ function CustomModal({ setShowModal }: CustomModalProps) {
     const targetElement = event.target as Element;
     const inputElement = targetElement.closest('div')?.querySelector('input');
     if (inputElement) {
-      const oldLabel = inputElement.name;
-      const newLabel = inputElement.value;
-      updateLabel(uid, oldLabel, newLabel, dispatch);
+      const labelId = inputElement.name;
+      const labelName = inputElement.value;
+      updateLabel(uid, labelName, labelId, dispatch);
     }
   };
 
@@ -40,20 +44,16 @@ function CustomModal({ setShowModal }: CustomModalProps) {
     const inputElement = targetElement.closest('div')?.querySelector('input');
     if (inputElement) {
       const label = inputElement.name;
-      deleteLabel(uid, label);
+      deleteLabel(uid, label, dispatch);
     }
   };
 
   const handleTickClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     const targetElement = event.target as Element;
     const inputElement = targetElement.closest('div')?.querySelector('input');
-    const labelData = {
-      count: 0,
-      time_stamp: serverTimestamp(),
-    };
     if (inputElement) {
       const label = inputElement.value;
-      createLabel(uid, label, true, labelData);
+      createLabel(uid, label);
     }
   };
   return (
@@ -65,7 +65,7 @@ function CustomModal({ setShowModal }: CustomModalProps) {
       <div
         tabIndex={-1}
         aria-hidden="true"
-        className="z-1000 flex overflow-y-auto overflow-x-hidden fixed justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+        className="z-[1000] flex overflow-y-auto overflow-x-hidden fixed justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
       >
         <div className="relative p-4 w-full max-w-md max-h-full">
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -105,7 +105,7 @@ function CustomModal({ setShowModal }: CustomModalProps) {
                 >
                   <img src={ICONS.LABEL} alt="" />
                   <input
-                    name={label.id}
+                    name={label.labelId}
                     defaultValue={label.id}
                     className="bg-gray-50 hover:bg-gray-100 outline-none"
                   />

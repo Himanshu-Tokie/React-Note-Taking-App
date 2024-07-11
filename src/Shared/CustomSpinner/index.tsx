@@ -10,7 +10,7 @@ export default function Spinner() {
   const loading = true;
   return (
     <>
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-40" />
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-[40]" />
       <div className="fixed inset-0 z-[60] top-1/2 left-1/2">
         <SyncLoader
           color="#000000"

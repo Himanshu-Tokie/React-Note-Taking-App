@@ -12,15 +12,18 @@ import { AppDispatch } from '../../Store';
 import { setLabel } from '../../Store/Label';
 import { labelProps } from '../../Views/Label/types';
 
+// listner for label update as somthing changes
 export const useUpdateLabel = (
   uid: string,
-  setData: (key: { id: string }[]) => void
+  setData: (key: { id: string; labelId: string }[]) => void
 ) => {
   useEffect(() => {
-    const parentDocRef = doc(db, 'user', uid);
-    const nestedCollectionRef = collection(parentDocRef, 'labels');
-    const unsubscribe = onSnapshot(nestedCollectionRef, (querySnapshot) => {
-      const labels = querySnapshot.docs.map((label) => ({ id: label.id }));
+    const labelsRef = collection(db, 'user', uid, 'labels');
+    const unsubscribe = onSnapshot(labelsRef, (querySnapshot) => {
+      const labels = querySnapshot.docs.map((item) => ({
+        id: item.data().label,
+        labelId: item.id,
+      }));
       setData(labels);
     });
     return () => {
@@ -29,17 +32,19 @@ export const useUpdateLabel = (
   }, [setData, uid]);
 };
 
+// listner for notes update as somthing changes
 export const useUpdateNotes = (
   uid: string,
   setData: (key: labelProps[]) => void,
-  label: string
+  labelId: string
 ) => {
   useEffect(() => {
     const parentDocRef = doc(db, 'user', uid);
     const nestedCollectionRef = collection(parentDocRef, 'notes');
+    const labelRef = doc(parentDocRef, 'labels', labelId);
     const q = query(
       nestedCollectionRef,
-      where('label', '==', label),
+      where('label', '==', labelRef),
       orderBy('time_stamp', 'desc')
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -57,7 +62,7 @@ export const useUpdateNotes = (
     return () => {
       unsubscribe();
     };
-  }, [label, setData, uid]);
+  }, [labelId, setData, uid]);
 };
 
 export const useLabelUpdate = (dispatch: AppDispatch, labelId: string) => {
