@@ -41,10 +41,11 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
       }
     }
   };
-  const logOut = () => {
+  const logOut = async () => {
     dispatch(setLoading(true));
-    signOut(auth);
+    await signOut(auth);
     dispatch(updateAuthTokenRedux(null));
+    dispatch(setLoading(false));
   };
   const setThemeHandler = (selectedTheme: THEME) => {
     setTheme(selectedTheme);

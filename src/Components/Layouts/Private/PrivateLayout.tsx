@@ -1,40 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CustomModal from '../../../Shared/CustomComponents/CustomModal/EditLabel';
-import { fetchSearchNotes } from '../../../Shared/Firebase Utils';
-import { stateType } from '../../../Views/Dashboard/types';
 import Notes from '../../../Views/Notes';
 import { AppLayoutProps } from '../AppLayout.d';
 import NoteNavbar from './Navbar';
 import Sidebar from './Sidebar';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const [allNotesData, setAllNotesData] = useState<
-    {
-      noteId: string;
-      content: string;
-      label: string;
-      title: string;
-      time_stamp: string;
-    }[]
-  >();
-  const [searchData, setSearchData] = useState<
-    {
-      noteId: string;
-      content: string;
-      label: string;
-      title: string;
-      time_stamp: string;
-    }[]
-  >();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [sidebarWidth, setSidebarWidth] = useState<string>('250px');
-  const uid = useSelector((state: stateType) => state.common.uid);
   const handleClick = (e: MouseEvent) => {
     const nearestDiv = (e.target as Element).closest('div');
     if (nearestDiv?.id === 'Edit Labels') {
@@ -60,22 +37,6 @@ function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
     navigate(`${location.pathname}?q=${e.target.value}`, {
       replace: !isFirstSearch,
     });
-
-    // await fetchSearchNotes(uid, e.target.value).then((data) =>
-    //   setAllNotesData(data)
-    // );
-    // const text = e.target.value;
-    // if (allNotesData) {
-    //   const filteredData = allNotesData.filter((note) => {
-    //     return (
-    //       note.content.toLowerCase().match(text) ||
-    //       note.title.toLowerCase().match(text) ||
-    //       note.label.toLowerCase().match(text)
-    //     );
-    //   });
-    //   console.log(filteredData);
-    //   setSearchData([]);
-    // }
   };
 
   return (

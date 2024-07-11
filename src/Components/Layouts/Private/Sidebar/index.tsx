@@ -8,7 +8,7 @@ import { useUpdateLabel } from '../../../../Shared/CustomHooks';
 import ICONS from '../../../../assets';
 
 export default function Sidebar() {
-  const [data, setData] = useState<{ id: string }[]>();
+  const [data, setData] = useState<{ id: string; labelId: string }[]>();
   const uid = useSelector((state: stateType) => state.common.uid);
   useEffect(() => {
     fetchLabels(uid).then((label) => setData(label));
@@ -52,7 +52,7 @@ export default function Sidebar() {
       {data?.map((item) => (
         <NavLink
           key={item.id}
-          to={`/label/${item.id}`}
+          to={`/label/${item.labelId}`}
           state={{ label: item.id }}
           className={({ isActive }) =>
             isActive

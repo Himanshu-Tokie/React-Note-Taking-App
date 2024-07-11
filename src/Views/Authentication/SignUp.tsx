@@ -1,4 +1,5 @@
 import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../Shared/Constants';
 import { createUser } from '../../Shared/Firebase Utils';
@@ -6,6 +7,7 @@ import { SignupSchema } from './Utils';
 
 function SignUp(): JSX.Element {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   return (
     <div>
       <div className="flex flex-col flex-wrap place-content-center pt-16 ">
@@ -27,7 +29,8 @@ function SignUp(): JSX.Element {
               createUser(
                 values.email,
                 values.password,
-                `${values.firstName} + ' ' + ${values.lastName}`
+                `${values.firstName} + ' ' + ${values.lastName}`,
+                dispatch
               ).then(() => navigate('/login'));
             }}
           >

@@ -1,22 +1,22 @@
-import { useDispatch } from 'react-redux';
-import { useLabelUpdate } from '../../Shared/CustomHooks';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import CustomBox from '../../Shared/CustomComponents/CustomBox';
+import { useLabelUpdate } from '../../Shared/CustomHooks';
+import { fetchSearchNotes } from '../../Shared/Firebase Utils';
+import { notesDataProps, stateType } from './types';
 
 export default function Dashboard() {
-  const notesData = [
-    {
-      noteId: '53MVc9ewj0nmwCEidpZD',
-      content: '<p>afsdfadsfdsfdfasdf</p>',
-      label: 'qwe',
-      title: '111',
-    },
-    {
-      noteId: 'iXGxFEtUoyljrXA8s9Zh',
-      content: '<p>qweq</p>',
-      label: 'test',
-      title: 'qwe',
-    },
-  ];
+  const location = useLocation();
+  const [notesData, setNotesData] = useState<notesDataProps[]>();
+  const uid = useSelector((state: stateType) => state.common.uid);
+  const searchParams = new URLSearchParams(location.search);
+  const searchQuery = searchParams.get('q');
+  if (searchQuery) {
+    fetchSearchNotes(uid, searchQuery).then((data) => {
+      setNotesData(data);
+    });
+  }
   const dispatch = useDispatch();
   useLabelUpdate(dispatch, '');
   const toggleNoteEditor = () => {};

@@ -1,20 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import CustomBox from '../../Shared/CustomComponents/CustomBox';
 import EditNotes from '../../Shared/CustomComponents/CustomModal/EditsNotes';
 import { useLabelUpdate, useUpdateNotes } from '../../Shared/CustomHooks';
-import { fetchNotes } from '../../Shared/Firebase Utils';
+import { fetchNotesWithLabel } from '../../Shared/Firebase Utils';
+import { RootState } from '../../Store';
+import { setLoading } from '../../Store/Loader';
 import { stateType } from '../Dashboard/types';
 import { labelProps } from './types';
-import { setLoading } from '../../Store/Loader';
-import { RootState } from '../../Store';
 
 export default function Lable() {
-  const data = useLocation();
   const params = useParams();
   const dispatch = useDispatch();
-  const { label } = data.state;
   const uid = useSelector((state: stateType) => state.common.uid);
   const [notesData, setNotesData] = useState<labelProps[]>();
   const [showNoteEditor, setShowNoteEditor] = useState(false);
@@ -34,14 +32,14 @@ export default function Lable() {
   const handleToggle = (noteId: string) => {
     setActiveNoteId((prevNoteId) => (prevNoteId === noteId ? null : noteId));
   };
-
   useEffect(() => {
-    fetchNotes(uid, label).then((fetchedNotesData) =>
-      setNotesData(fetchedNotesData)
-    );
-  }, [label, uid]);
+    if (params.labelId)
+      fetchNotesWithLabel(params.labelId, uid).then((fetchedNotesData) =>
+        setNotesData(fetchedNotesData)
+      );
+  }, [params.labelId, uid]);
 
-  useUpdateNotes(uid, setNotesData, label);
+  useUpdateNotes(uid, setNotesData, params.labelId ?? '');
   useLabelUpdate(dispatch, params.labelId ?? '');
 
   if (showNoteEditor) {

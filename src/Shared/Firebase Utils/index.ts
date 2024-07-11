@@ -7,10 +7,10 @@ import {
   endAt,
   getDoc,
   getDocs,
+  increment,
   orderBy,
   query,
   serverTimestamp,
-  setDoc,
   startAt,
   updateDoc,
   where,
@@ -21,16 +21,15 @@ import { AppDispatch } from '../../Store';
 import { setLoading } from '../../Store/Loader';
 import { NOTES } from '../Constants';
 
-export async function fetchNotes(uid: string, label: string) {
-  const parentDocRef = doc(db, 'user', uid);
-  const nestedCollectionRef = collection(parentDocRef, 'notes');
-  const q = query(
-    nestedCollectionRef,
-    where('label', '==', label),
-    orderBy('time_stamp')
-  );
-  const querySnapshot = await getDocs(q);
-  const notes = querySnapshot.docs.map((note) => {
+export async function fetchNotesWithLabel(labelId: string, userId: string) {
+  // console.log(labelId,userId,'hui');
+  const labelDocRef = doc(db, 'user', userId, 'labels', labelId);
+  const notesRef = collection(db, 'user', userId, 'notes');
+  const notesQuery = query(notesRef, where('label', '==', labelDocRef));
+
+  const notesSnapshot = await getDocs(notesQuery);
+  console.log(notesRef, 'ref');
+  const notes = notesSnapshot.docs.map((note) => {
     return {
       noteId: note.id,
       content: note.data().content,
@@ -39,27 +38,30 @@ export async function fetchNotes(uid: string, label: string) {
       time_stamp: note.data().time_stamp,
     };
   });
+  // console.log(notes, 'adsf');
+
   return notes;
 }
-export async function fetchNote(uid: string, notesId: string | null) {
-  if (notesId) {
-    const parentDocRef = doc(db, 'user', uid);
-    const nestedCollectionRef = collection(parentDocRef, 'notes');
-    const noteRef = doc(nestedCollectionRef, notesId);
+
+export async function fetchAllNotes(uid: string) {
+  const noteRef = collection(db, 'user', uid, 'notes');
+  const notesData = getDocs(noteRef);
+  return notesData;
+}
+export async function fetchNote(userId: string, noteId: string | null) {
+  if (noteId) {
+    const noteRef = doc(db, 'user', userId, 'notes', noteId);
     const noteData = await getDoc(noteRef);
     return noteData;
   }
   return null;
 }
 export async function fetchSearchNotes(uid: string, qs: string) {
-  const parentDocRef = doc(db, 'user', uid);
-  const nestedCollectionRef = collection(parentDocRef, 'notes');
-  const q = startAt(qs);
-  // console.log();
+  const notesRef = collection(db, 'user', uid, 'notes');
   const qu = query(
-    nestedCollectionRef,
+    notesRef,
     orderBy('title'),
-    q,
+    startAt(qs),
     endAt(`${qs}\uf8ff`)
   );
   const querySnapshot = await getDocs(qu);
@@ -72,73 +74,68 @@ export async function fetchSearchNotes(uid: string, qs: string) {
       time_stamp: note.data().time_stamp,
     };
   });
-  console.log(allNotesData);
-
   return allNotesData;
 }
 export async function deleteNotes(uid: string, noteId: string) {
-  const parentDocRef = doc(db, 'user', uid);
-  const nestedCollectionRef = collection(parentDocRef, 'notes');
-  const noteDoc = doc(nestedCollectionRef, noteId);
-  await deleteDoc(noteDoc);
-  // const labelCollectionRef = collection(parentDocRef, 'labels');
-  // const labelDoc = doc(labelCollectionRef, labelId);
+  const noteRef = doc(db, 'user', uid, 'notes', noteId);
+  const noteData = await getDoc(noteRef);
+  const labelRef = noteData.data()?.label;
+  if (noteData.data()) {
+    await deleteDoc(noteRef);
+    await updateDoc(labelRef, { count: increment(-1) });
+  }
 }
 export const createNote = async (
   uid: string,
   content: string,
-  label: string,
+  labelId: string,
   title: string
 ) => {
-  const parentDocRef = doc(db, 'user', uid);
-  const nestedCollectionRef = collection(parentDocRef, 'notes');
-  await addDoc(nestedCollectionRef, {
+  const labelRef = doc(db, 'user', uid, 'labels', labelId);
+  const noteRef = collection(db, 'user', uid, 'notes');
+  await addDoc(noteRef, {
     content,
-    label,
+    label: labelRef,
     title,
     time_stamp: serverTimestamp(),
   });
+  await updateDoc(labelRef, { count: increment(1) });
 };
 
 export const updateNote = async (
   uid: string,
   noteId: string,
   content: string,
-  title: string,
-  label: string
+  title: string
 ) => {
   const parentDocRef = doc(db, 'user', uid);
   const nestedCollectionRef = collection(parentDocRef, 'notes');
   const noteRef = doc(nestedCollectionRef, noteId);
-  updateDoc(noteRef, { content, title, label });
+  updateDoc(noteRef, { content, title });
 };
 
 export const signUpUser = async (uid: string) => {
   try {
-    const notes = [
+    const notes: Note[] = [
       {
-        label: NOTES.ACADEMICS.NAME,
         title: NOTES.ACADEMICS.TITLE,
         content: NOTES.ACADEMICS.CONTENT,
         url: [],
         time_stamp: serverTimestamp(),
       },
       {
-        label: NOTES.OTHERS.NAME,
         title: NOTES.OTHERS.TITLE,
         content: NOTES.OTHERS.CONTENT,
         url: [],
         time_stamp: serverTimestamp(),
       },
       {
-        label: NOTES.PERSONAL.NAME,
         title: NOTES.PERSONAL.TITLE,
         content: NOTES.PERSONAL.CONTENT,
         url: [],
         time_stamp: serverTimestamp(),
       },
       {
-        label: NOTES.WORK.NAME,
         title: NOTES.WORK.TITLE,
         content: NOTES.WORK.CONTENT,
         url: [],
@@ -156,17 +153,18 @@ export const signUpUser = async (uid: string) => {
     const notesRef = collection(newNoteRef, 'notes');
     const labelRef = collection(newNoteRef, 'labels');
 
+    labels.forEach((label, index) => {
+      const labelDoc = doc(labelRef);
+      batch.set(labelDoc, {
+        count: 1,
+        label,
+        time_stamp: serverTimestamp(),
+      });
+      notes[index].label = labelDoc;
+    });
     notes.forEach((note) => {
       const noteDoc = doc(notesRef);
       batch.set(noteDoc, note);
-    });
-
-    labels.forEach((label) => {
-      const labelDoc = doc(labelRef, label);
-      batch.set(labelDoc, {
-        count: 1,
-        time_stamp: serverTimestamp(),
-      });
     });
     await batch.commit();
   } catch (error) {
@@ -177,9 +175,11 @@ export const signUpUser = async (uid: string) => {
 export const createUser = async (
   email: string,
   password: string,
-  name: string
+  name: string,
+  dispatch: AppDispatch
 ) => {
   try {
+    dispatch(setLoading(true));
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
@@ -190,71 +190,63 @@ export const createUser = async (
         displayName: name,
       });
     }
-    signUpUser(userCredential.user.uid);
+    await signUpUser(userCredential.user.uid);
+    dispatch(setLoading(false));
   } catch (error) {
-    // console.error('Error creating account:', error);
+    dispatch(setLoading(false));
+    // ShowAlertMessage Dispatch
   }
 };
 
 export const fetchLabels = async (uid: string) => {
-  const parentDocRef = doc(db, 'user', uid);
-  const nestedCollectionRef = collection(parentDocRef, 'labels');
-  const querySnapshot = await getDocs(nestedCollectionRef);
-  const labels = querySnapshot.docs.map((label) => ({ id: label.id }));
+  const labelsRef = collection(db, 'user', uid, 'labels');
+  const labelData = await getDocs(labelsRef);
+  const labels = labelData.docs.map((item) => ({
+    id: item.data().label,
+    labelId: item.id,
+  }));
   return labels;
 };
 
-export const createLabel = async (
-  uid: string,
-  label: string,
-  newLabel: boolean,
-  labelData?: unknown
-) => {
-  const parentDocRef = doc(db, 'user', uid);
-  const nestedCollectionRef = collection(parentDocRef, 'labels');
-  const labelDataRef = doc(nestedCollectionRef, label);
-  if (newLabel) {
-    await setDoc(labelDataRef, labelData);
-  } else await setDoc(labelDataRef, labelData);
+export const createLabel = async (uid: string, labelName: string) => {
+  const labelRef = collection(db, 'user', uid, 'labels');
+  await addDoc(labelRef, {
+    count: 0,
+    label: labelName,
+    time_stamp: serverTimestamp(),
+  });
 };
 
 export const updateLabel = async (
   uid: string,
-  oldLabel: string,
-  newLabel: string,
+  labelName: string,
+  labelId: string,
+  dispatch: AppDispatch
+) => {
+  dispatch(setLoading(true));
+  const parentDocRef = doc(db, 'user', uid);
+  const labelCollectionRef = doc(parentDocRef, 'labels', labelId);
+  updateDoc(labelCollectionRef, { label: labelName });
+  dispatch(setLoading(false));
+};
+
+export const deleteLabel = async (
+  uid: string,
+  labelId: string,
   dispatch: AppDispatch
 ) => {
   dispatch(setLoading(true));
   const parentDocRef = doc(db, 'user', uid);
   const labelCollectionRef = collection(parentDocRef, 'labels');
   const noteCollectionRef = collection(parentDocRef, 'notes');
-  const labelDoc = doc(labelCollectionRef, oldLabel);
-  const prevLabelData = await getDoc(labelDoc).then((labelData) =>
-    labelData.data()
-  );
-  await deleteDoc(labelDoc);
-  createLabel(uid, newLabel, false, prevLabelData);
+  const labelRef = doc(labelCollectionRef, labelId);
   const batch = writeBatch(db);
-  const q = query(noteCollectionRef, where('label', '==', oldLabel));
-  const documents = await getDocs(q);
-  documents.forEach((note) => {
-    batch.update(note.ref, { label: newLabel });
-  });
-  await batch.commit();
-  dispatch(setLoading(false));
-};
-
-export const deleteLabel = async (uid: string, label: string) => {
-  const parentDocRef = doc(db, 'user', uid);
-  const labelCollectionRef = collection(parentDocRef, 'labels');
-  const noteCollectionRef = collection(parentDocRef, 'notes');
-  const labelDoc = doc(labelCollectionRef, label);
-  await deleteDoc(labelDoc);
-  const batch = writeBatch(db);
-  const q = query(noteCollectionRef, where('label', '==', label));
+  const q = query(noteCollectionRef, where('label', '==', labelRef));
   const documents = await getDocs(q);
   documents.forEach((note) => {
     batch.delete(note.ref);
   });
   await batch.commit();
+  await deleteDoc(labelRef);
+  dispatch(setLoading(false));
 };

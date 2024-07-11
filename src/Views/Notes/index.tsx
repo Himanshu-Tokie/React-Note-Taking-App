@@ -1,6 +1,7 @@
 import JoditEditor from 'jodit-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { doc, getDoc } from 'firebase/firestore';
 import { useLabelUpdate, useUpdateLabel } from '../../Shared/CustomHooks';
 import {
   createNote,
@@ -11,6 +12,7 @@ import { stateType } from '../Dashboard/types';
 import { editorConfig } from './Utils';
 import { notesProps } from './types';
 import { setLoading } from '../../Store/Loader';
+import { db } from '../../Services/Config/Firebase/firebase';
 
 function Notes({
   noteTitle,
@@ -21,15 +23,17 @@ function Notes({
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
   const [label, setLabel] = useState('');
-  const [labelData, setLabelData] = useState<{ id: string }[]>();
+  const [labelData, setLabelData] =
+    useState<{ id: string; labelId: string }[]>();
   const dispatch = useDispatch();
-
+  const [currentLabel, setCurrentLabel] = useState('');
   useEffect(() => {
     if (noteTitle) {
       setTitle(noteTitle);
     }
     if (noteContent) setContent(noteContent);
   }, [noteContent, noteTitle]);
+
   const [showEditor, setShowEditor] = useState(false);
   const uid = useSelector((state: stateType) => state.common.uid);
   const labelId = useSelector(
@@ -40,7 +44,11 @@ function Notes({
 
   useEffect(() => {
     setLabel(labelId);
-  }, [labelId]);
+    if (labelId) {
+      const labelRef = doc(db, 'user', uid, 'labels', labelId);
+      getDoc(labelRef).then((data) => setCurrentLabel(data.data()?.label));
+    }
+  }, [labelId, uid]);
   const handleEditorClick = useCallback(
     (e: MouseEvent) => {
       const editor = document.getElementById('editor');
@@ -65,21 +73,22 @@ function Notes({
     if ((title || content) && label) {
       dispatch(setLoading(true));
       if (noteId && setShowNoteEditor) {
-        updateNote(uid, noteId, content, title, label).then(() => {
+        updateNote(uid, noteId, content, title).then(() => {
           setShowNoteEditor(false);
           setContent('');
           setTitle('');
           dispatch(setLoading(false));
         });
-      } else
+      } else {
         createNote(uid, content, label, title).then(() => {
           setContent('');
           setTitle('');
           setShowEditor(false);
           dispatch(setLoading(false));
         });
+      }
     } else {
-      alert('Empty Notes');
+      // alert('Empty Notes');
     }
   }
   function onClickCancel() {
@@ -102,7 +111,7 @@ function Notes({
         </div>
         <div className="px-2">
           {labelId ? (
-            <p>{labelId}</p>
+            <p>{currentLabel}</p>
           ) : (
             <select
               name="label"
@@ -111,7 +120,7 @@ function Notes({
               onBlur={(event) => setLabel(event.target.value)}
             >
               {labelData?.map((item) => (
-                <option value={item.id} key={item.id}>
+                <option value={item.labelId} key={item.labelId}>
                   {item.id}
                 </option>
               ))}
