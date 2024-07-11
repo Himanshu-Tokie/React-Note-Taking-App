@@ -1,6 +1,6 @@
 import { serverTimestamp } from 'firebase/firestore';
 import { MouseEventHandler, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { stateType } from '../../../../Views/Dashboard/types';
 import {
   createLabel,
@@ -15,6 +15,7 @@ import ICONS from '../../../../assets';
 function CustomModal({ setShowModal }: CustomModalProps) {
   const uid = useSelector((state: stateType) => state.common.uid);
   const [data, setData] = useState<{ id: string }[]>();
+  const dispatch = useDispatch();
   useEffect(() => {
     fetchLabels(uid).then((label) => setData(label));
   }, [uid]);
@@ -30,7 +31,7 @@ function CustomModal({ setShowModal }: CustomModalProps) {
     if (inputElement) {
       const oldLabel = inputElement.name;
       const newLabel = inputElement.value;
-      updateLabel(uid, oldLabel, newLabel);
+      updateLabel(uid, oldLabel, newLabel, dispatch);
     }
   };
 

@@ -4,17 +4,21 @@ import {
   collection,
   deleteDoc,
   doc,
+  endAt,
   getDoc,
   getDocs,
   orderBy,
   query,
   serverTimestamp,
   setDoc,
+  startAt,
   updateDoc,
   where,
   writeBatch,
 } from 'firebase/firestore';
 import { auth, db } from '../../Services/Config/Firebase/firebase';
+import { AppDispatch } from '../../Store';
+import { setLoading } from '../../Store/Loader';
 import { NOTES } from '../Constants';
 
 export async function fetchNotes(uid: string, label: string) {
@@ -47,7 +51,31 @@ export async function fetchNote(uid: string, notesId: string | null) {
   }
   return null;
 }
+export async function fetchSearchNotes(uid: string, qs: string) {
+  const parentDocRef = doc(db, 'user', uid);
+  const nestedCollectionRef = collection(parentDocRef, 'notes');
+  const q = startAt(qs);
+  // console.log();
+  const qu = query(
+    nestedCollectionRef,
+    orderBy('title'),
+    q,
+    endAt(`${qs}\uf8ff`)
+  );
+  const querySnapshot = await getDocs(qu);
+  const allNotesData = querySnapshot.docs.map((note) => {
+    return {
+      noteId: note.id,
+      content: note.data().content,
+      label: note.data().label,
+      title: note.data().title,
+      time_stamp: note.data().time_stamp,
+    };
+  });
+  console.log(allNotesData);
 
+  return allNotesData;
+}
 export async function deleteNotes(uid: string, noteId: string) {
   const parentDocRef = doc(db, 'user', uid);
   const nestedCollectionRef = collection(parentDocRef, 'notes');
@@ -193,8 +221,10 @@ export const createLabel = async (
 export const updateLabel = async (
   uid: string,
   oldLabel: string,
-  newLabel: string
+  newLabel: string,
+  dispatch: AppDispatch
 ) => {
+  dispatch(setLoading(true));
   const parentDocRef = doc(db, 'user', uid);
   const labelCollectionRef = collection(parentDocRef, 'labels');
   const noteCollectionRef = collection(parentDocRef, 'notes');
@@ -211,6 +241,7 @@ export const updateLabel = async (
     batch.update(note.ref, { label: newLabel });
   });
   await batch.commit();
+  dispatch(setLoading(false));
 };
 
 export const deleteLabel = async (uid: string, label: string) => {

@@ -1,26 +1,45 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import CustomModal from '../../../Shared/CustomComponents/CustomModal/EditLabel';
+import { fetchSearchNotes } from '../../../Shared/Firebase Utils';
+import { stateType } from '../../../Views/Dashboard/types';
 import Notes from '../../../Views/Notes';
 import { AppLayoutProps } from '../AppLayout.d';
 import NoteNavbar from './Navbar';
 import Sidebar from './Sidebar';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [allNotesData, setAllNotesData] = useState<
+    {
+      noteId: string;
+      content: string;
+      label: string;
+      title: string;
+      time_stamp: string;
+    }[]
+  >();
+  const [searchData, setSearchData] = useState<
+    {
+      noteId: string;
+      content: string;
+      label: string;
+      title: string;
+      time_stamp: string;
+    }[]
+  >();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [sidebarWidth, setSidebarWidth] = useState<string>('250px');
+  const uid = useSelector((state: stateType) => state.common.uid);
   const handleClick = (e: MouseEvent) => {
     const nearestDiv = (e.target as Element).closest('div');
-    // const sidebar = document.getElementById('sidebar');
     if (nearestDiv?.id === 'Edit Labels') {
       setShowModal((prevShowModal) => !prevShowModal);
     }
-    // if (nearestDiv) {
-    //   document.querySelectorAll('#sidebar > div').forEach((div) => {
-    //     div.classList.remove('bg-[#7F56D9]', 'text-white');
-    //   });
-    //   if (sidebar?.contains(nearestDiv) && nearestDiv.id !== 'sidebar')
-    //     nearestDiv.classList.add('bg-[#7F56D9]', 'text-white');
-    // }
   };
   useEffect(() => {
     const tag = document.getElementById('sidebar');
@@ -35,9 +54,33 @@ function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
       body.style.marginLeft = sidebarWidth;
     }
   }, [sidebarWidth]);
+  const search = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const params = new URLSearchParams(location.search);
+    const isFirstSearch = params.get('q') == null;
+    navigate(`${location.pathname}?q=${e.target.value}`, {
+      replace: !isFirstSearch,
+    });
+
+    // await fetchSearchNotes(uid, e.target.value).then((data) =>
+    //   setAllNotesData(data)
+    // );
+    // const text = e.target.value;
+    // if (allNotesData) {
+    //   const filteredData = allNotesData.filter((note) => {
+    //     return (
+    //       note.content.toLowerCase().match(text) ||
+    //       note.title.toLowerCase().match(text) ||
+    //       note.label.toLowerCase().match(text)
+    //     );
+    //   });
+    //   console.log(filteredData);
+    //   setSearchData([]);
+    // }
+  };
+
   return (
     <>
-      <NoteNavbar setSidebarWidth={setSidebarWidth} />
+      <NoteNavbar setSidebarWidth={setSidebarWidth} search={search} />
       <div className="flex mt-20 dark:bg-gray-700">
         <Sidebar />
         <div
