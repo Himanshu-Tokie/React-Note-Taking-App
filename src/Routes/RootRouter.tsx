@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 import { useRoutes } from 'react-router-dom';
+import AppLayout from '../Components/Layouts/AppLayout';
+import Spinner from '../Shared/CustomSpinner';
+import type { RootState } from '../Store';
 import DocumentTitle from './DocumentTitle';
 import { authenticatedRoutes, guestRoutes } from './config';
-import AppLayout from '../Components/Layouts/AppLayout';
-import type { RootState } from '../Store';
-import Spinner from '../Shared/CustomSpinner';
 
 function RootRouter() {
   const guest = useRoutes(guestRoutes);

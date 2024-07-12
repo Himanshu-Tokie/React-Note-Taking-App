@@ -8,11 +8,13 @@ import { updateAuthTokenRedux } from '../../../../Store/Common';
 import { setLoading } from '../../../../Store/Loader';
 import ICONS from '../../../../assets';
 import { noteNavbarProps } from './types';
+import PopUpMessage from '../../../../Shared/CustomComponents/CustomModal/PopUp';
 
 function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   const [themeVisible, setThemeVisible] = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
   const [showSidebar, setShowSidebar] = useState(true);
+  const [confirmationModal, setConfirmationModal] = useState(false);
   const dispatch = useDispatch();
   const [theme, setTheme] = useState<THEME>(THEME.SYSTEM);
   function toggleSettings() {
@@ -61,9 +63,22 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
         return <img src={ICONS.COMPUTER} alt="system" className="h-full" />;
     }
   };
+  const themeToggler = (e) => {
+    setThemeHandler(e.currentTarget);
+    if (e.currentTarget.id === THEME.DARK) document.body.classList.add('dark');
+    else if (e.currentTarget.id === THEME.LIGHT)
+      document.body.classList.remove('dark');
+  };
   return (
     <>
-      <div className="fixed w-full bg-white top-0 z-[35] dark:bg-gray-700">
+      {confirmationModal && (
+        <PopUpMessage
+          setConfirmationModal={setConfirmationModal}
+          description="Are you sure want to log out"
+          confirmationFunction={logOut}
+        />
+      )}
+      <div className="fixed w-full bg-white top-0 z-[35] dark:bg-zinc-700">
         <header className="flex justify-between pr-5 pl-4 pt-2">
           <div className="flex py-2 items-center">
             <div
@@ -76,19 +91,20 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
               <img src={ICONS.MENU} alt="menu" />
             </div>
             <img src={ICONS.DIARY} alt="menu" className="h-16 opacity-100" />
-            <p className="md:pl-2 place-content-center text-xl">NoteHub</p>
+            <p className="md:pl-2 place-content-center text-xl font-bold dark:text-white">
+              NoteHub
+            </p>
           </div>
           <div className="hidden md:flex border-2 items-center px-2 rounded-lg h-fit self-center">
             <img src={ICONS.SEARCH} alt="settings" className="h-6" />
             <input
               placeholder="Search"
-              className="outline-0 px-3 w-96 py-3"
+              className="outline-0 px-3 w-96 py-3 bg-gray-50"
               // onChange={(e) => setSearchParams({ search: e.target.value })}
               onChange={search}
             />
             <img src={ICONS.CLOSE} alt="settings" className="h-6" />
           </div>
-
           <div className="flex items-center">
             <img src={ICONS.SEARCH} alt="user" className="h-7 pl-3 md:hidden" />
             <div
@@ -120,7 +136,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
               <div
                 className="flex"
                 id={THEME.LIGHT}
-                onClick={() => setThemeHandler(THEME.LIGHT)}
+                onClick={themeToggler}
                 onKeyDown={handleKeyDown}
                 role="button"
                 tabIndex={0}
@@ -133,7 +149,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
               <div
                 className="flex"
                 id={THEME.DARK}
-                onClick={() => setThemeHandler(THEME.DARK)}
+                onClick={themeToggler}
                 onKeyDown={handleKeyDown}
                 role="button"
                 tabIndex={0}
@@ -146,7 +162,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
               <div
                 className="flex"
                 id={THEME.SYSTEM}
-                onClick={() => setThemeHandler(THEME.SYSTEM)}
+                onClick={themeToggler}
                 onKeyDown={handleKeyDown}
                 role="button"
                 tabIndex={0}
@@ -162,7 +178,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
         <Cards
           name={auth.currentUser?.displayName ?? ''}
           user={auth.currentUser?.email ?? ''}
-          signOut={logOut}
+          signOut={() => setConfirmationModal(true)}
         />
       )}
     </>

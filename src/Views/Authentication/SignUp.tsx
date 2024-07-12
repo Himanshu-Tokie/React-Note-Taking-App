@@ -1,15 +1,42 @@
 import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../Shared/Constants';
+import PopUpMessage from '../../Shared/CustomComponents/CustomModal/PopUp';
 import { createUser } from '../../Shared/Firebase Utils';
 import { SignupSchema } from './Utils';
 
 function SignUp(): JSX.Element {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [confirmationModal, setConfirmationModal] = useState(false);
+  const formValues = useRef<{
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  }>();
+  const signUpUser = () => {
+    if (formValues.current) {
+      createUser(
+        formValues.current.email,
+        formValues.current.password,
+        `${formValues.current.firstName} ${formValues.current.lastName}`,
+        dispatch
+      ).then(() => navigate('/login'));
+    }
+  };
   return (
     <div>
+      {confirmationModal && (
+        <PopUpMessage
+          setConfirmationModal={setConfirmationModal}
+          description="Are you sure want to sign up"
+          confirmationFunction={signUpUser}
+        />
+      )}
       <div className="flex flex-col flex-wrap place-content-center pt-16 ">
         <h1 className="font-bold self-center text-2xl">Sign up</h1>
         <p className="text-[#475467] py-2 self-center">
@@ -26,12 +53,8 @@ function SignUp(): JSX.Element {
             }}
             validationSchema={SignupSchema}
             onSubmit={(values) => {
-              createUser(
-                values.email,
-                values.password,
-                `${values.firstName} + ' ' + ${values.lastName}`,
-                dispatch
-              ).then(() => navigate('/login'));
+              formValues.current = values;
+              setConfirmationModal(true);
             }}
           >
             <Form>

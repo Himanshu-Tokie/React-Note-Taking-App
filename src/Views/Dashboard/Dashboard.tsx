@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import CustomBox from '../../Shared/CustomComponents/CustomBox';
@@ -12,11 +12,15 @@ export default function Dashboard() {
   const uid = useSelector((state: stateType) => state.common.uid);
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get('q');
-  if (searchQuery) {
-    fetchSearchNotes(uid, searchQuery).then((data) => {
-      setNotesData(data);
-    });
-  }
+  useEffect(() => {
+    if (searchQuery) {
+      fetchSearchNotes(uid, searchQuery).then((data) => {
+        setNotesData(data);
+      });
+    } else {
+      setNotesData([]);
+    }
+  }, [searchQuery, uid]);
   const dispatch = useDispatch();
   useLabelUpdate(dispatch, '');
   const toggleNoteEditor = () => {};
