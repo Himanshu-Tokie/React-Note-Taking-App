@@ -22,13 +22,11 @@ import { setLoading } from '../../Store/Loader';
 import { NOTES } from '../Constants';
 
 export async function fetchNotesWithLabel(labelId: string, userId: string) {
-  // console.log(labelId,userId,'hui');
   const labelDocRef = doc(db, 'user', userId, 'labels', labelId);
   const notesRef = collection(db, 'user', userId, 'notes');
   const notesQuery = query(notesRef, where('label', '==', labelDocRef));
 
   const notesSnapshot = await getDocs(notesQuery);
-  console.log(notesRef, 'ref');
   const notes = notesSnapshot.docs.map((note) => {
     return {
       noteId: note.id,
@@ -38,8 +36,6 @@ export async function fetchNotesWithLabel(labelId: string, userId: string) {
       time_stamp: note.data().time_stamp,
     };
   });
-  // console.log(notes, 'adsf');
-
   return notes;
 }
 

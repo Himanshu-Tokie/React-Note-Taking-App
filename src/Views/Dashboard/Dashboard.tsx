@@ -31,7 +31,7 @@ export default function Dashboard() {
         notesData?.map((note) => (
           <div
             id={note.noteId}
-            className="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 m-4"
+            className="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-[#333333] dark:border-gray-700 m-4"
             key={note.noteId}
           >
             <CustomBox

@@ -78,8 +78,8 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
           confirmationFunction={logOut}
         />
       )}
-      <div className="fixed w-full bg-white top-0 z-[35] dark:bg-zinc-700">
-        <header className="flex justify-between pr-5 pl-4 pt-2">
+      <div className="fixed w-full bg-white top-0 z-[35] dark:bg-[#1E1E1E]">
+        <header className="flex justify-between pr-5 pl-4 pt-2 border-b-2 dark:border-[#5F6368]">
           <div className="flex py-2 items-center">
             <div
               onClick={toggleSidebar}
@@ -95,11 +95,11 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
               NoteHub
             </p>
           </div>
-          <div className="hidden md:flex border-2 items-center px-2 rounded-lg h-fit self-center">
+          <div className="hidden md:flex border-2 dark:border-[#5F6368] items-center px-2 rounded-lg h-fit self-center dark:bg-[#333333]">
             <img src={ICONS.SEARCH} alt="settings" className="h-6" />
             <input
               placeholder="Search"
-              className="outline-0 px-3 w-96 py-3 bg-gray-50"
+              className="outline-0 px-3 w-96 py-3 bg-gray-50 dark:bg-[#333333] dark:text-gray-300"
               // onChange={(e) => setSearchParams({ search: e.target.value })}
               onChange={search}
             />
@@ -127,7 +127,6 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
             </div>
           </div>
         </header>
-        <hr />
       </div>
       {themeVisible && (
         <div className="fixed right-6 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-30 dark:bg-gray-700">
