@@ -98,25 +98,31 @@ function Notes({
     else setShowEditor(false);
   }
   return (
-    <div className="w-full self-center mt-8 max-w-xl" id="note">
-      <div className="flex items-center border-2 mb-2 rounded-lg" id="editor">
+    <div
+      className="w-full self-center mt-8 max-w-xl dark:bg-[#252526]"
+      id="note"
+    >
+      <div
+        className="flex items-center border-2 mb-2 rounded-lg dark:bg-[#333333] dark:border-[#5F6368]"
+        id="editor"
+      >
         <div className="flex-1 px-2">
           <input
             type="text"
             placeholder="title"
-            className="w-full py-2 outline-none"
+            className="w-full py-2 outline-none dark:bg-[#333333] dark:text-gray-300"
             onChange={(e) => setTitle(e.currentTarget.value)}
             value={title}
           />
         </div>
         <div className="px-2">
           {labelId ? (
-            <p>{currentLabel}</p>
+            <p className="dark:text-gray-300">{currentLabel}</p>
           ) : (
             <select
               name="label"
               id="labelId"
-              className="outline-none w-30"
+              className="outline-none w-30 dark:bg-[#333333] dark:text-gray-300"
               onBlur={(event) => setLabel(event.target.value)}
             >
               {labelData?.map((item) => (

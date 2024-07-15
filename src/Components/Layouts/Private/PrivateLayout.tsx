@@ -42,14 +42,14 @@ function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
   return (
     <>
       <NoteNavbar setSidebarWidth={setSidebarWidth} search={search} />
-      <div className="flex mt-20 dark:bg-zinc-800">
+      <div className="flex mt-20 dark:bg-[#1E1E1E]">
         <Sidebar />
         <div
-          className="flex-1 flex flex-col transition-all duration-300 ease-in-out dark:bg-gray-600 dark:border-2"
+          className="flex-1 flex flex-col transition-all duration-300 ease-in-out dark:bg-[#252526] dark:border-2 dark:border-[#5F6368]"
           id="body"
         >
           <Notes />
-          <div className="h-dvh">{children}</div>
+          <div className="h-dvh dark:bg-[#252526]">{children}</div>
         </div>
       </div>
       {showModal && <CustomModal setShowModal={setShowModal} />}
