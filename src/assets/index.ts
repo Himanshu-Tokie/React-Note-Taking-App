@@ -22,6 +22,7 @@ import USER from './user.svg';
 import LIGHT_MODE from './light_mode.svg';
 import DARK_MODE from './dark_mode.svg';
 import COMPUTER from './computer.svg';
+import AUTH_IMAGE from './auth_sideimage.svg';
 
 const ICONS = {
   BG_DESIGN,
@@ -48,6 +49,7 @@ const ICONS = {
   LIGHT_MODE,
   DARK_MODE,
   COMPUTER,
+  AUTH_IMAGE,
 };
 
 export default ICONS;

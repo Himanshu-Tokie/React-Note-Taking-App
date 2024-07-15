@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import CustomBox from '../../Shared/CustomComponents/CustomBox';
@@ -17,7 +17,6 @@ export default function Lable() {
   const [notesData, setNotesData] = useState<labelProps[]>();
   const [showNoteEditor, setShowNoteEditor] = useState(false);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
-  const currentDivRef = useRef<HTMLDivElement | null>(null);
   const loading = useSelector((state: RootState) => state.loader.isLoading);
   const noteIdSetter = (
     e: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>
@@ -61,7 +60,6 @@ export default function Lable() {
             tabIndex={0}
             role="button"
             aria-label="label"
-            ref={activeNoteId === note.noteId ? currentDivRef : null}
           >
             <CustomBox
               title={note.title}

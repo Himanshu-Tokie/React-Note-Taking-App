@@ -15,6 +15,7 @@ import PopUpMessage from '../PopUp';
 function CustomModal({ setShowModal }: CustomModalProps) {
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
+  const [selectedLabel, setSelectedLabel] = useState<string | undefined>();
   const uid = useSelector((state: stateType) => state.common.uid);
   const [data, setData] = useState<
     {
@@ -42,12 +43,11 @@ function CustomModal({ setShowModal }: CustomModalProps) {
     }
   };
 
-  const handleDeleteClick: MouseEventHandler<HTMLButtonElement> = (event) => {
-    const targetElement = event.target as Element;
-    const inputElement = targetElement.closest('div')?.querySelector('input');
-    if (inputElement) {
-      const label = inputElement.name;
-      deleteLabel(uid, label, dispatch);
+  const handleDeleteClick = () => {
+    if (selectedLabel) {
+      deleteLabel(uid, selectedLabel, dispatch);
+      setConfirmationModal(false);
+      setSelectedLabel(undefined);
     }
   };
 
@@ -79,10 +79,10 @@ function CustomModal({ setShowModal }: CustomModalProps) {
       <div
         tabIndex={-1}
         aria-hidden="true"
-        className="z-[1000] flex overflow-y-auto overflow-x-hidden fixed justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+        className="z-[1000] flex overflow-y-auto overflow-x-hidden fixed justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full "
       >
-        <div className="relative p-4 w-full max-w-md max-h-full">
-          <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div className="relative p-4 w-full max-w-md max-h-full ">
+          <div className="relative bg-white rounded-lg shadow dark:bg-[#1E1E1E]">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Edit Labels
@@ -101,7 +101,7 @@ function CustomModal({ setShowModal }: CustomModalProps) {
               </div>
             </div>
             <div className="p-4 md:p-5 flex flex-col">
-              <div className="justify-between items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+              <div className="justify-between items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 group hover:shadow dark:bg-[#333333] dark:text-white">
                 <div className="flex justify-between items-center">
                   <button
                     type="button"
@@ -114,7 +114,7 @@ function CustomModal({ setShowModal }: CustomModalProps) {
                     id="labelInput"
                     name="label"
                     placeholder="Create Label"
-                    className="bg-gray-50 hover:bg-gray-100 outline-none"
+                    className="bg-gray-50 hover:bg-gray-100 outline-none dark:bg-[#333333]"
                   />
                   <button
                     type="button"
@@ -133,17 +133,20 @@ function CustomModal({ setShowModal }: CustomModalProps) {
               {data?.map((label) => (
                 <div
                   key={label.id}
-                  className="flex justify-between items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
+                  className="flex justify-between items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 group hover:shadow dark:bg-[#333333] dark:text-white"
                 >
                   <img src={ICONS.LABEL} alt="" />
                   <input
                     name={label.labelId}
                     defaultValue={label.id}
-                    className="bg-gray-50 hover:bg-gray-100 outline-none"
+                    className="bg-gray-50 hover:bg-gray-100 outline-none dark:text-gray-50 dark:bg-[#333333]"
                   />
                   <button
                     type="button"
-                    onClick={() => setConfirmationModal(true)}
+                    onClick={() => {
+                      setSelectedLabel(label.labelId);
+                      setConfirmationModal(true);
+                    }}
                     className="hover:bg-red-600 cursor-pointer rounded-full p-1"
                   >
                     <img src={ICONS.DELETE} alt="delete" />

@@ -1,14 +1,15 @@
 import { signOut } from 'firebase/auth';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { auth } from '../../../../Services/Config/Firebase/firebase';
-import { THEME } from '../../../../Shared/Constants';
+import { ROUTES, THEME } from '../../../../Shared/Constants';
 import Cards from '../../../../Shared/CustomCards';
-import { updateAuthTokenRedux } from '../../../../Store/Common';
+import PopUpMessage from '../../../../Shared/CustomComponents/CustomModal/PopUp';
+import { updateAuthTokenRedux, updateTheme } from '../../../../Store/Common';
 import { setLoading } from '../../../../Store/Loader';
 import ICONS from '../../../../assets';
 import { noteNavbarProps } from './types';
-import PopUpMessage from '../../../../Shared/CustomComponents/CustomModal/PopUp';
 
 function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   const [themeVisible, setThemeVisible] = useState(false);
@@ -16,7 +17,11 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   const [showSidebar, setShowSidebar] = useState(true);
   const [confirmationModal, setConfirmationModal] = useState(false);
   const dispatch = useDispatch();
-  const [theme, setTheme] = useState<THEME>(THEME.SYSTEM);
+  const navigate = useNavigate();
+  const storedDarkMode = localStorage.getItem('Theme') as THEME;
+  const [theme, setTheme] = useState<THEME>(storedDarkMode ?? THEME.DARK);
+  const themeElementRef = useRef<HTMLDivElement | null>(null);
+  const profileElementRef = useRef<HTMLDivElement | null>(null);
   function toggleSettings() {
     setThemeVisible(!themeVisible);
   }
@@ -51,6 +56,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   };
   const setThemeHandler = (selectedTheme: THEME) => {
     setTheme(selectedTheme);
+    dispatch(updateTheme(selectedTheme));
     setThemeVisible(false);
   };
   const getThemeIcon = () => {
@@ -64,10 +70,34 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
     }
   };
   const themeToggler = (e) => {
-    setThemeHandler(e.currentTarget);
+    setThemeHandler(e.currentTarget.id);
     if (e.currentTarget.id === THEME.DARK) document.body.classList.add('dark');
     else if (e.currentTarget.id === THEME.LIGHT)
       document.body.classList.remove('dark');
+  };
+  useEffect(() => {
+    if (theme === THEME.DARK) document.body.classList.add('dark');
+    else if (theme === THEME.LIGHT) document.body.classList.remove('dark');
+  }, [theme]);
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (!themeElementRef.current?.contains(e.target as Element)) {
+        setThemeVisible(false);
+      }
+      if (!profileElementRef.current?.contains(e.target as Element)) {
+        setProfileVisible(false);
+      }
+    };
+    document.addEventListener('click', handleClick);
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, []);
+  const searchFocusHandler = () => {
+    navigate(ROUTES.HOMEPAGE, { replace: true });
+  };
+  const searchBlurHandler = () => {
+    setTimeout(() => navigate(-2), 0);
   };
   return (
     <>
@@ -99,9 +129,11 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
             <img src={ICONS.SEARCH} alt="settings" className="h-6" />
             <input
               placeholder="Search"
-              className="outline-0 px-3 w-96 py-3 bg-gray-50 dark:bg-[#333333] dark:text-gray-300"
+              className="outline-0 px-3 w-96 py-3 dark:bg-[#333333] "
               // onChange={(e) => setSearchParams({ search: e.target.value })}
               onChange={search}
+              onFocus={searchFocusHandler}
+              onBlur={searchBlurHandler}
             />
             <img src={ICONS.CLOSE} alt="settings" className="h-6" />
           </div>
@@ -113,6 +145,8 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
               onKeyDown={handleKeyDown}
               role="button"
               tabIndex={0}
+              id="settings"
+              ref={themeElementRef}
             >
               {getThemeIcon()}
             </div>
@@ -122,6 +156,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
               onKeyDown={handleKeyDown}
               role="button"
               tabIndex={0}
+              ref={profileElementRef}
             >
               <img src={ICONS.USER} alt="user" className="h-7" />
             </div>
@@ -129,7 +164,10 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
         </header>
       </div>
       {themeVisible && (
-        <div className="fixed right-6 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-30 dark:bg-gray-700">
+        <div
+          className="fixed right-6 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-30 dark:bg-gray-700"
+          id="themeModal"
+        >
           <ul className="py-2">
             <li className="py-2 hover:bg-gray-100 cursor-pointer px-5">
               <div
@@ -141,7 +179,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
                 tabIndex={0}
               >
                 <img src={ICONS.LIGHT_MODE} alt="light" />
-                <p className="pl-2">Light</p>
+                <p className="pl-2 dark:text-gray-300">Light</p>
               </div>
             </li>
             <li className="py-2 hover:bg-gray-100 cursor-pointer px-5">
@@ -154,7 +192,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
                 tabIndex={0}
               >
                 <img src={ICONS.DARK_MODE} alt="dark" />
-                <p className="pl-2">Dark</p>
+                <p className="pl-2 dark:text-gray-300">Dark</p>
               </div>
             </li>
             <li className="py-2 hover:bg-gray-100 cursor-pointer px-5">
@@ -167,7 +205,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
                 tabIndex={0}
               >
                 <img src={ICONS.COMPUTER} alt="system" />
-                <p className="pl-2">System</p>
+                <p className="pl-2 dark:text-gray-300">System</p>
               </div>
             </li>
           </ul>
