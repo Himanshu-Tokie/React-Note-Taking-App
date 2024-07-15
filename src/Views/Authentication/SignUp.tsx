@@ -37,12 +37,14 @@ function SignUp(): JSX.Element {
           confirmationFunction={signUpUser}
         />
       )}
-      <div className="flex flex-col flex-wrap place-content-center pt-16 ">
-        <h1 className="font-bold self-center text-2xl">Sign up</h1>
-        <p className="text-[#475467] py-2 self-center">
-          Welcome! Happy to connect with you.
+      <div className="flex flex-col flex-wrap place-content-center px-16 py-4">
+        <h1 className="font-bold self-center text-3xl dark:text-white">
+          Welcome!
+        </h1>
+        <p className="text-[#475467] py-2 self-center dark:text-white">
+          Happy to connect with you
         </p>
-        <div className="w-1/4 bg-opacity-50 bg-slate-300 p-4">
+        <div className="bg-opacity-50">
           <Formik
             initialValues={{
               firstName: '',
@@ -59,10 +61,15 @@ function SignUp(): JSX.Element {
           >
             <Form>
               <div className="my-2">
-                <label htmlFor="firstName">First Name</label>
+                <label
+                  htmlFor="firstName"
+                  className="text-stone-900 font-medium dark:text-gray-300"
+                >
+                  First Name
+                </label>
                 <br />
                 <Field
-                  className="my-1 py-1 px-2 rounded-md border-2 w-full"
+                  className="outline-none py-1 px-2 rounded-md border-2 w-full bg-neutral-100 min-w-72"
                   type="text"
                   placeholder="Enter your first name"
                   id="firstName"
@@ -75,10 +82,15 @@ function SignUp(): JSX.Element {
                 />
               </div>
               <div className="my-2">
-                <label htmlFor="lastName">Last Name</label>
+                <label
+                  htmlFor="lastName"
+                  className="text-stone-900 font-medium dark:text-gray-300"
+                >
+                  Last Name
+                </label>
                 <br />
                 <Field
-                  className="my-1 py-1 px-2 rounded-md border-2 w-full"
+                  className="outline-none py-1 px-2 rounded-md border-2 w-full bg-neutral-100 min-w-72"
                   type="lastName"
                   placeholder="Enter your lastName"
                   id="lastName"
@@ -91,10 +103,15 @@ function SignUp(): JSX.Element {
                 />
               </div>
               <div className="my-2">
-                <label htmlFor="email">Email</label>
+                <label
+                  htmlFor="email"
+                  className="text-stone-900 font-medium dark:text-gray-300"
+                >
+                  Email
+                </label>
                 <br />
                 <Field
-                  className="my-1 py-1 px-2 rounded-md border-2 w-full"
+                  className="outline-none py-1 px-2 rounded-md border-2 w-full bg-neutral-100 min-w-72"
                   type="email"
                   placeholder="Enter your email"
                   id="email"
@@ -107,10 +124,15 @@ function SignUp(): JSX.Element {
                 />
               </div>
               <div className="my-2">
-                <label htmlFor="password">Password</label>
+                <label
+                  htmlFor="password"
+                  className="text-stone-900 font-medium dark:text-gray-300"
+                >
+                  Password
+                </label>
                 <br />
                 <Field
-                  className="my-1 py-1 px-2 rounded-md border-2 w-full"
+                  className="outline-none py-1 px-2 rounded-md border-2 w-full bg-neutral-100 min-w-72"
                   type="password"
                   placeholder="Enter your password"
                   id="password"
@@ -119,14 +141,19 @@ function SignUp(): JSX.Element {
                 <ErrorMessage
                   name="password"
                   component="p"
-                  className="text-red-500"
+                  className="text-red-500 max-w-72"
                 />
               </div>
               <div className="my-2">
-                <label htmlFor="confirmPassword">Confirm Password</label>
+                <label
+                  htmlFor="confirmPassword"
+                  className="text-stone-900 font-medium dark:text-gray-300"
+                >
+                  Confirm Password
+                </label>
                 <br />
                 <Field
-                  className="my-1 py-1 px-2 rounded-md border-2 w-full"
+                  className="outline-none py-1 px-2 rounded-md border-2 w-full bg-neutral-100 min-w-72"
                   type="password"
                   placeholder="Enter confirmPassword"
                   id="confirmPassword"
@@ -147,8 +174,8 @@ function SignUp(): JSX.Element {
             </Form>
           </Formik>
         </div>
-        <div className="self-center pt-2">
-          <p>
+        <div className="self-center">
+          <p className="dark:text-gray-300">
             Already have an account?{' '}
             <Link to={ROUTES.LOGIN} className="text-[#7F56D9] font-medium">
               Log in

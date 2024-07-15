@@ -23,6 +23,8 @@ function Notes({
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
   const [label, setLabel] = useState('');
+  const theme = useSelector((state) => state.common.theme.toLowerCase());
+
   const [labelData, setLabelData] =
     useState<{ id: string; labelId: string }[]>();
   const dispatch = useDispatch();
@@ -41,7 +43,6 @@ function Notes({
   );
   const editorRef = useRef(null);
   useLabelUpdate(dispatch, labelId ?? '');
-
   useEffect(() => {
     setLabel(labelId);
     if (labelId) {
@@ -141,7 +142,10 @@ function Notes({
             <JoditEditor
               ref={editorRef}
               value={content}
-              config={editorConfig}
+              config={{
+                ...editorConfig,
+                theme,
+              }}
               onBlur={(text) => {
                 setContent(text);
               }}

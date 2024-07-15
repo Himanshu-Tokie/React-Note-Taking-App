@@ -49,7 +49,7 @@ function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
           id="body"
         >
           <Notes />
-          <div className="h-dvh dark:bg-[#252526]">{children}</div>
+          <div className=" dark:bg-[#252526]">{children}</div>
         </div>
       </div>
       {showModal && <CustomModal setShowModal={setShowModal} />}
