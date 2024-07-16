@@ -10,6 +10,7 @@ import { editNoteProps } from './type';
 export default function EditNotes({
   setShowNoteEditor,
   activeNoteId,
+  handleToggle,
 }: editNoteProps) {
   const [notesData, setNotesData] = useState<DocumentData>();
   const uid = useSelector((state: stateType) => state.common.uid);
@@ -49,6 +50,7 @@ export default function EditNotes({
                 noteTitle={notesData?.title}
                 setShowNoteEditor={setShowNoteEditor}
                 noteId={activeNoteId ?? ''}
+                handleToggle={handleToggle}
               />
             </div>
           ) : (

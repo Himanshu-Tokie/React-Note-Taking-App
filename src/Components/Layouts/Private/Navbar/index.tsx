@@ -129,7 +129,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
             <img src={ICONS.SEARCH} alt="settings" className="h-6" />
             <input
               placeholder="Search"
-              className="outline-0 px-3 w-96 py-3 dark:bg-[#333333] "
+              className="outline-0 px-3 w-96 py-3 dark:bg-[#333333] dark:text-gray-300 "
               // onChange={(e) => setSearchParams({ search: e.target.value })}
               onChange={search}
               onFocus={searchFocusHandler}

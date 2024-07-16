@@ -2,7 +2,8 @@ import { Timestamp } from "firebase/firestore";
 
 export interface stateType{
     common:{
-        uid:string
+        uid:string,
+        theme:string
     }
 }
 

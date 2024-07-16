@@ -5,8 +5,6 @@ import CustomBox from '../../Shared/CustomComponents/CustomBox';
 import EditNotes from '../../Shared/CustomComponents/CustomModal/EditsNotes';
 import { useLabelUpdate, useUpdateNotes } from '../../Shared/CustomHooks';
 import { fetchNotesWithLabel } from '../../Shared/Firebase Utils';
-import { RootState } from '../../Store';
-import { setLoading } from '../../Store/Loader';
 import { stateType } from '../Dashboard/types';
 import { labelProps } from './types';
 
@@ -17,7 +15,7 @@ export default function Lable() {
   const [notesData, setNotesData] = useState<labelProps[]>();
   const [showNoteEditor, setShowNoteEditor] = useState(false);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
-  const loading = useSelector((state: RootState) => state.loader.isLoading);
+  // const [deletePopup, setDeletePopup] = useState(false);
   const noteIdSetter = (
     e: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>
   ) => {
@@ -41,12 +39,11 @@ export default function Lable() {
   useUpdateNotes(uid, setNotesData, params.labelId ?? '');
   useLabelUpdate(dispatch, params.labelId ?? '');
 
-  if (showNoteEditor) {
-    dispatch(setLoading(true));
-    setTimeout(() => {
-      dispatch(setLoading(false));
-    }, 1000);
-  }
+  // useEffect(() => {
+  //   document.addEventListener('click', () => {
+  //     setDeletePopup((val) => !val);
+  //   });
+  // }, []);
   return (
     <div className="flex flex-wrap place-content-center">
       {notesData?.length ? (
@@ -68,16 +65,18 @@ export default function Lable() {
               isActive={activeNoteId === note.noteId}
               handleToggle={handleToggle}
               toggleNoteEditor={toggleNoteEditor}
+              // showNoteEditor={showNoteEditor}
             />
           </div>
         ))
       ) : (
-        <p>Create new notes.....</p>
+        <p className="dark:text-gray-300">Create new notes.....</p>
       )}
-      {loading && showNoteEditor && (
+      {showNoteEditor && (
         <EditNotes
           setShowNoteEditor={setShowNoteEditor}
           activeNoteId={activeNoteId}
+          handleToggle={handleToggle}
         />
       )}
     </div>
