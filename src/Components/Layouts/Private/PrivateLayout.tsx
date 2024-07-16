@@ -38,14 +38,13 @@ function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
       replace: !isFirstSearch,
     });
   };
-
   return (
     <>
       <NoteNavbar setSidebarWidth={setSidebarWidth} search={search} />
       <div className="flex mt-20 dark:bg-[#1E1E1E]">
         <Sidebar />
         <div
-          className="flex-1 flex flex-col transition-all duration-300 ease-in-out dark:bg-[#252526] dark:border-2 dark:border-[#5F6368]"
+          className="flex-1 flex flex-col transition-all duration-300 ease-in-out dark:bg-[#252526] dark:border-2 dark:border-[#5F6368] h-lvh"
           id="body"
         >
           <Notes />

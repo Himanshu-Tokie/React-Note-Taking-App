@@ -10,12 +10,11 @@ function CustomBox({
   isActive,
   handleToggle,
   toggleNoteEditor,
+  // showNoteEditor,
 }: customBoxProps) {
   const theObj = { __html: content };
-  // const [click, setClick] = useState(false);
   function handleClick() {
     handleToggle(noteId);
-    // setClick(true);
   }
   const uid = useSelector((state: stateType) => state.common.uid);
   function handleKeyDownDelete(event: React.KeyboardEvent<HTMLButtonElement>) {
@@ -28,6 +27,12 @@ function CustomBox({
       toggleNoteEditor();
     }
   }
+  // useEffect(() => {
+  //   const pop = document.getElementById(noteId);
+  //   document.addEventListener('click', (e) => {
+  //     if (!pop?.contains(e.target)) handleClick();
+  //   });
+  // }, []);
   return (
     <div>
       <div className="flex justify-end px-4 pt-4 relative">

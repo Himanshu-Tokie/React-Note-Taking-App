@@ -79,10 +79,10 @@ function CustomModal({ setShowModal }: CustomModalProps) {
       <div
         tabIndex={-1}
         aria-hidden="true"
-        className="z-[1000] flex overflow-y-auto overflow-x-hidden fixed justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full "
+        className="z-[1000] flex overflow-y-auto overflow-x-hidden fixed justify-center items-center w-full inset-0 max-h-full "
       >
         <div className="relative p-4 w-full max-w-md max-h-full ">
-          <div className="relative bg-white rounded-lg shadow dark:bg-[#1E1E1E]">
+          <div className="relative bg-white rounded-lg shadow dark:bg-[#1E1E1E] w-11/12 sm:w-full">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Edit Labels
