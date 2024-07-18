@@ -1,4 +1,7 @@
 // debounce.ts
+
+import { toast } from 'react-toastify';
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function debounce<T extends (...args: any[]) => void>(
   func: T,
@@ -11,3 +14,37 @@ export default function debounce<T extends (...args: any[]) => void>(
     timeout = setTimeout(() => func.apply(this, args), wait);
   } as T;
 }
+
+export const toastWarning = (message: string) =>
+  toast.warn(message, {
+    position: 'top-right',
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+  });
+
+export const toastSuccess = (message: string) => {
+  toast.success(message, {
+    position: 'top-right',
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+  });
+};
+export const toastError = (message: string) => {
+  toast.error(message, {
+    position: 'top-right',
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+  });
+};

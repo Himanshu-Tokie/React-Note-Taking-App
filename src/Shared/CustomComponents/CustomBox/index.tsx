@@ -1,9 +1,10 @@
+/* eslint-disable react/no-danger */
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { stateType } from '../../../Views/Dashboard/types';
+import { STRINGS } from '../../Constants';
 import { deleteNotes } from '../../Firebase Utils';
 import { customBoxProps } from './types';
-import { STRINGS } from '../../Constants';
 
 function CustomBox({
   title,
@@ -22,9 +23,10 @@ function CustomBox({
     setShow((val) => !val);
   }
   const uid = useSelector((state: stateType) => state.common.uid);
+  const theme = useSelector((state: stateType) => state.common.theme);
   function handleKeyDownDelete(event: React.KeyboardEvent<HTMLButtonElement>) {
     if (event.key === 'Enter' || event.key === ' ') {
-      deleteNotes(uid, noteId);
+      deleteNotes(uid, noteId, theme);
     }
   }
   function handleKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
@@ -95,7 +97,7 @@ function CustomBox({
                   className="flex flex-1 justify-center "
                   onClick={(e) => {
                     e.stopPropagation();
-                    deleteNotes(uid, noteId);
+                    deleteNotes(uid, noteId, theme);
                   }}
                   onKeyDown={handleKeyDownDelete}
                   type="button"
