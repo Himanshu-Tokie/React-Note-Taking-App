@@ -5,13 +5,14 @@ import CustomBox from '../../Shared/CustomComponents/CustomBox';
 import { useLabelUpdate } from '../../Shared/CustomHooks';
 import { fetchSearchNotes } from '../../Shared/Firebase Utils';
 import { notesDataProps, stateType } from './types';
+import { STRINGS } from '../../Shared/Constants';
 
 export default function Dashboard() {
   const location = useLocation();
   const [notesData, setNotesData] = useState<notesDataProps[]>();
   const uid = useSelector((state: stateType) => state.common.uid);
   const searchParams = new URLSearchParams(location.search);
-  const searchQuery = searchParams.get('q');
+  const searchQuery = searchParams.get(STRINGS.SEARCH);
   useEffect(() => {
     if (searchQuery) {
       fetchSearchNotes(uid, searchQuery).then((data) => {
@@ -27,23 +28,24 @@ export default function Dashboard() {
   const handleToggle = () => {};
   return (
     <div className="flex flex-wrap place-content-center">
-      {notesData?.length &&
-        notesData?.map((note) => (
-          <div
-            id={note.noteId}
-            className="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-[#333333] dark:border-gray-700 m-4"
-            key={note.noteId}
-          >
-            <CustomBox
-              title={note.title}
-              content={note.content}
-              noteId={note.noteId}
-              isActive={false}
-              handleToggle={handleToggle}
-              toggleNoteEditor={toggleNoteEditor}
-            />
-          </div>
-        ))}
+      {notesData?.length
+        ? notesData?.map((note) => (
+            <div
+              id={note.noteId}
+              className="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-[#333333] dark:border-gray-700 m-4"
+              key={note.noteId}
+            >
+              <CustomBox
+                title={note.title}
+                content={note.content}
+                noteId={note.noteId}
+                isActive={false}
+                handleToggle={handleToggle}
+                toggleNoteEditor={toggleNoteEditor}
+              />
+            </div>
+          ))
+        : null}
     </div>
   );
 }

@@ -1,7 +1,8 @@
-import { MouseEventHandler, useEffect, useState } from 'react';
+import { MouseEventHandler, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { stateType } from '../../../../Views/Dashboard/types';
 import ICONS from '../../../../assets';
+import { STRINGS } from '../../../Constants';
 import { useUpdateLabel } from '../../../CustomHooks';
 import {
   createLabel,
@@ -9,14 +10,19 @@ import {
   fetchLabels,
   updateLabel,
 } from '../../../Firebase Utils';
-import { CustomModalProps } from './types';
 import PopUpMessage from '../PopUp';
+import { CustomModalProps } from './types';
 
 function CustomModal({ setShowModal }: CustomModalProps) {
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
+  const [isInputLabelEmpty, setIsInputLabelEmpty] = useState(false);
+  const [toggler, setToggler] = useState(false);
+  const [isActive, setIsActive] = useState('');
+  const [isLabelExist, setIsLabelExist] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState<string | undefined>();
   const uid = useSelector((state: stateType) => state.common.uid);
+  // const tickRef = useRef<HTMLImageElement>(null);
   const [data, setData] = useState<
     {
       labelId: string | undefined;
@@ -24,6 +30,13 @@ function CustomModal({ setShowModal }: CustomModalProps) {
     }[]
   >();
   const dispatch = useDispatch();
+
+  const isActiveRef = useRef('');
+
+  // useEffect(() => {
+  //     isActiveRef.current = isActive;
+  // }, [isActive]);
+
   useEffect(() => {
     fetchLabels(uid).then((label) => setData(label));
   }, [uid]);
@@ -36,13 +49,18 @@ function CustomModal({ setShowModal }: CustomModalProps) {
   const handleEditClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     const targetElement = event.target as Element;
     const inputElement = targetElement.closest('div')?.querySelector('input');
-    if (inputElement) {
-      const labelId = inputElement.name;
-      const labelName = inputElement.value;
-      updateLabel(uid, labelName, labelId, dispatch);
+    if (!isActive) inputElement?.focus();
+    else {
+      inputElement?.blur();
+      setIsActive('');
     }
   };
-
+  const saveLabel = (e: React.FocusEvent<HTMLInputElement>) => {
+    const labelName = e.currentTarget.value;
+    const labelId = e.currentTarget.name;
+    if (labelName) updateLabel(uid, labelName, labelId, dispatch);
+    else setIsInputLabelEmpty(true);
+  };
   const handleDeleteClick = () => {
     if (selectedLabel) {
       deleteLabel(uid, selectedLabel, dispatch);
@@ -50,21 +68,34 @@ function CustomModal({ setShowModal }: CustomModalProps) {
       setSelectedLabel(undefined);
     }
   };
-
   const handleTickClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     const targetElement = event.target as Element;
     const inputElement = targetElement.closest('div')?.querySelector('input');
     if (inputElement?.value) {
       const label = inputElement.value;
-      createLabel(uid, label);
-      setIsEmpty(false);
+      const isExists = data?.filter((item) => item.id === label);
+      if (!isExists?.length) {
+        createLabel(uid, label);
+        setToggler(false);
+        setIsEmpty(false);
+        setIsLabelExist(false);
+        inputElement.value = '';
+      } else setIsLabelExist(true);
     } else {
       setIsEmpty(true);
+      setIsLabelExist(false);
     }
   };
   const handleCloseClick: MouseEventHandler<HTMLButtonElement> = () => {
     const target = document.getElementById('labelInput') as HTMLInputElement;
     if (target) target.value = '';
+    setToggler((val) => !val);
+    setIsEmpty(false);
+    setIsLabelExist(false);
+  };
+  const closeEditor = (e: React.MouseEvent<HTMLDivElement>) => {
+    const element = document.getElementById('editLabel');
+    if (e.target === element) setShowModal(false);
   };
   return (
     <>
@@ -80,12 +111,14 @@ function CustomModal({ setShowModal }: CustomModalProps) {
         tabIndex={-1}
         aria-hidden="true"
         className="z-[1000] flex overflow-y-auto overflow-x-hidden fixed justify-center items-center w-full inset-0 max-h-full "
+        id="editLabel"
+        onClick={closeEditor}
       >
         <div className="relative p-4 w-full max-w-md max-h-full ">
           <div className="relative bg-white rounded-lg shadow dark:bg-[#1E1E1E] w-11/12 sm:w-full">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Edit Labels
+                {STRINGS.EDIT_LABELS}
               </h3>
               <div
                 className="px-2 py-2 hover:bg-gray-100 cursor-pointer rounded-full"
@@ -101,6 +134,11 @@ function CustomModal({ setShowModal }: CustomModalProps) {
               </div>
             </div>
             <div className="p-4 md:p-5 flex flex-col">
+              {isInputLabelEmpty && (
+                <p className="text-xs text-red-600 text-center italic">
+                  {STRINGS.LABLE_NOT_EMPTY}
+                </p>
+              )}
               <div className="justify-between items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 group hover:shadow dark:bg-[#333333] dark:text-white">
                 <div className="flex justify-between items-center">
                   <button
@@ -108,29 +146,46 @@ function CustomModal({ setShowModal }: CustomModalProps) {
                     onClick={handleCloseClick}
                     className=" hover:bg-gray-200 cursor-pointer rounded-full p-1"
                   >
-                    <img src={ICONS.CLOSE} alt="close" />
+                    {toggler ? (
+                      <img src={ICONS.CLOSE} alt="close" />
+                    ) : (
+                      <img src={ICONS.ADD} alt="add" />
+                    )}
                   </button>
                   <input
                     id="labelInput"
                     name="label"
                     placeholder="Create Label"
-                    className="bg-gray-50 hover:bg-gray-100 outline-none dark:bg-[#333333]"
+                    className="bg-gray-50 hover:bg-gray-100 outline-none dark:bg-[#333333] flex-1 pl-5"
+                    maxLength={30}
+                    onFocus={() => {
+                      setToggler(true);
+                      setIsEmpty(false);
+                    }}
                   />
-                  <button
-                    type="button"
-                    onClick={handleTickClick}
-                    className='hover:bg-gray-200 cursor-pointer rounded-full p-4"'
-                  >
-                    <img src={ICONS.TICK} alt="tick" />
-                  </button>
+                  {toggler && (
+                    <button
+                      type="button"
+                      onClick={handleTickClick}
+                      className='hover:bg-gray-200 cursor-pointer rounded-full p-4"'
+                    >
+                      <img src={ICONS.TICK} alt="tick" />
+                    </button>
+                  )}
                 </div>
                 {isEmpty && (
+                  <p className="text-xs text-red-600 italic">
+                    {STRINGS.EMPTY_LABEL}
+                  </p>
+                )}
+                {isLabelExist && (
                   <p className="text-xs text-red-600 italic text-center">
-                    *Empty label
+                    {STRINGS.LABEL_EXISTS}
                   </p>
                 )}
               </div>
               {data?.map((label) => (
+                // <EditLabelRow name={label.labelId} value={label.id} />
                 <div
                   key={label.id}
                   className="flex justify-between items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 group hover:shadow dark:bg-[#333333] dark:text-white"
@@ -140,6 +195,16 @@ function CustomModal({ setShowModal }: CustomModalProps) {
                     name={label.labelId}
                     defaultValue={label.id}
                     className="bg-gray-50 hover:bg-gray-100 outline-none dark:text-gray-50 dark:bg-[#333333]"
+                    onFocus={() => {
+                      setIsActive(label.id);
+                      setIsInputLabelEmpty(false);
+                    }}
+                    onBlur={(e) => {
+                      setIsActive(STRINGS.EMPTY);
+                      isActiveRef.current = '';
+                      saveLabel(e);
+                    }}
+                    maxLength={30}
                   />
                   <button
                     type="button"
@@ -156,7 +221,11 @@ function CustomModal({ setShowModal }: CustomModalProps) {
                     onClick={handleEditClick}
                     className="hover:bg-gray-200 cursor-pointer rounded-full p-1"
                   >
-                    <img src={ICONS.EDIT} alt="edit" />
+                    {isActive === label.id ? (
+                      <img src={ICONS.TICK} alt="tick" />
+                    ) : (
+                      <img src={ICONS.EDIT} alt="edit" />
+                    )}
                   </button>
                 </div>
               ))}

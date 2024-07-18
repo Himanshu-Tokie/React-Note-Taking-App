@@ -1,9 +1,6 @@
-import { FormikTouched } from "formik";
-
-export interface CustomInputProps {
+export interface signUpInputProps{
     labelName:string;
-    placeholderName:string;
-    error:string|undefined;
-    logIn?:boolean;
-    touched:FormikTouched
+    id:string;
+    placeholder:string;
+    type?:'text'|string;
 }

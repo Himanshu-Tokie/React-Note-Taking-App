@@ -1,23 +1,28 @@
-import { CustomInputProps } from './types';
+import { ErrorMessage, Field } from 'formik';
+import { signUpInputProps } from './types';
 
-function CustomInput({
-  labelName,
-  placeholderName,
-  touched,
-  error,
-  logIn = true,
-}: CustomInputProps): JSX.Element {
+function CustomInput({ labelName, id, placeholder, type }: signUpInputProps) {
   return (
     <div className="my-2">
-      <label htmlFor={labelName}>{labelName}</label>
+      <label
+        htmlFor={id}
+        className="text-stone-900 font-medium dark:text-gray-300"
+      >
+        {labelName}
+      </label>
       <br />
-      <input
-        className="my-1 py-1 px-2 rounded-md border-2 w-full"
-        type="text"
-        placeholder={placeholderName}
-        id={labelName}
+      <Field
+        className="outline-none py-1 px-2 rounded-md border-2 w-full bg-neutral-100 min-w-72"
+        type={type ?? 'text'}
+        placeholder={placeholder}
+        id={id}
+        name={id}
       />
-      {touched && error && logIn && <p>*{error}</p>}
+      <ErrorMessage
+        name={id}
+        component="p"
+        className="text-red-500 text-sm italic max-w-72"
+      />
     </div>
   );
 }

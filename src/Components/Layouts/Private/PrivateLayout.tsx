@@ -28,23 +28,24 @@ function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
   useEffect(() => {
     const body = document.getElementById('body');
     if (body) {
-      body.style.marginLeft = sidebarWidth;
+      if (window.innerWidth > 600) body.style.marginLeft = sidebarWidth;
+      else body.style.marginLeft = '60px';
     }
   }, [sidebarWidth]);
   const search = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const params = new URLSearchParams(location.search);
-    const isFirstSearch = params.get('q') == null;
-    navigate(`${location.pathname}?q=${e.target.value}`, {
-      replace: !isFirstSearch,
+    const isFirstSearch = params.get('search') == null;
+    navigate(`${location.pathname}?search=${e.target.value}`, {
+      replace: isFirstSearch,
     });
   };
   return (
     <>
       <NoteNavbar setSidebarWidth={setSidebarWidth} search={search} />
-      <div className="flex mt-20 dark:bg-[#1E1E1E]">
+      <div className="flex mt-14 sm:mt-20 dark:bg-[#1E1E1E]">
         <Sidebar />
         <div
-          className="flex-1 flex flex-col transition-all duration-300 ease-in-out dark:bg-[#252526] dark:border-2 dark:border-[#5F6368] h-lvh"
+          className="flex-1 flex flex-col transition-all duration-300 ease-in-out dark:bg-[#252526] dark:border-[#5F6368] h-lvh px-4"
           id="body"
         >
           <Notes />

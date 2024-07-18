@@ -3,6 +3,7 @@ import JoditEditor from 'jodit-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { db } from '../../Services/Config/Firebase/firebase';
+import { STRINGS } from '../../Shared/Constants';
 import { useLabelUpdate, useUpdateLabel } from '../../Shared/CustomHooks';
 import {
   createNote,
@@ -24,8 +25,8 @@ function Notes({
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
   const [label, setLabel] = useState('');
-  const theme = useSelector((state: stateType) =>
-    state.common.theme.toLowerCase()
+  const theme = useSelector(
+    (state: stateType) => state.common.theme.toLowerCase() ?? 'light'
   );
   // const [confirmationModal, setConfirmationModal] = useState(false);
   const [labelData, setLabelData] =
@@ -72,25 +73,33 @@ function Notes({
     fetchLabels(uid).then((labels) => setLabelData(labels));
   }, [uid]);
   useUpdateLabel(uid, setLabelData);
-
   function onClickSave() {
     if ((title || content) && label) {
-      dispatch(setLoading(true));
-      if (noteId && setShowNoteEditor) {
-        updateNote(uid, noteId, content, title).then(() => {
-          setShowNoteEditor(false);
-          setContent('');
-          setTitle('');
-          if (handleToggle) handleToggle(noteId);
-          dispatch(setLoading(false));
-        });
+      const regex = /^\s*$/;
+      if (!regex.test(title) || !regex.test(title)) {
+        dispatch(setLoading(true));
+        if (noteId && setShowNoteEditor) {
+          updateNote(uid, noteId, content, title).then(() => {
+            setShowNoteEditor(false);
+            setContent('');
+            setTitle('');
+            if (handleToggle) handleToggle(noteId);
+            dispatch(setLoading(false));
+          });
+        } else {
+          createNote(uid, content, label, title).then(() => {
+            setContent('');
+            setTitle('');
+            setShowEditor(false);
+            dispatch(setLoading(false));
+          });
+        }
       } else {
-        createNote(uid, content, label, title).then(() => {
-          setContent('');
-          setTitle('');
-          setShowEditor(false);
-          dispatch(setLoading(false));
-        });
+        setContent('');
+        setTitle('');
+        setShowEditor(false);
+        console.log('test');
+        // set empty notes can't be created
       }
     } else {
       // setConfirmationModal(true);
@@ -125,7 +134,7 @@ function Notes({
           <div className="flex-1 px-2">
             <input
               type="text"
-              placeholder="title"
+              placeholder={STRINGS.TITLE}
               className="w-full py-2 outline-none dark:bg-[#333333] dark:text-gray-300"
               onChange={(e) => setTitle(e.currentTarget.value)}
               value={title}
@@ -141,7 +150,7 @@ function Notes({
                 className="outline-none w-30 dark:bg-[#333333] dark:text-gray-300"
                 onBlur={(event) => setLabel(event.target.value)}
               >
-                <option value="">Select Label</option>
+                <option value="">{STRINGS.SELECT_LABEL}</option>
                 {labelData?.map((item) => (
                   <option value={item.labelId} key={item.labelId}>
                     {item.id}
@@ -173,14 +182,14 @@ function Notes({
                 onClick={onClickCancel}
                 className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
               >
-                Cancel
+                {STRINGS.CANCEL}
               </button>
               <button
                 type="button"
                 onClick={onClickSave}
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
               >
-                Save
+                {STRINGS.SAVE}
               </button>
             </div>
           </>
