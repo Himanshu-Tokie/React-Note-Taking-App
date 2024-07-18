@@ -5,5 +5,6 @@ export interface customBoxProps {
     isActive: boolean;
     handleToggle: (noteId: string) => void;
     toggleNoteEditor:()=>void;
+    activeNoteId?:string;
   }
   

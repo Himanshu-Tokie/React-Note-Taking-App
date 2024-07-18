@@ -1,7 +1,7 @@
 import { signOut } from 'firebase/auth';
-import { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { auth } from '../../../../Services/Config/Firebase/firebase';
 import { ROUTES, THEME } from '../../../../Shared/Constants';
 import Cards from '../../../../Shared/CustomCards';
@@ -10,6 +10,7 @@ import { updateAuthTokenRedux, updateTheme } from '../../../../Store/Common';
 import { setLoading } from '../../../../Store/Loader';
 import ICONS from '../../../../assets';
 import { noteNavbarProps } from './types';
+import { stateType } from '../../../../Views/Dashboard/types';
 
 function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   const [themeVisible, setThemeVisible] = useState(false);
@@ -18,8 +19,10 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   const [confirmationModal, setConfirmationModal] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const storedDarkMode = localStorage.getItem('Theme') as THEME;
-  const [theme, setTheme] = useState<THEME>(storedDarkMode ?? THEME.DARK);
+  // const storedDarkMode = localStorage.getItem('Theme') as THEME;
+  // const [theme, setTheme] = useState<THEME>(storedDarkMode ?? THEME.DARK);
+  const theme = useSelector((state: stateType) => state.common.theme);
+
   const themeElementRef = useRef<HTMLDivElement | null>(null);
   const profileElementRef = useRef<HTMLDivElement | null>(null);
   function toggleSettings() {
@@ -48,6 +51,28 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
       }
     }
   };
+  const adjustSidebarWidth = useCallback(() => {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) {
+      if (window.innerWidth < 600) {
+        sidebar.style.width = '60px';
+        setSidebarWidth('60px');
+        setShowSidebar(false);
+      } else {
+        sidebar.style.width = '250px';
+        setSidebarWidth('250px');
+        setShowSidebar(true);
+      }
+    }
+  }, [setSidebarWidth]);
+  useEffect(() => {
+    adjustSidebarWidth();
+    window.addEventListener('resize', adjustSidebarWidth);
+    return () => {
+      window.removeEventListener('resize', adjustSidebarWidth);
+    };
+  }, [adjustSidebarWidth, setSidebarWidth]);
+
   const logOut = async () => {
     dispatch(setLoading(true));
     await signOut(auth);
@@ -55,7 +80,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
     dispatch(setLoading(false));
   };
   const setThemeHandler = (selectedTheme: THEME) => {
-    setTheme(selectedTheme);
+    // setTheme(selectedTheme);
     dispatch(updateTheme(selectedTheme));
     setThemeVisible(false);
   };
@@ -69,8 +94,8 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
         return <img src={ICONS.COMPUTER} alt="system" className="h-full" />;
     }
   };
-  const themeToggler = (e) => {
-    setThemeHandler(e.currentTarget.id);
+  const themeToggler = (e: React.MouseEvent<HTMLDivElement>) => {
+    setThemeHandler(e.currentTarget.id as THEME);
     if (e.currentTarget.id === THEME.DARK) document.body.classList.add('dark');
     else if (e.currentTarget.id === THEME.LIGHT)
       document.body.classList.remove('dark');
@@ -96,9 +121,17 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   const searchFocusHandler = () => {
     navigate(ROUTES.HOMEPAGE, { replace: true });
   };
-  const searchBlurHandler = () => {
-    setTimeout(() => navigate(-2), 0);
-  };
+  // const searchBlurHandler = () => {
+  //   setTimeout(() => navigate(-2), 0);
+  // };
+  const location = useLocation();
+  const [searchQuery, setSearchQuery] = useState('');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const searchParams = new URLSearchParams(location.search);
+  useEffect(() => {
+    setSearchQuery(searchParams.get('search') ?? '');
+  }, [searchParams]);
+  // const searchQuery = searchParams.get('search');
   return (
     <>
       {confirmationModal && (
@@ -109,7 +142,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
         />
       )}
       <div className="fixed w-full bg-white top-0 z-[35] dark:bg-[#1E1E1E]">
-        <header className="flex justify-between pr-5 pl-4 pt-2 border-b-2 dark:border-[#5F6368]">
+        <header className="flex justify-between pr-5 pl-4 sm:pt-2 border-b-2 dark:border-[#5F6368]">
           <div className="flex py-2 items-center">
             <div
               onClick={toggleSidebar}
@@ -120,9 +153,13 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
             >
               <img src={ICONS.MENU} alt="menu" />
             </div>
-            <img src={ICONS.DIARY} alt="menu" className="h-16 opacity-100" />
-            <p className="md:pl-2 place-content-center text-xl font-bold dark:text-white">
-              NoteHub
+            <img
+              src={ICONS.DIARY}
+              alt="menu"
+              className="h-10 sm:h-16 opacity-100"
+            />
+            <p className="md:pl-2 place-content-center text-sm sm:text-lg font-bold dark:text-white">
+              <span className="text-[#7F56D9]">Note-Ta</span>king App
             </p>
           </div>
           <div className="hidden md:flex border-2 dark:border-[#5F6368] items-center px-2 rounded-lg h-fit self-center dark:bg-[#333333]">
@@ -133,7 +170,8 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
               // onChange={(e) => setSearchParams({ search: e.target.value })}
               onChange={search}
               onFocus={searchFocusHandler}
-              onBlur={searchBlurHandler}
+              defaultValue={searchQuery ?? ''}
+              // onBlur={searchBlurHandler}
             />
             <img src={ICONS.CLOSE} alt="settings" className="h-6" />
           </div>
@@ -168,7 +206,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
           className="fixed right-6 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-30 dark:bg-gray-700"
           id="themeModal"
         >
-          <ul className="py-2">
+          <ul className="pt-2">
             <li className="py-2 hover:bg-gray-100 cursor-pointer px-5">
               <div
                 className="flex"
@@ -195,7 +233,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
                 <p className="pl-2 dark:text-gray-300">Dark</p>
               </div>
             </li>
-            <li className="py-2 hover:bg-gray-100 cursor-pointer px-5">
+            {/* <li className="py-2 hover:bg-gray-100 cursor-pointer px-5">
               <div
                 className="flex"
                 id={THEME.SYSTEM}
@@ -207,7 +245,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
                 <img src={ICONS.COMPUTER} alt="system" />
                 <p className="pl-2 dark:text-gray-300">System</p>
               </div>
-            </li>
+            </li> */}
           </ul>
         </div>
       )}

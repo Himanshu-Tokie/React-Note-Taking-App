@@ -1,7 +1,9 @@
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { stateType } from '../../../Views/Dashboard/types';
 import { deleteNotes } from '../../Firebase Utils';
 import { customBoxProps } from './types';
+import { STRINGS } from '../../Constants';
 
 function CustomBox({
   title,
@@ -10,11 +12,14 @@ function CustomBox({
   isActive,
   handleToggle,
   toggleNoteEditor,
-  // showNoteEditor,
+  activeNoteId,
 }: customBoxProps) {
+  const [show, setShow] = useState(isActive);
+  const menuRef = useRef<HTMLDivElement>(null);
   const theObj = { __html: content };
   function handleClick() {
     handleToggle(noteId);
+    setShow((val) => !val);
   }
   const uid = useSelector((state: stateType) => state.common.uid);
   function handleKeyDownDelete(event: React.KeyboardEvent<HTMLButtonElement>) {
@@ -27,12 +32,20 @@ function CustomBox({
       toggleNoteEditor();
     }
   }
-  // useEffect(() => {
-  //   const pop = document.getElementById(noteId);
-  //   document.addEventListener('click', (e) => {
-  //     if (!pop?.contains(e.target)) handleClick();
-  //   });
-  // }, []);
+  useEffect(() => {
+    const box = document.getElementById(activeNoteId ?? '');
+    document.addEventListener('click', (e) => {
+      if (e.target instanceof Node && !box?.contains(e.target)) {
+        setShow(false);
+      }
+    });
+    return () =>
+      document.removeEventListener('click', (e) => {
+        if (e.target instanceof Node && !box?.contains(e.target)) {
+          setShow(false);
+        } else setShow(true);
+      });
+  }, [activeNoteId]);
   return (
     <div>
       <div className="flex justify-end px-4 pt-4 relative">
@@ -57,10 +70,11 @@ function CustomBox({
             <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
           </svg>
         </button>
-        {isActive && (
+        {show && (
           <div
             id={noteId}
-            className="text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute block top-14 right-2"
+            ref={menuRef}
+            className="text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute block top-14 right-2 customBox"
           >
             <ul className="py-2" aria-labelledby="dropdownButton">
               <li className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
@@ -73,7 +87,7 @@ function CustomBox({
                   onKeyDown={handleKeyDown}
                   type="button"
                 >
-                  <p>Edit Note</p>
+                  <p>{STRINGS.EDIT_NOTES}</p>
                 </button>
               </li>
               <li className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
@@ -86,7 +100,7 @@ function CustomBox({
                   onKeyDown={handleKeyDownDelete}
                   type="button"
                 >
-                  <p>Delete</p>
+                  <p>{STRINGS.DELETE}</p>
                 </button>
               </li>
             </ul>

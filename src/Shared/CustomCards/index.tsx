@@ -1,4 +1,5 @@
 import ICONS from '../../assets';
+import { STRINGS } from '../Constants';
 import { cardsProps } from './types';
 
 export default function Cards({ name, user, signOut }: cardsProps) {
@@ -24,7 +25,7 @@ export default function Cards({ name, user, signOut }: cardsProps) {
         onClick={signOut}
         className="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center"
       >
-        Sign Out
+        {STRINGS.SIGN_OUT}
       </button>
     </div>
   );

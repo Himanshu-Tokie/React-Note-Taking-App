@@ -7,6 +7,7 @@ import { useLabelUpdate, useUpdateNotes } from '../../Shared/CustomHooks';
 import { fetchNotesWithLabel } from '../../Shared/Firebase Utils';
 import { stateType } from '../Dashboard/types';
 import { labelProps } from './types';
+import { STRINGS } from '../../Shared/Constants';
 
 export default function Lable() {
   const params = useParams();
@@ -39,11 +40,6 @@ export default function Lable() {
   useUpdateNotes(uid, setNotesData, params.labelId ?? '');
   useLabelUpdate(dispatch, params.labelId ?? '');
 
-  // useEffect(() => {
-  //   document.addEventListener('click', () => {
-  //     setDeletePopup((val) => !val);
-  //   });
-  // }, []);
   return (
     <div className="flex flex-wrap place-content-center">
       {notesData?.length ? (
@@ -65,12 +61,12 @@ export default function Lable() {
               isActive={activeNoteId === note.noteId}
               handleToggle={handleToggle}
               toggleNoteEditor={toggleNoteEditor}
-              // showNoteEditor={showNoteEditor}
+              activeNoteId={activeNoteId ?? ''}
             />
           </div>
         ))
       ) : (
-        <p className="dark:text-gray-300">Create new notes.....</p>
+        <p className="dark:text-gray-300">{STRINGS.CREATE_NOTES}</p>
       )}
       {showNoteEditor && (
         <EditNotes

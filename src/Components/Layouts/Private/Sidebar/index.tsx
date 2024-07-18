@@ -28,13 +28,17 @@ export default function Sidebar() {
               : 'flex items-center py-3'
           }
         >
-          <img src={ICONS.LIGHTBULB} alt="lightbulb" className="pl-6 p-2" />
+          <img
+            src={ICONS.LIGHTBULB}
+            alt="lightbulb"
+            className="pl-4 sm:pl-6 p-2"
+          />
           <p className="pl-6 text-base dark:text-gray-300 hover:text-black">
             Notes
           </p>
         </NavLink>
       </div>
-      <div
+      {/* <div
         className="rounded-r-full cursor-pointer hover:bg-gray-100"
         id="Reminders"
       >
@@ -49,7 +53,7 @@ export default function Sidebar() {
           <img src={ICONS.NOTIFICATIONS} alt="Reminders" className="pl-6 p-2" />
           <p className="pl-6 text-base dark:text-gray-300">Reminders</p>
         </NavLink>
-      </div>
+      </div> */}
 
       {data?.map((item) => (
         <NavLink
@@ -62,7 +66,7 @@ export default function Sidebar() {
               : 'flex items-center py-3 hover:bg-gray-100 rounded-r-full'
           }
         >
-          <img src={ICONS.LABEL} alt="label" className="pl-6 p-2" />
+          <img src={ICONS.LABEL} alt="label" className="pl-4 sm:pl-6 p-2" />
           <p className="pl-6 text-base dark:text-gray-300">{item.id}</p>
         </NavLink>
       ))}
@@ -71,7 +75,7 @@ export default function Sidebar() {
         className="flex items-center py-3 rounded-r-full cursor-pointer hover:bg-gray-100"
         id="Edit Labels"
       >
-        <img src={ICONS.EDIT} alt="edit" className="pl-6 p-2" />
+        <img src={ICONS.EDIT} alt="edit" className="pl-4 sm:pl-6 p-2" />
         <p className="pl-6 text-base dark:text-gray-300">Edit Labels</p>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux';
 import ICONS from '../../../../assets';
 import { signInWithGoogle } from '../../Utils';
+import { STRINGS } from '../../../../Shared/Constants';
 
 function CustomGoogleButton(): JSX.Element {
   const dispatch = useDispatch();
@@ -14,7 +15,7 @@ function CustomGoogleButton(): JSX.Element {
       }}
     >
       <img src={ICONS.GOOGLE} alt="Google Icon" className="h-4 mr-2" />
-      Sign in with Google
+      {STRINGS.GOOGLE_SIGNIN}
     </button>
   );
 }
