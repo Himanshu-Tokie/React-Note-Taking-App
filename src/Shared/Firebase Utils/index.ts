@@ -16,6 +16,7 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore';
+import { toast } from 'react-toastify';
 import { auth, db } from '../../Services/Config/Firebase/firebase';
 import { AppDispatch } from '../../Store';
 import { setLoading } from '../../Store/Loader';
@@ -102,7 +103,7 @@ export async function fetchSearchNotes(uid: string, qs: string) {
   });
   return allNotesData;
 }
-export async function deleteNotes(uid: string, noteId: string) {
+export async function deleteNotes(uid: string, noteId: string, theme: string) {
   const noteRef = doc(
     db,
     FIREBASE_STRINGS.USER,
@@ -115,6 +116,16 @@ export async function deleteNotes(uid: string, noteId: string) {
   if (noteData.data()) {
     await deleteDoc(noteRef);
     await updateDoc(labelRef, { count: increment(-1) });
+    toast.success('Note deleted successfully', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: theme ?? 'light',
+    });
   }
 }
 export const createNote = async (

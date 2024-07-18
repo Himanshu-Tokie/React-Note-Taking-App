@@ -68,6 +68,7 @@ function CustomModal({ setShowModal }: CustomModalProps) {
       setSelectedLabel(undefined);
     }
   };
+  // const theme = useSelector((state: stateType) => state.common.theme);
   const handleTickClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     const targetElement = event.target as Element;
     const inputElement = targetElement.closest('div')?.querySelector('input');

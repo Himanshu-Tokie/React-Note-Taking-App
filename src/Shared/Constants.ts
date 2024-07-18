@@ -77,7 +77,7 @@ const STRINGS = {
   EDIT_LABELS: 'Edit Labels',
   DELETE: 'Delete',
   EMPTY_LABEL: '*Empty label',
-  LABLE_NOT_EMPTY: "Label Can't be happy",
+  LABLE_NOT_EMPTY: "Label Can't be empty",
   LABEL_EXISTS: '*Label exists already',
   YES: 'Yes, I am sure',
   GOOGLE_SIGNIN: 'Sign in with Google',

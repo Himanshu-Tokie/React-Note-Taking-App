@@ -2,6 +2,8 @@ import { doc, getDoc } from 'firebase/firestore';
 import JoditEditor from 'jodit-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { db } from '../../Services/Config/Firebase/firebase';
 import { STRINGS } from '../../Shared/Constants';
 import { useLabelUpdate, useUpdateLabel } from '../../Shared/CustomHooks';
@@ -74,36 +76,29 @@ function Notes({
   }, [uid]);
   useUpdateLabel(uid, setLabelData);
   function onClickSave() {
-    if ((title || content) && label) {
-      const regex = /^\s*$/;
-      if (!regex.test(title) || !regex.test(title)) {
-        dispatch(setLoading(true));
-        if (noteId && setShowNoteEditor) {
-          updateNote(uid, noteId, content, title).then(() => {
-            setShowNoteEditor(false);
-            setContent('');
-            setTitle('');
-            if (handleToggle) handleToggle(noteId);
-            dispatch(setLoading(false));
-          });
-        } else {
-          createNote(uid, content, label, title).then(() => {
-            setContent('');
-            setTitle('');
-            setShowEditor(false);
-            dispatch(setLoading(false));
-          });
-        }
+    const regex = /^\s*$/;
+    if (!regex.test(title) || !regex.test(title)) {
+      dispatch(setLoading(true));
+      if (noteId && setShowNoteEditor) {
+        updateNote(uid, noteId, content, title).then(() => {
+          setShowNoteEditor(false);
+          setContent('');
+          setTitle('');
+          if (handleToggle) handleToggle(noteId);
+          dispatch(setLoading(false));
+        });
       } else {
-        setContent('');
-        setTitle('');
-        setShowEditor(false);
-        console.log('test');
-        // set empty notes can't be created
+        createNote(uid, content, label, title).then(() => {
+          setContent('');
+          setTitle('');
+          setShowEditor(false);
+          dispatch(setLoading(false));
+        });
       }
     } else {
-      // setConfirmationModal(true);
-      alert('Empty Notes or Labels');
+      setContent('');
+      setTitle('');
+      setShowEditor(false);
     }
   }
   function onClickCancel() {
@@ -116,13 +111,18 @@ function Notes({
   }
   return (
     <>
-      {/* {confirmationModal && (
-        <PopUpMessage
-          description="Empty Notes or Labels"
-          setConfirmationModal={setConfirmationModal}
-          confirmationFunction={}
-        />
-      )} */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme={theme}
+      />
       <div
         className="w-full self-center mt-8 max-w-xl dark:bg-[#252526]"
         id="note"
