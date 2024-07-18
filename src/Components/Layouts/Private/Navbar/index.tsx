@@ -8,9 +8,9 @@ import Cards from '../../../../Shared/CustomCards';
 import PopUpMessage from '../../../../Shared/CustomComponents/CustomModal/PopUp';
 import { updateAuthTokenRedux, updateTheme } from '../../../../Store/Common';
 import { setLoading } from '../../../../Store/Loader';
+import { stateType } from '../../../../Views/Dashboard/types';
 import ICONS from '../../../../assets';
 import { noteNavbarProps } from './types';
-import { stateType } from '../../../../Views/Dashboard/types';
 
 function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   const [themeVisible, setThemeVisible] = useState(false);
@@ -126,12 +126,17 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   // };
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
+  const appNameRef = useRef(null);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchParams = new URLSearchParams(location.search);
   useEffect(() => {
     setSearchQuery(searchParams.get('search') ?? '');
   }, [searchParams]);
   // const searchQuery = searchParams.get('search');
+  const [isExpanded, setIsExpanded] = useState(false);
+  const onClickHandler = () => {
+    setIsExpanded(!isExpanded);
+  };
   return (
     <>
       {confirmationModal && (
@@ -142,7 +147,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
         />
       )}
       <div className="fixed w-full bg-white top-0 z-[35] dark:bg-[#1E1E1E]">
-        <header className="flex justify-between pr-5 pl-4 sm:pt-2 border-b-2 dark:border-[#5F6368]">
+        <header className="flex justify-between pr-2 sm:pr-5 pl-4 sm:pt-2 border-b-2 dark:border-[#5F6368]">
           <div className="flex py-2 items-center">
             <div
               onClick={toggleSidebar}
@@ -158,7 +163,10 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
               alt="menu"
               className="h-10 sm:h-16 opacity-100"
             />
-            <p className="md:pl-2 place-content-center text-sm sm:text-lg font-bold dark:text-white">
+            <p
+              className={`md:pl-2 place-content-center text-sm sm:text-lg font-bold dark:text-white ${isExpanded ? 'hidden' : 'block'} md:block`}
+              ref={appNameRef}
+            >
               <span className="text-[#7F56D9]">Note-Ta</span>king App
             </p>
           </div>
@@ -176,9 +184,32 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
             <img src={ICONS.CLOSE} alt="settings" className="h-6" />
           </div>
           <div className="flex items-center">
-            <img src={ICONS.SEARCH} alt="user" className="h-7 pl-3 md:hidden" />
+            <div className="flex md:hidden items-center relative">
+              <input
+                type="text"
+                placeholder="Search"
+                onChange={search}
+                onFocus={searchFocusHandler}
+                defaultValue={searchQuery ?? ''}
+                className={`outline-none py-2 fixed left-20 sm:left-24 rounded-lg dark:border-[#5F6368] dark:bg-[#333333] dark:text-gray-300 transition-width duration-300 ease-in-out ${
+                  isExpanded ? 'w-2/4 sm:4/6 px-3 border-2' : 'w-0'
+                }`}
+              />
+              <div
+                onClick={onClickHandler}
+                aria-label="search"
+                role="button"
+                className="self-center ml-1"
+              >
+                <img
+                  src={ICONS.SEARCH}
+                  alt="search"
+                  className="h-7 md:h-8 cursor-pointer"
+                />
+              </div>
+            </div>
             <div
-              className="h-7 pl-5 cursor-pointer"
+              className="h-7 ml-1 sm:ml-5 cursor-pointer"
               onClick={toggleSettings}
               onKeyDown={handleKeyDown}
               role="button"
@@ -189,7 +220,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
               {getThemeIcon()}
             </div>
             <div
-              className="h-7 ml-5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer rounded-full"
+              className="h-7 ml-1 sm:ml-5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer rounded-full"
               onClick={toggleProfile}
               onKeyDown={handleKeyDown}
               role="button"
