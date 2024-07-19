@@ -43,7 +43,7 @@ function SignUp(): JSX.Element {
           confirmationFunction={signUpUser}
         />
       )}
-      <div className="flex flex-col flex-wrap place-content-center px-16 py-4">
+      <div className="flex flex-col flex-wrap place-content-center px-8 md:px-16 py-4">
         <h1 className="font-bold self-center text-3xl dark:text-white">
           {STRINGS.WELCOME2}
         </h1>

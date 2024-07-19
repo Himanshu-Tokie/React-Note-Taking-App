@@ -24,10 +24,11 @@ function RootRouter() {
         newestOnTop={false}
         closeOnClick
         rtl={false}
-        pauseOnFocusLoss
+        pauseOnFocusLoss={false}
         draggable
         pauseOnHover
         theme={theme}
+        toastClassName="toast-container"
       />
       <DocumentTitle isAuthenticated={isAuthenticated} />
       <AppLayout isAuthenticated={isAuthenticated}>

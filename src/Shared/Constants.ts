@@ -4,6 +4,7 @@ const ROUTES = {
   Reminder: '/reminder',
   Label: '/label/:labelId',
   SIGN_UP: '/signup',
+  FORGOT_PASSWORD: '/forgotpassword',
 };
 
 const WILDCARD_ROUTES = {
@@ -31,6 +32,10 @@ const ROUTES_CONFIG = {
   SIGN_UP: {
     path: ROUTES.SIGN_UP,
     title: 'Sign up',
+  },
+  FORGOT_PASSWORD: {
+    path: ROUTES.FORGOT_PASSWORD,
+    title: 'Forgot Password',
   },
 };
 
@@ -64,6 +69,8 @@ enum THEME {
 }
 
 const STRINGS = {
+  RESET_LINK: 'Reset link sent',
+  RESET_LINK_FAILED: 'Some issue please try again',
   TITLE: 'Title',
   EMPTY: 'temporarily empty',
   SEARCH: 'search',
@@ -83,18 +90,22 @@ const STRINGS = {
   GOOGLE_SIGNIN: 'Sign in with Google',
   WELCOME1: 'Welcome Back!',
   WELCOME2: 'Welcome!',
+  FORGOT_PASSWORD: 'Forgot Password ?',
+  FORGOT_PASSWORD_INSTRUCTIONS:
+    'Enter the email address you used when you joined and we’ll send you link to reset your password.',
   WELCOME_MESSAGE: 'Happy to connect with you',
   NOTE_TAKING_APP: {
     PART1: 'Note-Ta',
     PART2: 'king App',
   },
-  EMAIL: 'Email',
+  EMAIL: 'Email Address',
   PASSWORD: 'Password',
   CONFIRM_PASSWORD: 'Confirm Password',
   FIRST_NAME: 'First Name',
   LAST_NAME: 'Last Name',
   SIGN_IN: 'Sign in',
   SIGN_UP: 'Sign up',
+  RESET_PASSWORD: 'Send Reset Link',
   LOG_IN: 'Log in',
   CREATE_ACCOUNT: 'Create Account',
   HAVE_ACCOUNT: 'Already have an account? ',
@@ -112,7 +123,7 @@ const AUTHENTICATION = {
   PLACEHOLDER: {
     FIRST_NAME: 'Enter your first name',
     LAST_NAME: 'Enter your lastName',
-    EMAIL: 'Enter your first name',
+    EMAIL: 'Enter your email',
     PASSWORD: 'Enter your password',
     CONFIRM_PASSWORD: 'Enter Confirm Password',
   },
@@ -129,12 +140,12 @@ const AUTHENTICATION = {
   },
 };
 export {
-  ROUTES,
-  WILDCARD_ROUTES,
-  ROUTES_CONFIG,
-  NOTES,
-  THEME,
-  STRINGS,
-  FIREBASE_STRINGS,
   AUTHENTICATION,
+  FIREBASE_STRINGS,
+  NOTES,
+  ROUTES,
+  ROUTES_CONFIG,
+  STRINGS,
+  THEME,
+  WILDCARD_ROUTES,
 };

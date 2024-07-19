@@ -38,6 +38,12 @@ export const SignupSchema = Yup.object().shape({
     .required(YUP_STRINGS.CONFIRM_PASSWORD),
 });
 
+export const PasswordResetSchema = Yup.object().shape({
+  email: Yup.string()
+    .email(YUP_STRINGS.INVALID_EMAIL)
+    .required(YUP_STRINGS.ENTER_EMAIL),
+});
+
 export const LogInSchema = Yup.object({
   email: Yup.string()
     .email(YUP_STRINGS.INVALID_EMAIL)
