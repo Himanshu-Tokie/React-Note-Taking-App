@@ -226,25 +226,19 @@ export const createUser = async (
   name: string,
   dispatch: AppDispatch
 ) => {
-  try {
-    dispatch(setLoading(true));
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    if (userCredential.user) {
-      await updateProfile(userCredential.user, {
-        displayName: name,
-      });
-    }
-    await signUpUser(userCredential.user.uid);
-    dispatch(setLoading(false));
-  } catch (error) {
-    dispatch(setLoading(false));
-    // console.log(error);
-    // ShowAlertMessage Dispatch
+  dispatch(setLoading(true));
+  const userCredential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+  if (userCredential.user) {
+    await updateProfile(userCredential.user, {
+      displayName: name,
+    });
   }
+  await signUpUser(userCredential.user.uid);
+  dispatch(setLoading(false));
 };
 
 export const fetchLabels = async (uid: string) => {
@@ -314,15 +308,39 @@ export const deleteLabel = async (
   });
   await batch.commit();
   await deleteDoc(labelRef);
+  console.log('asdfa');
+  toastSuccess('asdadfasdf');
   dispatch(setLoading(false));
 };
 
-export function resetPassword(email: string, theme: string) {
+export function resetPassword(email: string) {
   sendPasswordResetEmail(auth, email)
     .then(() => {
-      toastSuccess(STRINGS.RESET_LINK, theme);
+      toastSuccess(STRINGS.RESET_LINK);
     })
     .catch(() => {
-      toastError(STRINGS.RESET_LINK_FAILED, theme);
+      toastError(STRINGS.RESET_LINK_FAILED);
     });
 }
+
+// export async function uploadImage(uid: string, imageURL) {
+//   if (imageURL === null) {
+//     toastError('Please select an image');
+//     return;
+//   }
+//   const photoName = imageURL.split('/').pop();
+//   const imageRef = ref(storage, `${uid}/userPhoto/${photoName}`);
+
+//   try {
+//     const snapshot = await uploadBytes(imageRef, imageURL);
+//     const uploadedImageURL = await getDownloadURL(snapshot.ref);
+//     if (auth.currentUser) {
+//       await updateProfile(auth.currentUser, {
+//         photoURL: uploadedImageURL,
+//       });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     toastError('Error uploading image');
+//   }
+// }

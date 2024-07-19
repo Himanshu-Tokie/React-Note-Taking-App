@@ -1,17 +1,17 @@
 import { Form, Formik } from 'formik';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { AUTHENTICATION, ROUTES, STRINGS } from '../../Shared/Constants';
-import PopUpMessage from '../../Shared/CustomComponents/CustomModal/PopUp';
 import { createUser } from '../../Shared/Firebase Utils';
+import { toastError, toastSuccess } from '../../Shared/Utils';
 import CustomInput from './Custom Component/Custom Input';
 import { SignupSchema } from './Utils';
+import { setLoading } from '../../Store/Loader';
 
 function SignUp(): JSX.Element {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [confirmationModal, setConfirmationModal] = useState(false);
   const formValues = useRef<{
     firstName: string;
     lastName: string;
@@ -27,22 +27,23 @@ function SignUp(): JSX.Element {
           formValues.current.password,
           `${formValues.current.firstName} ${formValues.current.lastName}`,
           dispatch
-        ).then(() => navigate('/login'));
-        // .catch((e) => console.log(e));
+        )
+          .then(() => {
+            toastSuccess('Signup successful!');
+            navigate('/login');
+          })
+          .catch(() => {
+            toastError('Signup failed');
+            dispatch(setLoading(false));
+          });
       }
     } catch (e) {
-      // console.log(e);
+      toastError('Some issues please try again');
+      dispatch(setLoading(false));
     }
   };
   return (
     <div>
-      {confirmationModal && (
-        <PopUpMessage
-          setConfirmationModal={setConfirmationModal}
-          description="Are you sure want to sign up"
-          confirmationFunction={signUpUser}
-        />
-      )}
       <div className="flex flex-col flex-wrap place-content-center px-8 md:px-16 py-4">
         <h1 className="font-bold self-center text-3xl dark:text-white">
           {STRINGS.WELCOME2}
@@ -62,7 +63,7 @@ function SignUp(): JSX.Element {
             validationSchema={SignupSchema}
             onSubmit={(values) => {
               formValues.current = values;
-              setConfirmationModal(true);
+              signUpUser();
             }}
           >
             <Form>

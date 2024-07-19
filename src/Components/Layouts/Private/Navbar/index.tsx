@@ -1,9 +1,9 @@
 import { signOut } from 'firebase/auth';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { auth } from '../../../../Services/Config/Firebase/firebase';
-import { ROUTES, THEME } from '../../../../Shared/Constants';
+import { ROUTES, STRINGS, THEME } from '../../../../Shared/Constants';
 import Cards from '../../../../Shared/CustomCards';
 import PopUpMessage from '../../../../Shared/CustomComponents/CustomModal/PopUp';
 import { updateAuthTokenRedux, updateTheme } from '../../../../Store/Common';
@@ -19,12 +19,11 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   const [confirmationModal, setConfirmationModal] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const storedDarkMode = localStorage.getItem('Theme') as THEME;
-  // const [theme, setTheme] = useState<THEME>(storedDarkMode ?? THEME.DARK);
   const theme = useSelector((state: stateType) => state.common.theme);
-
   const themeElementRef = useRef<HTMLDivElement | null>(null);
+  const themeModalRef = useRef<HTMLDivElement | null>(null);
   const profileElementRef = useRef<HTMLDivElement | null>(null);
+  const userPhoto = auth.currentUser?.photoURL;
   function toggleSettings() {
     setThemeVisible(!themeVisible);
   }
@@ -109,7 +108,10 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
       if (!themeElementRef.current?.contains(e.target as Element)) {
         setThemeVisible(false);
       }
-      if (!profileElementRef.current?.contains(e.target as Element)) {
+      if (
+        !profileElementRef.current?.contains(e.target as Element) &&
+        !themeModalRef.current?.contains(e.target as Element)
+      ) {
         setProfileVisible(false);
       }
     };
@@ -125,6 +127,8 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   //   setTimeout(() => navigate(-2), 0);
   // };
   const location = useLocation();
+  // console.log(location.pathname.split('/')[2]);
+
   const [searchQuery, setSearchQuery] = useState('');
   const appNameRef = useRef(null);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -132,7 +136,6 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   useEffect(() => {
     setSearchQuery(searchParams.get('search') ?? '');
   }, [searchParams]);
-  // const searchQuery = searchParams.get('search');
   const [isExpanded, setIsExpanded] = useState(false);
   const onClickHandler = () => {
     setIsExpanded(!isExpanded);
@@ -158,16 +161,23 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
             >
               <img src={ICONS.MENU} alt="menu" />
             </div>
-            <img
-              src={ICONS.DIARY}
-              alt="menu"
-              className="h-10 sm:h-16 opacity-100"
-            />
+            <Link to={ROUTES.HOMEPAGE}>
+              <img
+                src={ICONS.DIARY}
+                alt="menu"
+                className="h-10 sm:h-16 opacity-100"
+              />
+            </Link>
             <p
               className={`md:pl-2 place-content-center text-sm sm:text-lg font-bold dark:text-white ${isExpanded ? 'hidden' : 'block'} md:block`}
               ref={appNameRef}
             >
-              <span className="text-[#7F56D9]">Note-Ta</span>king App
+              <Link to={ROUTES.HOMEPAGE}>
+                <span className="text-[#7F56D9]">
+                  {STRINGS.NOTE_TAKING_APP.PART1}
+                </span>
+                {STRINGS.NOTE_TAKING_APP.PART2}
+              </Link>
             </p>
           </div>
           <div className="hidden md:flex border-2 dark:border-[#5F6368] items-center px-2 rounded-lg h-fit self-center dark:bg-[#333333]">
@@ -230,16 +240,17 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
               tabIndex={0}
               ref={profileElementRef}
             >
-              <img src={ICONS.USER} alt="user" className="h-7" />
+              <img
+                src={userPhoto ?? ICONS.USER}
+                alt="user"
+                className="h-8 rounded-full"
+              />
             </div>
           </div>
         </header>
       </div>
       {themeVisible && (
-        <div
-          className="fixed right-6 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-30 dark:bg-gray-700"
-          id="themeModal"
-        >
+        <div className="fixed right-6 z-40 bg-white divide-y divide-gray-100 rounded-lg shadow w-30 dark:bg-gray-700">
           <ul className="pt-2">
             <li className="py-2 hover:bg-gray-100 cursor-pointer px-5">
               <div
@@ -284,11 +295,13 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
         </div>
       )}
       {profileVisible && (
-        <Cards
-          name={auth.currentUser?.displayName ?? ''}
-          user={auth.currentUser?.email ?? ''}
-          signOut={() => setConfirmationModal(true)}
-        />
+        <div ref={themeModalRef}>
+          <Cards
+            name={auth.currentUser?.displayName ?? ''}
+            user={auth.currentUser?.email ?? ''}
+            signOut={() => setConfirmationModal(true)}
+          />
+        </div>
       )}
     </>
   );

@@ -69,6 +69,9 @@ enum THEME {
 }
 
 const STRINGS = {
+  PROFILE_INSTRUCTION:
+    "A picture helps people recognize you and lets you know when you'resigned in to your account",
+  EDIT: 'Change Photo',
   RESET_LINK: 'Reset link sent',
   RESET_LINK_FAILED: 'Some issue please try again',
   TITLE: 'Title',
@@ -122,10 +125,10 @@ const FIREBASE_STRINGS = {
 const AUTHENTICATION = {
   PLACEHOLDER: {
     FIRST_NAME: 'Enter your first name',
-    LAST_NAME: 'Enter your lastName',
-    EMAIL: 'Enter your email',
+    LAST_NAME: 'Enter your last name',
+    EMAIL: 'Enter your email address',
     PASSWORD: 'Enter your password',
-    CONFIRM_PASSWORD: 'Enter Confirm Password',
+    CONFIRM_PASSWORD: 'Confirm your password',
   },
   ID: {
     FIRST_NAME: 'firstName',

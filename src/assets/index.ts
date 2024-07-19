@@ -24,10 +24,12 @@ import SEARCH from './search.svg';
 import SETTINGS from './settings.svg';
 import TICK from './tick.svg';
 import USER from './user.svg';
-import VISIBLITY from './visiblity.svg';
+import VISIBLITY from './visibility.svg';
 import VISIBLITY_OFF from './visiblity_off.svg';
+import WHITE_EDIT from './edit_white.svg';
 
 const ICONS = {
+  WHITE_EDIT,
   VISIBLITY,
   VISIBLITY_OFF,
   BG_DESIGN,
