@@ -190,6 +190,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
                 placeholder="Search"
                 onChange={search}
                 onFocus={searchFocusHandler}
+                onBlur={() => setIsExpanded(false)}
                 defaultValue={searchQuery ?? ''}
                 className={`outline-none py-2 fixed left-20 sm:left-24 rounded-lg dark:border-[#5F6368] dark:bg-[#333333] dark:text-gray-300 transition-width duration-300 ease-in-out ${
                   isExpanded ? 'w-2/4 sm:4/6 px-3 border-2' : 'w-0'
@@ -200,6 +201,8 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
                 aria-label="search"
                 role="button"
                 className="self-center ml-1"
+                tabIndex={0}
+                onKeyDown={handleKeyDown}
               >
                 <img
                   src={ICONS.SEARCH}

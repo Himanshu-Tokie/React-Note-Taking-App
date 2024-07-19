@@ -1,4 +1,8 @@
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  updateProfile,
+} from 'firebase/auth';
 import {
   addDoc,
   collection,
@@ -16,11 +20,11 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore';
-import { toast } from 'react-toastify';
 import { auth, db } from '../../Services/Config/Firebase/firebase';
 import { AppDispatch } from '../../Store';
 import { setLoading } from '../../Store/Loader';
-import { FIREBASE_STRINGS, NOTES } from '../Constants';
+import { FIREBASE_STRINGS, NOTES, STRINGS } from '../Constants';
+import { toastError, toastSuccess } from '../Utils';
 
 export async function fetchNotesWithLabel(labelId: string, userId: string) {
   const labelDocRef = doc(
@@ -103,7 +107,7 @@ export async function fetchSearchNotes(uid: string, qs: string) {
   });
   return allNotesData;
 }
-export async function deleteNotes(uid: string, noteId: string, theme: string) {
+export async function deleteNotes(uid: string, noteId: string) {
   const noteRef = doc(
     db,
     FIREBASE_STRINGS.USER,
@@ -116,16 +120,6 @@ export async function deleteNotes(uid: string, noteId: string, theme: string) {
   if (noteData.data()) {
     await deleteDoc(noteRef);
     await updateDoc(labelRef, { count: increment(-1) });
-    toast.success('Note deleted successfully', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: theme ?? 'light',
-    });
   }
 }
 export const createNote = async (
@@ -322,3 +316,13 @@ export const deleteLabel = async (
   await deleteDoc(labelRef);
   dispatch(setLoading(false));
 };
+
+export function resetPassword(email: string, theme: string) {
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      toastSuccess(STRINGS.RESET_LINK, theme);
+    })
+    .catch(() => {
+      toastError(STRINGS.RESET_LINK_FAILED, theme);
+    });
+}
