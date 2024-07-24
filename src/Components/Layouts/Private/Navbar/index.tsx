@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { auth } from '../../../../Services/Config/Firebase/firebase';
 import { ROUTES, STRINGS, THEME } from '../../../../Shared/Constants';
-import Cards from '../../../../Shared/CustomCards';
+import Cards from '../../../../Shared/CustomComponents/CustomCards';
 import PopUpMessage from '../../../../Shared/CustomComponents/CustomModal/PopUp';
 import { updateAuthTokenRedux, updateTheme } from '../../../../Store/Common';
 import { setLoading } from '../../../../Store/Loader';
@@ -13,6 +13,7 @@ import ICONS from '../../../../assets';
 import { noteNavbarProps } from './types';
 
 function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
+  const userPhoto = auth.currentUser?.photoURL;
   const [themeVisible, setThemeVisible] = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
   const [showSidebar, setShowSidebar] = useState(true);
@@ -23,7 +24,6 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   const themeElementRef = useRef<HTMLDivElement | null>(null);
   const themeModalRef = useRef<HTMLDivElement | null>(null);
   const profileElementRef = useRef<HTMLDivElement | null>(null);
-  const userPhoto = auth.currentUser?.photoURL;
   function toggleSettings() {
     setThemeVisible(!themeVisible);
   }
@@ -243,7 +243,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
               <img
                 src={userPhoto ?? ICONS.USER}
                 alt="user"
-                className="h-8 rounded-full"
+                className="h-8 w-8 rounded-full"
               />
             </div>
           </div>

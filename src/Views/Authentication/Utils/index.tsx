@@ -1,3 +1,4 @@
+import { FirebaseError } from 'firebase/app';
 import {
   getAdditionalUserInfo,
   signInWithEmailAndPassword,
@@ -8,7 +9,9 @@ import {
   auth,
   googleProvider,
 } from '../../../Services/Config/Firebase/firebase';
+import { ERROR, FIREBASE_STRINGS } from '../../../Shared/Constants';
 import { signUpUser } from '../../../Shared/Firebase Utils';
+import { toastError } from '../../../Shared/Utils';
 import { AppDispatch } from '../../../Store';
 import { setUidRedux, updateAuthTokenRedux } from '../../../Store/Common';
 import { setLoading } from '../../../Store/Loader';
@@ -67,30 +70,48 @@ export const logInUser = async (
         dispatch(setUidRedux(uid));
       }
     );
-  } catch (error) {
-    dispatch(setLoading(true));
-    // ShowAlertMessage Dispatch
+  } catch (error: unknown) {
+    dispatch(setLoading(false));
+    switch ((error as FirebaseError).code) {
+      case FIREBASE_STRINGS.ERROR.INVALID_CREDENTIALS:
+        toastError(ERROR.INVALID_CREDENTIALS);
+        break;
+      default:
+        toastError(FIREBASE_STRINGS.ERROR.DEFAULT);
+    }
   }
 };
 
 export const signInWithGoogle = async (dispatch: AppDispatch) => {
   try {
     dispatch(setLoading(true));
-    const userDetail = await signInWithPopup(auth, googleProvider).then(
-      async (user) => {
+    const userDetail = await signInWithPopup(auth, googleProvider)
+      .then(async (user) => {
         const isNewUser: boolean =
           getAdditionalUserInfo(user)?.isNewUser || false;
         if (isNewUser) await signUpUser(user.user.uid);
         return user;
-      }
-    );
-    const token = await userDetail.user.getIdToken();
-    const { uid } = userDetail.user;
-    dispatch(updateAuthTokenRedux(token));
+      })
+      .catch((error) => {
+        dispatch(setLoading(false));
+        switch (error.code) {
+          case FIREBASE_STRINGS.ERROR.POPUP_CLOSED:
+            toastError(ERROR.POPUP_CLOSED);
+            break;
+          default:
+            toastError(FIREBASE_STRINGS.ERROR.DEFAULT);
+        }
+      });
+    if (userDetail) {
+      const token = await userDetail?.user.getIdToken();
+      const { uid } = userDetail.user;
+      dispatch(updateAuthTokenRedux(token));
+      dispatch(setUidRedux(uid));
+    }
     dispatch(setLoading(false));
-    dispatch(setUidRedux(uid));
   } catch (error) {
     dispatch(setLoading(false));
-    // console.log(error);
+    toastError(FIREBASE_STRINGS.ERROR.DEFAULT);
+    // console.log(error.code);
   }
 };

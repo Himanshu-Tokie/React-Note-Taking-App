@@ -20,7 +20,8 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore';
-import { auth, db } from '../../Services/Config/Firebase/firebase';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { auth, db, storage } from '../../Services/Config/Firebase/firebase';
 import { AppDispatch } from '../../Store';
 import { setLoading } from '../../Store/Loader';
 import { FIREBASE_STRINGS, NOTES, STRINGS } from '../Constants';
@@ -308,7 +309,6 @@ export const deleteLabel = async (
   });
   await batch.commit();
   await deleteDoc(labelRef);
-  console.log('asdfa');
   toastSuccess('asdadfasdf');
   dispatch(setLoading(false));
 };
@@ -323,24 +323,29 @@ export function resetPassword(email: string) {
     });
 }
 
-// export async function uploadImage(uid: string, imageURL) {
-//   if (imageURL === null) {
-//     toastError('Please select an image');
-//     return;
-//   }
-//   const photoName = imageURL.split('/').pop();
-//   const imageRef = ref(storage, `${uid}/userPhoto/${photoName}`);
-
-//   try {
-//     const snapshot = await uploadBytes(imageRef, imageURL);
-//     const uploadedImageURL = await getDownloadURL(snapshot.ref);
-//     if (auth.currentUser) {
-//       await updateProfile(auth.currentUser, {
-//         photoURL: uploadedImageURL,
-//       });
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     toastError('Error uploading image');
-//   }
-// }
+export async function uploadImage(
+  uid: string,
+  imageURL: File,
+  dispatch: AppDispatch
+) {
+  if (imageURL === null) {
+    toastError('Please select an image');
+    return;
+  }
+  const imageRef = ref(storage, `${uid}/userPhoto/userPhoto`);
+  dispatch(setLoading(true));
+  try {
+    const snapshot = await uploadBytes(imageRef, imageURL);
+    const uploadedImageURL = await getDownloadURL(snapshot.ref);
+    if (auth.currentUser) {
+      await updateProfile(auth.currentUser, {
+        photoURL: uploadedImageURL,
+      });
+    }
+    toastSuccess('Image updated successfully');
+    dispatch(setLoading(false));
+  } catch (error) {
+    toastError('Error uploading image');
+    dispatch(setLoading(false));
+  }
+}

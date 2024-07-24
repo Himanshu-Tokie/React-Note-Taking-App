@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { ROUTES } from '../../../../Shared/Constants';
+import { ROUTES, THEME } from '../../../../Shared/Constants';
 import { stateType } from '../../../../Views/Dashboard/types';
 import { fetchLabels } from '../../../../Shared/Firebase Utils';
 import { useUpdateLabel } from '../../../../Shared/CustomHooks';
@@ -10,6 +10,7 @@ import ICONS from '../../../../assets';
 export default function Sidebar() {
   const [data, setData] = useState<{ id: string; labelId: string }[]>();
   const uid = useSelector((state: stateType) => state.common.uid);
+  const theme = useSelector((state: stateType) => state.common.theme);
   useEffect(() => {
     fetchLabels(uid).then((label) => setData(label));
   }, [uid]);
@@ -28,14 +29,29 @@ export default function Sidebar() {
               : 'flex items-center py-3'
           }
         >
-          <img
-            src={ICONS.LIGHTBULB}
-            alt="lightbulb"
-            className="pl-4 sm:pl-6 p-2"
-          />
-          <p className="pl-6 text-base dark:text-gray-300 hover:text-black">
-            Notes
-          </p>
+          {({ isActive }) => {
+            if (isActive || theme === THEME.DARK)
+              return (
+                <>
+                  <img
+                    src={ICONS.LIGHTBULB}
+                    alt="label"
+                    className="pl-4 sm:pl-6 p-2"
+                  />
+                  <p className="pl-6 text-base dark:text-gray-300">Notes</p>
+                </>
+              );
+            return (
+              <>
+                <img
+                  src={ICONS.LIGHTBULB_DARK}
+                  alt="label"
+                  className="pl-4 sm:pl-6 p-2"
+                />
+                <p className="pl-6 text-base dark:text-gray-300">Notes</p>
+              </>
+            );
+          }}
         </NavLink>
       </div>
       {/* <div
@@ -66,8 +82,29 @@ export default function Sidebar() {
               : 'flex items-center py-3 hover:bg-gray-100 rounded-r-full'
           }
         >
-          <img src={ICONS.LABEL} alt="label" className="pl-4 sm:pl-6 p-2" />
-          <p className="pl-6 text-base dark:text-gray-300">{item.id}</p>
+          {({ isActive }) => {
+            if (isActive || theme === THEME.DARK)
+              return (
+                <>
+                  <img
+                    src={ICONS.LABEL}
+                    alt="label"
+                    className="pl-4 sm:pl-6 p-2"
+                  />
+                  <p className="pl-6 text-base dark:text-gray-300">{item.id}</p>
+                </>
+              );
+            return (
+              <>
+                <img
+                  src={ICONS.LABEL_DARK}
+                  alt="label"
+                  className="pl-4 sm:pl-6 p-2"
+                />
+                <p className="pl-6 text-base dark:text-gray-300">{item.id}</p>
+              </>
+            );
+          }}
         </NavLink>
       ))}
 
@@ -75,7 +112,11 @@ export default function Sidebar() {
         className="flex items-center py-3 rounded-r-full cursor-pointer hover:bg-gray-100"
         id="Edit Labels"
       >
-        <img src={ICONS.EDIT} alt="edit" className="pl-4 sm:pl-6 p-2" />
+        {theme === THEME.DARK ? (
+          <img src={ICONS.EDIT} alt="edit" className="pl-4 sm:pl-6 p-2" />
+        ) : (
+          <img src={ICONS.EDIT_DARK} alt="edit" className="pl-4 sm:pl-6 p-2" />
+        )}
         <p className="pl-6 text-base dark:text-gray-300">Edit Labels</p>
       </div>
     </div>

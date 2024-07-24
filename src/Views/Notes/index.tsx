@@ -76,7 +76,7 @@ function Notes({
   useUpdateLabel(uid, setLabelData);
   function onClickSave() {
     const regex = /^\s*$/;
-    if (!regex.test(title) || !regex.test(title)) {
+    if (!regex.test(title) || !regex.test(content)) {
       dispatch(setLoading(true));
       if (noteId && setShowNoteEditor) {
         updateNote(uid, noteId, content, title).then(() => {

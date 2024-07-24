@@ -17,6 +17,7 @@ import LABEL from './label.svg';
 import LIGHT_MODE from './light_mode.svg';
 import LIGHTBULB from './lightbulb.svg';
 import LIST_VIEW from './list_view.svg';
+import LIGHTBULB_DARK from './lightbulb_dark.svg';
 import MENU from './menu.svg';
 import NOTIFICATIONS from './notifications.svg';
 import REACT from './react.svg';
@@ -27,8 +28,12 @@ import USER from './user.svg';
 import VISIBLITY from './visibility.svg';
 import VISIBLITY_OFF from './visiblity_off.svg';
 import WHITE_EDIT from './edit_white.svg';
+import LABEL_DARK from './label_dark.svg';
+import EDIT_DARK from './edit_dark.svg';
 
 const ICONS = {
+  EDIT_DARK,
+  LABEL_DARK,
   WHITE_EDIT,
   VISIBLITY,
   VISIBLITY_OFF,
@@ -45,6 +50,7 @@ const ICONS = {
   GRID_VIEW,
   LABEL,
   LIGHTBULB,
+  LIGHTBULB_DARK,
   LIST_VIEW,
   MENU,
   NOTIFICATIONS,

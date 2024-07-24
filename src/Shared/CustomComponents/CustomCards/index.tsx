@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { auth } from '../../Services/Config/Firebase/firebase';
-import ICONS from '../../assets';
-import { STRINGS } from '../Constants';
-// import ChangePhoto from '../CustomComponents/CustomModal/ChangePhoto';
+import { auth } from '../../../Services/Config/Firebase/firebase';
+import ICONS from '../../../assets';
+import { STRINGS } from '../../Constants';
+import ChangePhoto from '../CustomModal/ChangePhoto';
 import { cardsProps } from './types';
 
 export default function Cards({ name, user, signOut }: cardsProps) {
@@ -11,15 +11,17 @@ export default function Cards({ name, user, signOut }: cardsProps) {
   // const [imageUpload, setImageUpload] = useState(null);
   return (
     <>
-      {/* {isVisible && <ChangePhoto photoURL={userPhoto} />} */}
+      {isVisible && (
+        <ChangePhoto photoURL={userPhoto} setIsVisible={setIsVisible} />
+      )}
       <div className="fixed right-0 z-[100] w-full max-w-60 p-2 mr-2 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
         <div className="flex relative items-baseline text-gray-900 dark:text-white justify-center">
           <img
             src={userPhoto ?? ICONS.DEFAULT_PROFILE}
             alt=""
-            className="h-20 rounded-full"
+            className="h-24 w-24 rounded-full"
           />
-          <div className="absolute bottom-0 right-1/4 bg-gray-500 rounded-full hover:bg-black">
+          <div className="absolute bottom-0 right-1/4 bg-gray-500 rounded-full hover:bg-black flex">
             <button type="button" onClick={() => setIsVisible(!isVisible)}>
               <img src={ICONS.WHITE_EDIT} alt="ImageEditor" />
             </button>
@@ -27,7 +29,7 @@ export default function Cards({ name, user, signOut }: cardsProps) {
         </div>
         <ul className="space-y-2 my-2 ">
           <li className="flex decoration-gray-500 justify-center">
-            <span className="text-base font-bold text-white ms-3">
+            <span className="text-base font-bold dark:text-white ms-3">
               {`Hi, ${name.charAt(0).toUpperCase() + name.slice(1).split(' ')[0]}!`}
             </span>
           </li>

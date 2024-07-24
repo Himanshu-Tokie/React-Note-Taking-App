@@ -68,7 +68,16 @@ enum THEME {
   SYSTEM = 'SYSTEM',
 }
 
+const ERROR = {
+  INVALID_CREDENTIALS: 'Invalid Credentials',
+  POPUP_CLOSED: 'Sign-in interrupted.',
+};
+
 const STRINGS = {
+  PROFILE: 'Profile Picture',
+  SELECT_FILE: 'Select a file',
+  ERROR: 'Some error occured please try again',
+  SIGNUP_MESSAGE: 'Welcome! Your sign-up is successful!',
   PROFILE_INSTRUCTION:
     "A picture helps people recognize you and lets you know when you'resigned in to your account",
   EDIT: 'Change Photo',
@@ -120,6 +129,11 @@ const FIREBASE_STRINGS = {
   LABELS: 'labels',
   NOTES: 'notes',
   LABEL: 'label',
+  ERROR: {
+    INVALID_CREDENTIALS: 'auth/invalid-credential',
+    DEFAULT: 'Some error occured please try again',
+    POPUP_CLOSED: 'auth/popup-closed-by-user',
+  },
 };
 
 const AUTHENTICATION = {
@@ -151,4 +165,5 @@ export {
   STRINGS,
   THEME,
   WILDCARD_ROUTES,
+  ERROR,
 };

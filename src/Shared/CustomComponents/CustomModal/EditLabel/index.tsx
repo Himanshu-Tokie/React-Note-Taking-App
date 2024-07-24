@@ -2,7 +2,7 @@ import { MouseEventHandler, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { stateType } from '../../../../Views/Dashboard/types';
 import ICONS from '../../../../assets';
-import { STRINGS } from '../../../Constants';
+import { STRINGS, THEME } from '../../../Constants';
 import { useUpdateLabel } from '../../../CustomHooks';
 import {
   createLabel,
@@ -68,7 +68,7 @@ function CustomModal({ setShowModal }: CustomModalProps) {
       setSelectedLabel(undefined);
     }
   };
-  // const theme = useSelector((state: stateType) => state.common.theme);
+  const theme = useSelector((state: stateType) => state.common.theme);
   const handleTickClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     const targetElement = event.target as Element;
     const inputElement = targetElement.closest('div')?.querySelector('input');
@@ -191,7 +191,10 @@ function CustomModal({ setShowModal }: CustomModalProps) {
                   key={label.id}
                   className="flex justify-between items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 group hover:shadow dark:bg-[#333333] dark:text-white"
                 >
-                  <img src={ICONS.LABEL} alt="" />
+                  <img
+                    src={theme === THEME.DARK ? ICONS.LABEL : ICONS.LABEL_DARK}
+                    alt="label"
+                  />
                   <input
                     name={label.labelId}
                     defaultValue={label.id}

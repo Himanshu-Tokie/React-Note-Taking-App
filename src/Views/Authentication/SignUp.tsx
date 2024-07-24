@@ -29,7 +29,7 @@ function SignUp(): JSX.Element {
           dispatch
         )
           .then(() => {
-            toastSuccess('Signup successful!');
+            toastSuccess(STRINGS.SIGNUP_MESSAGE);
             navigate('/login');
           })
           .catch(() => {
