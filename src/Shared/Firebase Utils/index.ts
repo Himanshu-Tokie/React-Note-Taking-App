@@ -20,7 +20,8 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore';
-import { auth, db } from '../../Services/Config/Firebase/firebase';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { auth, db, storage } from '../../Services/Config/Firebase/firebase';
 import { AppDispatch } from '../../Store';
 import { setLoading } from '../../Store/Loader';
 import { FIREBASE_STRINGS, NOTES, STRINGS } from '../Constants';
@@ -226,25 +227,19 @@ export const createUser = async (
   name: string,
   dispatch: AppDispatch
 ) => {
-  try {
-    dispatch(setLoading(true));
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    if (userCredential.user) {
-      await updateProfile(userCredential.user, {
-        displayName: name,
-      });
-    }
-    await signUpUser(userCredential.user.uid);
-    dispatch(setLoading(false));
-  } catch (error) {
-    dispatch(setLoading(false));
-    // console.log(error);
-    // ShowAlertMessage Dispatch
+  dispatch(setLoading(true));
+  const userCredential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+  if (userCredential.user) {
+    await updateProfile(userCredential.user, {
+      displayName: name,
+    });
   }
+  await signUpUser(userCredential.user.uid);
+  dispatch(setLoading(false));
 };
 
 export const fetchLabels = async (uid: string) => {
@@ -314,15 +309,43 @@ export const deleteLabel = async (
   });
   await batch.commit();
   await deleteDoc(labelRef);
+  toastSuccess('asdadfasdf');
   dispatch(setLoading(false));
 };
 
-export function resetPassword(email: string, theme: string) {
+export function resetPassword(email: string) {
   sendPasswordResetEmail(auth, email)
     .then(() => {
-      toastSuccess(STRINGS.RESET_LINK, theme);
+      toastSuccess(STRINGS.RESET_LINK);
     })
     .catch(() => {
-      toastError(STRINGS.RESET_LINK_FAILED, theme);
+      toastError(STRINGS.RESET_LINK_FAILED);
     });
+}
+
+export async function uploadImage(
+  uid: string,
+  imageURL: File,
+  dispatch: AppDispatch
+) {
+  if (imageURL === null) {
+    toastError('Please select an image');
+    return;
+  }
+  const imageRef = ref(storage, `${uid}/userPhoto/userPhoto`);
+  dispatch(setLoading(true));
+  try {
+    const snapshot = await uploadBytes(imageRef, imageURL);
+    const uploadedImageURL = await getDownloadURL(snapshot.ref);
+    if (auth.currentUser) {
+      await updateProfile(auth.currentUser, {
+        photoURL: uploadedImageURL,
+      });
+    }
+    toastSuccess('Image updated successfully');
+    dispatch(setLoading(false));
+  } catch (error) {
+    toastError('Error uploading image');
+    dispatch(setLoading(false));
+  }
 }

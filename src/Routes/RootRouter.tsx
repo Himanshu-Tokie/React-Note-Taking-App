@@ -29,6 +29,7 @@ function RootRouter() {
         pauseOnHover
         theme={theme}
         toastClassName="toast-container"
+        toastStyle={{ zIndex: 100 }}
       />
       <DocumentTitle isAuthenticated={isAuthenticated} />
       <AppLayout isAuthenticated={isAuthenticated}>

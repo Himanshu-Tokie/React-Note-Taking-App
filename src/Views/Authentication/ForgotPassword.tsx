@@ -1,15 +1,12 @@
 import { Form, Formik } from 'formik';
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { AUTHENTICATION, ROUTES, STRINGS } from '../../Shared/Constants';
 import { resetPassword } from '../../Shared/Firebase Utils';
 import ICONS from '../../assets';
-import { stateType } from '../Dashboard/types';
 import CustomInput from './Custom Component/Custom Input';
 import { PasswordResetSchema } from './Utils';
 
 function ForgotPassword(): JSX.Element {
-  const theme = useSelector((state: stateType) => state.common.theme);
   return (
     <div className="px-10 bg-opacity-40 py-10">
       <div className="flex flex-col flex-wrap place-content-center">
@@ -35,7 +32,7 @@ function ForgotPassword(): JSX.Element {
             initialValues={{ email: '' }}
             validationSchema={PasswordResetSchema}
             onSubmit={(values) => {
-              resetPassword(values.email, theme);
+              resetPassword(values.email);
             }}
           >
             <Form>

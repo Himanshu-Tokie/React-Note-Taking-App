@@ -46,11 +46,9 @@ function Login(): JSX.Element {
                 placeholder={AUTHENTICATION.PLACEHOLDER.PASSWORD}
                 type={AUTHENTICATION.TYPE.PASSWORD}
               />
-              <Link to={ROUTES.FORGOT_PASSWORD}>
-                <p className="text-[#7F56D9] font-medium text-sm py-2">
-                  Forgot password
-                </p>
-              </Link>
+              <p className="text-[#7F56D9] font-medium text-sm py-2">
+                <Link to={ROUTES.FORGOT_PASSWORD}>Forgot password</Link>
+              </p>
               <button
                 type="submit"
                 className="w-full my-2 px-10 py-2 text-center bg-[#7F56D9] text-white rounded-md font-medium text-sm"

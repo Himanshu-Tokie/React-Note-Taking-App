@@ -2,7 +2,6 @@ import { doc, getDoc } from 'firebase/firestore';
 import JoditEditor from 'jodit-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { db } from '../../Services/Config/Firebase/firebase';
 import { STRINGS } from '../../Shared/Constants';
@@ -77,7 +76,7 @@ function Notes({
   useUpdateLabel(uid, setLabelData);
   function onClickSave() {
     const regex = /^\s*$/;
-    if (!regex.test(title) || !regex.test(title)) {
+    if (!regex.test(title) || !regex.test(content)) {
       dispatch(setLoading(true));
       if (noteId && setShowNoteEditor) {
         updateNote(uid, noteId, content, title).then(() => {
@@ -110,92 +109,78 @@ function Notes({
     } else setShowEditor(false);
   }
   return (
-    <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme={theme}
-      />
+    <div
+      className="w-full self-center mt-8 max-w-xl dark:bg-[#252526]"
+      id="note"
+    >
       <div
-        className="w-full self-center mt-8 max-w-xl dark:bg-[#252526]"
-        id="note"
+        className="flex items-center border-2 mb-2 rounded-lg dark:bg-[#333333] dark:border-[#5F6368]"
+        id="editor"
       >
-        <div
-          className="flex items-center border-2 mb-2 rounded-lg dark:bg-[#333333] dark:border-[#5F6368]"
-          id="editor"
-        >
-          <div className="flex-1 px-2">
-            <input
-              type="text"
-              placeholder={STRINGS.TITLE}
-              className="w-full py-2 outline-none dark:bg-[#333333] dark:text-gray-300"
-              onChange={(e) => setTitle(e.currentTarget.value)}
-              value={title}
+        <div className="flex-1 px-2">
+          <input
+            type="text"
+            placeholder={STRINGS.TITLE}
+            className="w-full py-2 outline-none dark:bg-[#333333] dark:text-gray-300"
+            onChange={(e) => setTitle(e.currentTarget.value)}
+            value={title}
+          />
+        </div>
+        <div className="px-2">
+          {labelId ? (
+            <p className="dark:text-gray-300">{currentLabel}</p>
+          ) : (
+            <select
+              name="label"
+              id="labelId"
+              className="outline-none w-30 dark:bg-[#333333] dark:text-gray-300"
+              onBlur={(event) => setLabel(event.target.value)}
+            >
+              <option value="">{STRINGS.SELECT_LABEL}</option>
+              {labelData?.map((item) => (
+                <option value={item.labelId} key={item.labelId}>
+                  {item.id}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+      </div>
+
+      {(showEditor || noteTitle || noteContent) && (
+        <>
+          <div className="App">
+            <JoditEditor
+              ref={editorRef}
+              value={content}
+              config={{
+                ...editorConfig,
+                theme,
+              }}
+              onBlur={(text) => {
+                setContent(text);
+              }}
             />
           </div>
-          <div className="px-2">
-            {labelId ? (
-              <p className="dark:text-gray-300">{currentLabel}</p>
-            ) : (
-              <select
-                name="label"
-                id="labelId"
-                className="outline-none w-30 dark:bg-[#333333] dark:text-gray-300"
-                onBlur={(event) => setLabel(event.target.value)}
-              >
-                <option value="">{STRINGS.SELECT_LABEL}</option>
-                {labelData?.map((item) => (
-                  <option value={item.labelId} key={item.labelId}>
-                    {item.id}
-                  </option>
-                ))}
-              </select>
-            )}
+          <div className="text-center p-4">
+            <button
+              type="button"
+              onClick={onClickCancel}
+              className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+            >
+              {STRINGS.CANCEL}
+            </button>
+            <button
+              type="button"
+              onClick={onClickSave}
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+            >
+              {STRINGS.SAVE}
+            </button>
           </div>
-        </div>
-
-        {(showEditor || noteTitle || noteContent) && (
-          <>
-            <div className="App">
-              <JoditEditor
-                ref={editorRef}
-                value={content}
-                config={{
-                  ...editorConfig,
-                  theme,
-                }}
-                onBlur={(text) => {
-                  setContent(text);
-                }}
-              />
-            </div>
-            <div className="text-center p-4">
-              <button
-                type="button"
-                onClick={onClickCancel}
-                className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-              >
-                {STRINGS.CANCEL}
-              </button>
-              <button
-                type="button"
-                onClick={onClickSave}
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-              >
-                {STRINGS.SAVE}
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-    </>
+        </>
+      )}
+    </div>
   );
 }
 
