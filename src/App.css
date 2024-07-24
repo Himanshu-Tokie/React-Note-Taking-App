@@ -62,3 +62,26 @@
 .toast-container {
   background-color: rgba(87, 78, 78, 0.5);
 }
+
+#joditEditor
+{
+    .jodit-wysiwyg {
+        padding-left: 10px;
+    }
+    a{
+      color: mediumblue;
+    }
+  }
+  #noteBox{
+
+    ul {
+      list-style: inside !important;
+    }
+    ol {
+      list-style: inside !important;
+      list-style-type: number !important;
+    }
+    td {
+      border: solid 2px;
+    }
+  }

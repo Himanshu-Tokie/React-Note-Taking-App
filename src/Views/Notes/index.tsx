@@ -120,10 +120,11 @@ function Notes({
         <div className="flex-1 px-2">
           <input
             type="text"
-            placeholder={STRINGS.TITLE}
+            placeholder={showEditor ? STRINGS.TITLE : STRINGS.TAKE_NOTE}
             className="w-full py-2 outline-none dark:bg-[#333333] dark:text-gray-300"
             onChange={(e) => setTitle(e.currentTarget.value)}
             value={title}
+            maxLength={30}
           />
         </div>
         <div className="px-2">
@@ -149,7 +150,7 @@ function Notes({
 
       {(showEditor || noteTitle || noteContent) && (
         <>
-          <div className="App">
+          <div id="joditEditor">
             <JoditEditor
               ref={editorRef}
               value={content}

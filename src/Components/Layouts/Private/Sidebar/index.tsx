@@ -17,7 +17,7 @@ export default function Sidebar() {
   useUpdateLabel(uid, setData);
   return (
     <div
-      className="flex-1 dark:bg-[#252526] overflow-hidden md:w-[250px] mt-3 w-2/4 transition-all duration-300 ease-in-out fixed hover:overflow-y-scroll h-dvh"
+      className="flex-1 pb-24 dark:bg-[#252526] overflow-hidden md:w-[250px] mt-3 w-2/4 transition-all duration-300 ease-in-out fixed hover:overflow-y-scroll h-dvh"
       id="sidebar"
     >
       <div className="rounded-r-full cursor-pointer hover:bg-gray-100">

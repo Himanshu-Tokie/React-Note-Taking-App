@@ -74,6 +74,7 @@ const ERROR = {
 };
 
 const STRINGS = {
+  TAKE_NOTE: 'Take a note',
   PROFILE: 'Profile Picture',
   SELECT_FILE: 'Select a file',
   ERROR: 'Some error occured please try again',

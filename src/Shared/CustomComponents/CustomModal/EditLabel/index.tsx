@@ -228,7 +228,7 @@ function CustomModal({ setShowModal }: CustomModalProps) {
                     {isActive === label.id ? (
                       <img src={ICONS.TICK} alt="tick" />
                     ) : (
-                      <img src={ICONS.EDIT} alt="edit" />
+                      <img src={ICONS.EDIT_DARK} alt="edit" />
                     )}
                   </button>
                 </div>

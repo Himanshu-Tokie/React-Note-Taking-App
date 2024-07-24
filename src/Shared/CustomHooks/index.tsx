@@ -19,7 +19,8 @@ export const useUpdateLabel = (
 ) => {
   useEffect(() => {
     const labelsRef = collection(db, 'user', uid, 'labels');
-    const unsubscribe = onSnapshot(labelsRef, (querySnapshot) => {
+    const q = query(labelsRef, orderBy('time_stamp'));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const labels = querySnapshot.docs.map((item) => ({
         id: item.data().label,
         labelId: item.id,
