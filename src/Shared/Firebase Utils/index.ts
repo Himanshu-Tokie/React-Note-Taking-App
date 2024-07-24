@@ -249,7 +249,8 @@ export const fetchLabels = async (uid: string) => {
     uid,
     FIREBASE_STRINGS.LABELS
   );
-  const labelData = await getDocs(labelsRef);
+  const q = query(labelsRef, orderBy('time_stamp'));
+  const labelData = await getDocs(q);
   const labels = labelData.docs.map((item) => ({
     id: item.data().label,
     labelId: item.id,
@@ -309,7 +310,7 @@ export const deleteLabel = async (
   });
   await batch.commit();
   await deleteDoc(labelRef);
-  toastSuccess('asdadfasdf');
+  toastSuccess('Note deleted successfully');
   dispatch(setLoading(false));
 };
 

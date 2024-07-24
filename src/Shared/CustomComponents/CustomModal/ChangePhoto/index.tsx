@@ -15,7 +15,8 @@ function ChangePhoto({ photoURL, setIsVisible }: changePhotoProps) {
   }
   return (
     <div className="z-50">
-      <div
+      <button
+        type="button"
         className="fixed inset-0 bg-black bg-opacity-80 z-[200]"
         aria-label="blur screen"
         tabIndex={-1}

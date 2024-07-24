@@ -13,14 +13,18 @@ import ICONS from '../../../../assets';
 import { noteNavbarProps } from './types';
 
 function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchQuery, setSearchQuery] = useState('');
+  const theme = useSelector((state: stateType) => state.common.theme);
   const userPhoto = auth.currentUser?.photoURL;
   const [themeVisible, setThemeVisible] = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
   const [showSidebar, setShowSidebar] = useState(true);
   const [confirmationModal, setConfirmationModal] = useState(false);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const theme = useSelector((state: stateType) => state.common.theme);
+  const [isCrossVisible, setIsCrossVisible] = useState(false);
+  const appNameRef = useRef(null);
   const themeElementRef = useRef<HTMLDivElement | null>(null);
   const themeModalRef = useRef<HTMLDivElement | null>(null);
   const profileElementRef = useRef<HTMLDivElement | null>(null);
@@ -121,16 +125,14 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
     };
   }, []);
   const searchFocusHandler = () => {
-    navigate(ROUTES.HOMEPAGE, { replace: true });
+    if (!searchQuery) {
+      navigate(ROUTES.HOMEPAGE, { replace: true });
+    }
+    setIsCrossVisible(true);
   };
   // const searchBlurHandler = () => {
   //   setTimeout(() => navigate(-2), 0);
   // };
-  const location = useLocation();
-  // console.log(location.pathname.split('/')[2]);
-
-  const [searchQuery, setSearchQuery] = useState('');
-  const appNameRef = useRef(null);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchParams = new URLSearchParams(location.search);
   useEffect(() => {
@@ -185,13 +187,26 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
             <input
               placeholder="Search"
               className="outline-0 px-3 w-96 py-3 dark:bg-[#333333] dark:text-gray-300 "
-              // onChange={(e) => setSearchParams({ search: e.target.value })}
               onChange={search}
               onFocus={searchFocusHandler}
-              defaultValue={searchQuery ?? ''}
-              // onBlur={searchBlurHandler}
+              value={isCrossVisible ? searchQuery : ''}
             />
-            <img src={ICONS.CLOSE} alt="settings" className="h-6" />
+            <div className="h-6 w-6">
+              <button
+                onClick={() => {
+                  setIsCrossVisible(false);
+                  setSearchQuery('');
+                  navigate(ROUTES.HOMEPAGE);
+                }}
+                type="button"
+              >
+                <img
+                  src={ICONS.CLOSE}
+                  alt="close"
+                  className={`${isCrossVisible ? 'block' : 'hidden'} `}
+                />
+              </button>
+            </div>
           </div>
           <div className="flex items-center">
             <div className="flex md:hidden items-center relative">

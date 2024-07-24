@@ -49,10 +49,10 @@ function CustomBox({
       });
   }, [activeNoteId]);
   return (
-    <div>
+    <div id="noteBox">
       <div className="flex justify-end px-4 pt-4 relative">
         <button
-          className="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5"
+          className="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm py-1.5"
           type="button"
           aria-label="box"
           tabIndex={0}
@@ -109,11 +109,11 @@ function CustomBox({
           </div>
         )}
       </div>
-      <div className="flex flex-col items-center pb-8 px-2 max-h-52 overflow-hidden">
-        <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
+      <div className="flex flex-col items-left pb-8 px-4 max-h-52 overflow-hidden">
+        <h5 className="mb-2 text-xl font-medium text-gray-900 dark:text-white">
           {title}
         </h5>
-        <span className="text-sm text-gray-500 dark:text-gray-400">
+        <span className="text-sm text-gray-500 dark:text-gray-400 text-justify">
           <div dangerouslySetInnerHTML={theObj} />
         </span>
       </div>

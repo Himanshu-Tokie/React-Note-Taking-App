@@ -11,9 +11,6 @@ export const buttons = [
   '|',
   'image',
   'link',
-  '|',
-  'fullsize',
-  'selectall',
 ];
 export const editorConfig = {
   placeholder: '',

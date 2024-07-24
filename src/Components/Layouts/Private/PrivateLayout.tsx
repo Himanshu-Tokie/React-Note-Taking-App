@@ -33,10 +33,8 @@ function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
     }
   }, [sidebarWidth]);
   const search = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const params = new URLSearchParams(location.search);
-    const isFirstSearch = params.get('search') == null;
     navigate(`${location.pathname}?search=${e.target.value}`, {
-      replace: isFirstSearch,
+      replace: true,
     });
   };
   return (
