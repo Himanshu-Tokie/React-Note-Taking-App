@@ -45,15 +45,14 @@
   width: 10px;
 }
 
- 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888; 
+  background: #888;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #555;
 }
 ::-webkit-scrollbar-track {
   background: #888;
@@ -63,25 +62,57 @@
   background-color: rgba(87, 78, 78, 0.5);
 }
 
-#joditEditor
-{
-    .jodit-wysiwyg {
-        padding-left: 10px;
-    }
-    a{
-      color: mediumblue;
-    }
-  }
-  #noteBox{
-
+#joditEditor {
+  .jodit-wysiwyg {
     ul {
-      list-style: inside !important;
+      padding-left: 1.5rem;
+      list-style: inside;
     }
     ol {
-      list-style: inside !important;
-      list-style-type: number !important;
-    }
-    td {
-      border: solid 2px;
+      padding-left: 1.5rem;
+      list-style: inside;
+      list-style-type: number;
     }
   }
+  .jodit-react-container {
+    .jodit_theme_dark {
+      a {
+        color: rgb(156 163 175);
+        text-decoration: underline;
+      }
+    }
+    .jodit_theme_light {
+      a {
+        color: #61c;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+[aria-label='Insert file'] {
+  display: none !important;
+}
+:root {
+  --link-color: #61c;
+}
+
+body.dark {
+  --link-color: rgb(156, 163, 175);
+}
+
+#noteBox {
+  a {
+    color: var(--link-color);
+    text-decoration: underline;
+  }
+  ul {
+    list-style: inside !important;
+  }
+  ol {
+    list-style: inside !important;
+    list-style-type: number !important;
+  }
+  td {
+    border: solid 2px;
+  }
+}

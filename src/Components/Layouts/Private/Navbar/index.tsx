@@ -147,7 +147,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
       {confirmationModal && (
         <PopUpMessage
           setConfirmationModal={setConfirmationModal}
-          description="Are you sure want to log out"
+          description={STRINGS.LOG_OUT_MESSAGE}
           confirmationFunction={logOut}
         />
       )}

@@ -1,10 +1,29 @@
 /* eslint-disable react/no-danger */
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { stateType } from '../../../Views/Dashboard/types';
 import { STRINGS } from '../../Constants';
 import { deleteNotes } from '../../Firebase Utils';
 import { customBoxProps } from './types';
+
+function HtmlStringComponent({ htmlString }: { htmlString: string }) {
+  const modifyHtmlString = (html: string) => {
+    const container = document.createElement('div');
+    container.innerHTML = html;
+
+    // Find all anchor tags and set target to "_blank"
+    const anchors = container.querySelectorAll('a');
+    anchors.forEach((anchor) => {
+      anchor.setAttribute('target', '_blank');
+    });
+
+    return container.innerHTML;
+  };
+
+  return (
+    <div dangerouslySetInnerHTML={{ __html: modifyHtmlString(htmlString) }} />
+  );
+}
 
 function CustomBox({
   title,
@@ -17,7 +36,6 @@ function CustomBox({
 }: customBoxProps) {
   const [show, setShow] = useState(isActive);
   const menuRef = useRef<HTMLDivElement>(null);
-  const theObj = { __html: content };
   function handleClick() {
     handleToggle(noteId);
     setShow((val) => !val);
@@ -48,11 +66,15 @@ function CustomBox({
         } else setShow(true);
       });
   }, [activeNoteId]);
+
   return (
     <div id="noteBox">
-      <div className="flex justify-end px-4 pt-4 relative">
+      <div className="flex px-4 pt-4 relative justify-between">
+        <h5 className="mb-2 text-xl font-medium text-gray-900 dark:text-white">
+          {title && title.length > 20 ? `${title.slice(0, 20)}...` : title}
+        </h5>
         <button
-          className="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm py-1.5"
+          className="inline-block text-gray-500 px-1 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm py-1.5"
           type="button"
           aria-label="box"
           tabIndex={0}
@@ -109,16 +131,12 @@ function CustomBox({
           </div>
         )}
       </div>
-      <div className="flex flex-col items-left pb-8 px-4 max-h-52 overflow-hidden">
-        <h5 className="mb-2 text-xl font-medium text-gray-900 dark:text-white">
-          {title}
-        </h5>
-        <span className="text-sm text-gray-500 dark:text-gray-400 text-justify">
-          <div dangerouslySetInnerHTML={theObj} />
+      <div className="flex flex-col items-left pb-4 px-4 max-h-52 overflow-hidden">
+        <span className="text-sm break-words text-gray-500 dark:text-gray-400">
+          <HtmlStringComponent htmlString={content} />
         </span>
       </div>
     </div>
   );
 }
-
 export default CustomBox;

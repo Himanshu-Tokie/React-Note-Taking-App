@@ -41,7 +41,7 @@ export default function Lable() {
   useLabelUpdate(dispatch, params.labelId ?? '');
 
   return (
-    <div className="flex flex-wrap place-content-center">
+    <div className="flex flex-wrap sm:pl-8">
       {notesData?.length ? (
         notesData?.map((note) => (
           <div
@@ -66,7 +66,9 @@ export default function Lable() {
           </div>
         ))
       ) : (
-        <p className="dark:text-gray-300">{STRINGS.CREATE_NOTES}</p>
+        <div className="flex flex-1 justify-center">
+          <p className="dark:text-gray-300">{STRINGS.CREATE_NOTES}</p>
+        </div>
       )}
       {showNoteEditor && (
         <EditNotes

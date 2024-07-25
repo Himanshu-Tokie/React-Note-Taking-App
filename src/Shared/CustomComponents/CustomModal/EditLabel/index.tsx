@@ -5,10 +5,10 @@ import ICONS from '../../../../assets';
 import { STRINGS, THEME } from '../../../Constants';
 import { useUpdateLabel } from '../../../CustomHooks';
 import {
-  createLabel,
-  deleteLabel,
-  fetchLabels,
-  updateLabel,
+    createLabel,
+    deleteLabel,
+    fetchLabels,
+    updateLabel,
 } from '../../../Firebase Utils';
 import PopUpMessage from '../PopUp';
 import { CustomModalProps } from './types';
