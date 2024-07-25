@@ -1,7 +1,7 @@
-import './navbar.scss';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../../../Shared/Constants';
 import ICONS from '../../../../assets';
+import './navbar.scss';
 
 export function Navbar() {
   return (

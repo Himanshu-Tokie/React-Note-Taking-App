@@ -7,7 +7,6 @@ import DARK_MODE from './dark_mode.svg';
 import DEFAULT_PROFILE from './default_profile.svg';
 import DELETE from './delete.svg';
 import DIARY from './diary.svg';
-import DIARY2 from './diary2.svg';
 import EDIT from './edit.svg';
 import EYE from './eye.svg';
 import EYE_OFF from './eye_off.svg';
@@ -42,7 +41,6 @@ const ICONS = {
   DEFAULT_PROFILE,
   DELETE,
   DIARY,
-  DIARY2,
   EDIT,
   EYE_OFF,
   EYE,

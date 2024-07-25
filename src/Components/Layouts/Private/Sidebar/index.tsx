@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 import { ROUTES, THEME } from '../../../../Shared/Constants';
-import { stateType } from '../../../../Views/Dashboard/types';
-import { fetchLabels } from '../../../../Shared/Firebase Utils';
 import { useUpdateLabel } from '../../../../Shared/CustomHooks';
+import { fetchLabels } from '../../../../Shared/Firebase Utils';
+import { stateType } from '../../../../Views/Dashboard/types';
 import ICONS from '../../../../assets';
 
 export default function Sidebar() {
@@ -17,7 +17,7 @@ export default function Sidebar() {
   useUpdateLabel(uid, setData);
   return (
     <div
-      className="flex-1 pb-24 dark:bg-[#252526] overflow-hidden md:w-[250px] mt-3 w-2/4 transition-all duration-300 ease-in-out fixed hover:overflow-y-scroll h-dvh"
+      className="flex-1 pb-24 z-20 bg-white dark:bg-[#252526] overflow-hidden md:w-[250px] mt-3 w-2/4 transition-all duration-300 ease-in-out fixed hover:overflow-y-scroll h-dvh"
       id="sidebar"
     >
       <div className="rounded-r-full cursor-pointer hover:bg-gray-100">

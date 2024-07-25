@@ -15,6 +15,7 @@ import { setLoading } from '../../Store/Loader';
 import { stateType } from '../Dashboard/types';
 import { editorConfig } from './Utils';
 import { notesProps } from './types';
+import { toastError, toastSuccess } from '../../Shared/Utils';
 
 function Notes({
   noteTitle,
@@ -75,29 +76,44 @@ function Notes({
   }, [uid]);
   useUpdateLabel(uid, setLabelData);
   function onClickSave() {
-    const regex = /^\s*$/;
-    if (!regex.test(title) || !regex.test(content)) {
+    const regexContent = /^[\s\u00A0\xA0]*$/;
+    const regexTitle = /^\s*$/;
+    const textContent = content.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ');
+    if (!regexTitle.test(title) || !regexContent.test(textContent)) {
       dispatch(setLoading(true));
       if (noteId && setShowNoteEditor) {
-        updateNote(uid, noteId, content, title).then(() => {
-          setShowNoteEditor(false);
-          setContent('');
-          setTitle('');
-          if (handleToggle) handleToggle(noteId);
-          dispatch(setLoading(false));
-        });
+        updateNote(uid, noteId, content, title)
+          .then(() => {
+            setShowNoteEditor(false);
+            setContent('');
+            setTitle('');
+            if (handleToggle) handleToggle(noteId);
+            dispatch(setLoading(false));
+            toastSuccess('Note updated Successfully');
+          })
+          .catch(() => {
+            dispatch(setLoading(false));
+            toastError(STRINGS.ERROR);
+          });
       } else {
-        createNote(uid, content, label, title).then(() => {
-          setContent('');
-          setTitle('');
-          setShowEditor(false);
-          dispatch(setLoading(false));
-        });
+        createNote(uid, content, label, title)
+          .then(() => {
+            setContent('');
+            setTitle('');
+            setShowEditor(false);
+            dispatch(setLoading(false));
+            toastSuccess('Note created Successfully');
+          })
+          .catch(() => {
+            dispatch(setLoading(false));
+            toastError(STRINGS.ERROR);
+          });
       }
     } else {
       setContent('');
       setTitle('');
       setShowEditor(false);
+      toastError('Title and notes are empty');
     }
   }
   function onClickCancel() {

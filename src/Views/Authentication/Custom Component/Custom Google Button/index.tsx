@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
+import { STRINGS } from '../../../../Shared/Constants';
 import ICONS from '../../../../assets';
 import { signInWithGoogle } from '../../Utils';
-import { STRINGS } from '../../../../Shared/Constants';
 
 function CustomGoogleButton(): JSX.Element {
   const dispatch = useDispatch();

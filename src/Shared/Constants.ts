@@ -42,23 +42,23 @@ const ROUTES_CONFIG = {
 const NOTES = {
   PERSONAL: {
     NAME: 'Personal',
-    TITLE: 'Meeting Notes',
-    CONTENT: 'Discussion points: project updates, deadlines, action items',
+    TITLE: 'Personal Notes!',
+    CONTENT: 'Note your upcoming plans and goals!',
   },
   ACADEMICS: {
     NAME: 'Academic',
-    TITLE: 'Meeting Notes',
-    CONTENT: 'Discussion points: project updates, deadlines, action items',
+    TITLE: 'Study Notes!',
+    CONTENT: 'Add lectures, track assignments, and notes.',
   },
   WORK: {
     NAME: 'Work',
-    TITLE: 'Meeting Notes',
-    CONTENT: 'Discussion points: project updates, deadlines, action items',
+    TITLE: 'Work Notes!',
+    CONTENT: 'Track tasks, meetings, and projects here.',
   },
   OTHERS: {
     NAME: 'Others',
-    TITLE: 'Meeting Notes',
-    CONTENT: 'Discussion points: project updates, deadlines, action items',
+    TITLE: 'Miscellaneous Notes!',
+    CONTENT: 'Your space for all miscellaneous notes.',
   },
 };
 
@@ -74,13 +74,13 @@ const ERROR = {
 };
 
 const STRINGS = {
+  LOG_OUT_MESSAGE: 'Are you sure you want to logout?',
   TAKE_NOTE: 'Take a note',
   PROFILE: 'Profile Picture',
   SELECT_FILE: 'Select a file',
   ERROR: 'Some error occured please try again',
   SIGNUP_MESSAGE: 'Welcome! Your sign-up is successful!',
-  PROFILE_INSTRUCTION:
-    "A picture helps people recognize you and lets you know when you'resigned in to your account",
+  PROFILE_INSTRUCTION: 'Personalize your notes with a new profile image.',
   EDIT: 'Change Photo',
   RESET_LINK: 'Reset link sent',
   RESET_LINK_FAILED: 'Some issue please try again',

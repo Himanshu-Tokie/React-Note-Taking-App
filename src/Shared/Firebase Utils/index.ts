@@ -192,10 +192,10 @@ export const signUpUser = async (uid: string) => {
       },
     ];
     const labels = [
-      NOTES.WORK.NAME,
       NOTES.ACADEMICS.NAME,
       NOTES.OTHERS.NAME,
       NOTES.PERSONAL.NAME,
+      NOTES.WORK.NAME,
     ];
     const batch = writeBatch(db);
     const newNoteRef = doc(db, FIREBASE_STRINGS.USER, uid);
