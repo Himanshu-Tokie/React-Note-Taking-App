@@ -15,6 +15,8 @@ export default function Carousel({ imageList }: { imageList: string[] }) {
     1100: 2,
     700: 1,
   };
+  console.log(imageList);
+
   return (
     // <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
     //   {f.map((imageColumn) => {
