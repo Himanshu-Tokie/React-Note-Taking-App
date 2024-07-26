@@ -74,12 +74,13 @@ const ERROR = {
 };
 
 const STRINGS = {
+  NOTES: 'NOTES',
+  EDIT_LABELS: 'Edit Labels',
   LOG_OUT_MESSAGE: 'Are you sure you want to logout?',
   TAKE_NOTE: 'Take a note',
   PROFILE: 'Profile Picture',
   SELECT_FILE: 'Select a file',
   ERROR: 'Some error occured please try again',
-  SIGNUP_MESSAGE: 'Welcome! Your sign-up is successful!',
   PROFILE_INSTRUCTION: 'Personalize your notes with a new profile image.',
   EDIT: 'Change Photo',
   RESET_LINK: 'Reset link sent',
@@ -94,7 +95,6 @@ const STRINGS = {
   NO_REMINDER: 'No Reminder',
   SIGN_OUT: 'Sign Out',
   EDIT_NOTES: 'Edit Note',
-  EDIT_LABELS: 'Edit Labels',
   DELETE: 'Delete',
   EMPTY_LABEL: '*Empty label',
   LABLE_NOT_EMPTY: "Label Can't be empty",
@@ -123,8 +123,21 @@ const STRINGS = {
   CREATE_ACCOUNT: 'Create Account',
   HAVE_ACCOUNT: 'Already have an account? ',
   DONT_HAVE_ACCOUNT: "Don't have an account? ",
+  DELETE_LABEL_DESCRIPTION: 'Deleting lable will delete notes inside too',
 };
 
+const TOAST_STRINGS = {
+  SELECT_IMAGE: 'Please select an image',
+  IMAGE_UPDATED: 'Image updated successfully',
+  LABEL_EDIT: 'Label edited successfully',
+  NOTES_UPDATED: 'Note updated Successfully',
+  NOTES_CREATED: 'Note created Successfully',
+  NOTES_DELETED: 'Note deleted successfully',
+  EMPTY_NOTES: 'Title and notes are empty',
+  SIGNUP_FAILED: 'Signup failed',
+  SIGNUP_MESSAGE: 'Welcome! Your sign-up is successful!',
+  ERROR_UPLOADING_IMAGE: 'Error uploading image',
+};
 const FIREBASE_STRINGS = {
   USER: 'user',
   LABELS: 'labels',
@@ -167,4 +180,5 @@ export {
   THEME,
   WILDCARD_ROUTES,
   ERROR,
+  TOAST_STRINGS,
 };

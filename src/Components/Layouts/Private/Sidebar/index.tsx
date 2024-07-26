@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { ROUTES, THEME } from '../../../../Shared/Constants';
+import { ROUTES, STRINGS, THEME } from '../../../../Shared/Constants';
 import { useUpdateLabel } from '../../../../Shared/CustomHooks';
 import { fetchLabels } from '../../../../Shared/Firebase Utils';
 import { stateType } from '../../../../Views/Dashboard/types';
@@ -17,7 +17,7 @@ export default function Sidebar() {
   useUpdateLabel(uid, setData);
   return (
     <div
-      className="flex-1 pb-24 z-20 bg-white dark:bg-[#252526] overflow-hidden md:w-[250px] mt-3 w-2/4 transition-all duration-300 ease-in-out fixed hover:overflow-y-scroll h-dvh"
+      className="flex-1 pb-24 z-20 bg-white dark:bg-[#252526] overflow-hidden md:w-[250px] mt-4 w-2/4 transition-all duration-300 ease-in-out fixed hover:overflow-y-scroll h-dvh"
       id="sidebar"
     >
       <div className="rounded-r-full cursor-pointer hover:bg-gray-100">
@@ -38,7 +38,9 @@ export default function Sidebar() {
                     alt="label"
                     className="pl-4 sm:pl-6 p-2"
                   />
-                  <p className="pl-6 text-base dark:text-gray-300">Notes</p>
+                  <p className="pl-6 text-base dark:text-gray-300">
+                    {STRINGS.NOTES}
+                  </p>
                 </>
               );
             return (
@@ -48,7 +50,9 @@ export default function Sidebar() {
                   alt="label"
                   className="pl-4 sm:pl-6 p-2"
                 />
-                <p className="pl-6 text-base dark:text-gray-300">Notes</p>
+                <p className="pl-6 text-base dark:text-gray-300">
+                  {STRINGS.NOTES}
+                </p>
               </>
             );
           }}
@@ -117,7 +121,9 @@ export default function Sidebar() {
         ) : (
           <img src={ICONS.EDIT_DARK} alt="edit" className="pl-4 sm:pl-6 p-2" />
         )}
-        <p className="pl-6 text-base dark:text-gray-300">Edit Labels</p>
+        <p className="pl-6 text-base dark:text-gray-300">
+          {STRINGS.EDIT_LABELS}
+        </p>
       </div>
     </div>
   );

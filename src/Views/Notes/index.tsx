@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
 import { db } from '../../Services/Config/Firebase/firebase';
-import { STRINGS } from '../../Shared/Constants';
+import { STRINGS, TOAST_STRINGS } from '../../Shared/Constants';
 import { useLabelUpdate, useUpdateLabel } from '../../Shared/CustomHooks';
 import {
   createNote,
@@ -89,7 +89,7 @@ function Notes({
             setTitle('');
             if (handleToggle) handleToggle(noteId);
             dispatch(setLoading(false));
-            toastSuccess('Note updated Successfully');
+            toastSuccess(TOAST_STRINGS.NOTES_UPDATED);
           })
           .catch(() => {
             dispatch(setLoading(false));
@@ -102,7 +102,7 @@ function Notes({
             setTitle('');
             setShowEditor(false);
             dispatch(setLoading(false));
-            toastSuccess('Note created Successfully');
+            toastSuccess(TOAST_STRINGS.NOTES_CREATED);
           })
           .catch(() => {
             dispatch(setLoading(false));
@@ -113,7 +113,7 @@ function Notes({
       setContent('');
       setTitle('');
       setShowEditor(false);
-      toastError('Title and notes are empty');
+      toastError(TOAST_STRINGS.EMPTY_NOTES);
     }
   }
   function onClickCancel() {
