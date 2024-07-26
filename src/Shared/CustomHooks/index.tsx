@@ -6,7 +6,7 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { db } from '../../Services/Config/Firebase/firebase';
 import { AppDispatch } from '../../Store';
 import { setLabel } from '../../Store/Label';
@@ -71,3 +71,29 @@ export const useLabelUpdate = (dispatch: AppDispatch, labelId: string) => {
     dispatch(setLabel(labelId));
   }, [dispatch, labelId]);
 };
+
+type Timer = ReturnType<typeof setTimeout>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SomeFunction = (...args: any[]) => void;
+
+export function useDebounce<T extends SomeFunction>(
+  func: T,
+  delayedTime: number
+) {
+  const timer = useRef<Timer>();
+  useEffect(() => {
+    return () => {
+      if (!timer.current) return;
+      clearTimeout(timer.current);
+    };
+  }, []);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function debouncedFunction(...args: any[]) {
+    const newTimer = setTimeout(() => {
+      func(...args);
+    }, delayedTime);
+    clearTimeout(timer.current);
+    timer.current = newTimer;
+  }
+  return debouncedFunction;
+}

@@ -74,7 +74,7 @@ const ERROR = {
 };
 
 const STRINGS = {
-  NOTES: 'NOTES',
+  NOTES: 'Notes',
   EDIT_LABELS: 'Edit Labels',
   LOG_OUT_MESSAGE: 'Are you sure you want to logout?',
   TAKE_NOTE: 'Take a note',
@@ -130,8 +130,10 @@ const TOAST_STRINGS = {
   SELECT_IMAGE: 'Please select an image',
   IMAGE_UPDATED: 'Image updated successfully',
   LABEL_EDIT: 'Label edited successfully',
-  NOTES_UPDATED: 'Note updated Successfully',
-  NOTES_CREATED: 'Note created Successfully',
+  LABEL_CREATED: 'Label created successfully',
+  LABEL_DELETED: 'Label deleted successfully',
+  NOTES_UPDATED: 'Note updated successfully',
+  NOTES_CREATED: 'Note created successfully',
   NOTES_DELETED: 'Note deleted successfully',
   EMPTY_NOTES: 'Title and notes are empty',
   SIGNUP_FAILED: 'Signup failed',
