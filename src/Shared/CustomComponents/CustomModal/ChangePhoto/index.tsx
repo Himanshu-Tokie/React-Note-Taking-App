@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { stateType } from '../../../../Views/Dashboard/types';
 import ICONS from '../../../../assets';
 import { STRINGS } from '../../../Constants';
-import { uploadImage } from '../../../Firebase Utils';
+import { uploadUserImage } from '../../../Firebase Utils';
 import { toastError } from '../../../Utils';
 import { changePhotoProps } from './types';
 
@@ -10,7 +10,7 @@ function ChangePhoto({ photoURL, setIsVisible }: changePhotoProps) {
   const uid = useSelector((state: stateType) => state.common.uid);
   const dispatch = useDispatch();
   function handleImageAsFile(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.files) uploadImage(uid, e.target.files[0], dispatch);
+    if (e.target.files) uploadUserImage(uid, e.target.files[0], dispatch);
     else toastError(STRINGS.ERROR);
   }
   return (

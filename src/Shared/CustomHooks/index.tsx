@@ -1,4 +1,5 @@
 import {
+  DocumentData,
   collection,
   doc,
   onSnapshot,
@@ -11,6 +12,7 @@ import { db } from '../../Services/Config/Firebase/firebase';
 import { AppDispatch } from '../../Store';
 import { setLabel } from '../../Store/Label';
 import { labelProps } from '../../Views/Label/types';
+import { FIREBASE_STRINGS } from '../Constants';
 
 // listner for label update as somthing changes
 export const useUpdateLabel = (
@@ -70,6 +72,32 @@ export const useLabelUpdate = (dispatch: AppDispatch, labelId: string) => {
   useEffect(() => {
     dispatch(setLabel(labelId));
   }, [dispatch, labelId]);
+};
+
+export const useUpdateNote = (
+  uid: string,
+  setNoteData: (data: DocumentData) => void,
+  noteId: string | null
+) => {
+  useEffect(() => {
+    if (noteId) {
+      const noteRef = doc(
+        db,
+        FIREBASE_STRINGS.USER,
+        uid,
+        FIREBASE_STRINGS.NOTES,
+        noteId
+      );
+      const unsubscribe = onSnapshot(noteRef, (querySnapshot) => {
+        const data = querySnapshot.data();
+        if (data !== undefined) setNoteData(data);
+      });
+      return () => {
+        unsubscribe();
+      };
+    }
+    return () => {};
+  }, [noteId, setNoteData, uid]);
 };
 
 type Timer = ReturnType<typeof setTimeout>;

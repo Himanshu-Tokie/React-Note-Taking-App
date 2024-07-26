@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '../../../../Store/Loader';
 import { stateType } from '../../../../Views/Dashboard/types';
 import Notes from '../../../../Views/Notes';
+import { useUpdateNote } from '../../../CustomHooks';
 import { fetchNote } from '../../../Firebase Utils';
 import { editNoteProps } from './type';
 
@@ -22,6 +23,7 @@ export default function EditNotes({
       dispatch(setLoading(false));
     });
   }, [uid, activeNoteId, dispatch]);
+  useUpdateNote(uid, setNotesData, activeNoteId);
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Escape') {
       setShowNoteEditor(false);
@@ -40,7 +42,7 @@ export default function EditNotes({
       />
       <div
         tabIndex={-1}
-        className="fixed top-0 left-0 right-0 z-[1000] w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center justify-center"
+        className="fixed top-0 left-0 right-0 z-[900] w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center justify-center"
         onClick={closeEditor}
         onKeyDown={handleKeyDown}
         role="button"
@@ -50,6 +52,7 @@ export default function EditNotes({
           {notesData && (
             <div className="p-2 md:px-4 md:py-0 space-y-4">
               <Notes
+                imageList={notesData?.url}
                 noteContent={notesData?.content}
                 noteTitle={notesData?.title}
                 setShowNoteEditor={setShowNoteEditor}

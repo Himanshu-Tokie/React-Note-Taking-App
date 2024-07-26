@@ -9,7 +9,6 @@ export const buttons = [
   'ul',
   'ol',
   '|',
-  'image',
   'link',
 ];
 export const editorConfig = {

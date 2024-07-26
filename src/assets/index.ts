@@ -29,8 +29,10 @@ import VISIBLITY_OFF from './visiblity_off.svg';
 import WHITE_EDIT from './edit_white.svg';
 import LABEL_DARK from './label_dark.svg';
 import EDIT_DARK from './edit_dark.svg';
+import IMAGE from './image.svg';
 
 const ICONS = {
+  IMAGE,
   EDIT_DARK,
   LABEL_DARK,
   WHITE_EDIT,

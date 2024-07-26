@@ -10,14 +10,18 @@ import {
   createNote,
   fetchLabels,
   updateNote,
+  uploadImage,
 } from '../../Shared/Firebase Utils';
 import { setLoading } from '../../Store/Loader';
 import { stateType } from '../Dashboard/types';
 import { editorConfig } from './Utils';
 import { notesProps } from './types';
 import { toastError, toastSuccess } from '../../Shared/Utils';
+import ICONS from '../../assets';
+import Carousel from '../../Shared/CustomComponents/CustomCarousel';
 
 function Notes({
+  imageList,
   noteTitle,
   noteContent,
   setShowNoteEditor,
@@ -124,6 +128,11 @@ function Notes({
       handleToggle(noteId);
     } else setShowEditor(false);
   }
+  function handleImageAsFile(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.files && noteId)
+      uploadImage(uid, e.target.files[0], dispatch, noteId);
+    else toastError(STRINGS.ERROR);
+  }
   return (
     <div
       className="w-full self-center mt-8 max-w-xl dark:bg-[#252526]"
@@ -143,6 +152,15 @@ function Notes({
             maxLength={30}
           />
         </div>
+        <label className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+          <img src={ICONS.IMAGE} alt="pic" className="" />
+          <input
+            type="file"
+            className="hidden"
+            accept="image/*"
+            onChange={handleImageAsFile}
+          />
+        </label>
         <div className="px-2">
           {labelId ? (
             <p className="dark:text-gray-300">{currentLabel}</p>
@@ -165,7 +183,12 @@ function Notes({
       </div>
 
       {(showEditor || noteTitle || noteContent) && (
-        <>
+        <div>
+          {imageList && (
+            <div>
+              <Carousel imageList={imageList} />
+            </div>
+          )}
           <div id="joditEditor">
             <JoditEditor
               ref={editorRef}
@@ -195,7 +218,7 @@ function Notes({
               {STRINGS.SAVE}
             </button>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

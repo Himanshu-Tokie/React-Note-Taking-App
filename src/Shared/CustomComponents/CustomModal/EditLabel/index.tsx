@@ -127,7 +127,7 @@ function CustomModal({ setShowModal }: CustomModalProps) {
           confirmationFunction={handleDeleteClick}
         />
       )}
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-50" />
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-hidden" />
       <div
         tabIndex={-1}
         aria-hidden="true"
