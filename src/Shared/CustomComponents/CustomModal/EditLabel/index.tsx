@@ -71,7 +71,13 @@ function CustomModal({ setShowModal }: CustomModalProps) {
   };
   const handleDeleteClick = () => {
     if (selectedLabel) {
-      deleteLabel(uid, selectedLabel, dispatch);
+      deleteLabel(uid, selectedLabel, dispatch)
+        .then(() => {
+          toastSuccess(TOAST_STRINGS.LABEL_DELETED);
+        })
+        .catch(() => {
+          toastError(STRINGS.ERROR);
+        });
       setConfirmationModal(false);
       setSelectedLabel(undefined);
     }
@@ -84,7 +90,13 @@ function CustomModal({ setShowModal }: CustomModalProps) {
       const label = inputElement.value;
       const isExists = data?.filter((item) => item.id === label);
       if (!isExists?.length) {
-        createLabel(uid, label);
+        createLabel(uid, label)
+          .then(() => {
+            toastSuccess(TOAST_STRINGS.LABEL_CREATED);
+          })
+          .catch(() => {
+            toastError(STRINGS.ERROR);
+          });
         setToggler(false);
         setIsEmpty(false);
         setIsLabelExist(false);
