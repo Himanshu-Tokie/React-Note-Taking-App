@@ -5,6 +5,7 @@ import {
 } from 'firebase/auth';
 import {
   addDoc,
+  arrayUnion,
   collection,
   deleteDoc,
   doc,
@@ -324,7 +325,7 @@ export function resetPassword(email: string) {
     });
 }
 
-export async function uploadImage(
+export async function uploadUserImage(
   uid: string,
   imageURL: File,
   dispatch: AppDispatch
@@ -342,6 +343,40 @@ export async function uploadImage(
       await updateProfile(auth.currentUser, {
         photoURL: uploadedImageURL,
       });
+    }
+    toastSuccess(TOAST_STRINGS.IMAGE_UPDATED);
+    dispatch(setLoading(false));
+  } catch (error) {
+    toastError(TOAST_STRINGS.ERROR_UPLOADING_IMAGE);
+    dispatch(setLoading(false));
+  }
+}
+
+export async function uploadImage(
+  uid: string,
+  imageURL: File,
+  dispatch: AppDispatch,
+  noteId: string
+) {
+  if (imageURL === null) {
+    toastError(TOAST_STRINGS.SELECT_IMAGE);
+    return;
+  }
+  const uniqueId = new Date();
+  const imageRef = ref(storage, `${uid}/${noteId}/${uniqueId}`);
+  dispatch(setLoading(true));
+  try {
+    const snapshot = await uploadBytes(imageRef, imageURL);
+    const uploadedImageURL = await getDownloadURL(snapshot.ref);
+    if (auth.currentUser) {
+      const noteRef = doc(
+        db,
+        FIREBASE_STRINGS.USER,
+        uid,
+        FIREBASE_STRINGS.NOTES,
+        noteId
+      );
+      updateDoc(noteRef, { url: arrayUnion(uploadedImageURL) });
     }
     toastSuccess(TOAST_STRINGS.IMAGE_UPDATED);
     dispatch(setLoading(false));
