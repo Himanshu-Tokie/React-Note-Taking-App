@@ -2,16 +2,17 @@ import { MouseEventHandler, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { stateType } from '../../../../Views/Dashboard/types';
 import ICONS from '../../../../assets';
-import { STRINGS, THEME } from '../../../Constants';
+import { STRINGS, THEME, TOAST_STRINGS } from '../../../Constants';
 import { useUpdateLabel } from '../../../CustomHooks';
 import {
-    createLabel,
-    deleteLabel,
-    fetchLabels,
-    updateLabel,
+  createLabel,
+  deleteLabel,
+  fetchLabels,
+  updateLabel,
 } from '../../../Firebase Utils';
 import PopUpMessage from '../PopUp';
 import { CustomModalProps } from './types';
+import { toastError, toastSuccess } from '../../../Utils';
 
 function CustomModal({ setShowModal }: CustomModalProps) {
   const [confirmationModal, setConfirmationModal] = useState(false);
@@ -58,7 +59,14 @@ function CustomModal({ setShowModal }: CustomModalProps) {
   const saveLabel = (e: React.FocusEvent<HTMLInputElement>) => {
     const labelName = e.currentTarget.value;
     const labelId = e.currentTarget.name;
-    if (labelName) updateLabel(uid, labelName, labelId, dispatch);
+    if (labelName)
+      updateLabel(uid, labelName, labelId, dispatch)
+        .then(() => {
+          toastSuccess(TOAST_STRINGS.LABEL_EDIT);
+        })
+        .catch(() => {
+          toastError(STRINGS.ERROR);
+        });
     else setIsInputLabelEmpty(true);
   };
   const handleDeleteClick = () => {
@@ -103,7 +111,7 @@ function CustomModal({ setShowModal }: CustomModalProps) {
       {confirmationModal && (
         <PopUpMessage
           setConfirmationModal={setConfirmationModal}
-          description="Deleting lable will delete notes inside to"
+          description={STRINGS.DELETE_LABEL_DESCRIPTION}
           confirmationFunction={handleDeleteClick}
         />
       )}

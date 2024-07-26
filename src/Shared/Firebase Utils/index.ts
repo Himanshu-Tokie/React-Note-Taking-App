@@ -24,7 +24,7 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { auth, db, storage } from '../../Services/Config/Firebase/firebase';
 import { AppDispatch } from '../../Store';
 import { setLoading } from '../../Store/Loader';
-import { FIREBASE_STRINGS, NOTES, STRINGS } from '../Constants';
+import { FIREBASE_STRINGS, NOTES, STRINGS, TOAST_STRINGS } from '../Constants';
 import { toastError, toastSuccess } from '../Utils';
 
 export async function fetchNotesWithLabel(labelId: string, userId: string) {
@@ -310,7 +310,7 @@ export const deleteLabel = async (
   });
   await batch.commit();
   await deleteDoc(labelRef);
-  toastSuccess('Note deleted successfully');
+  toastSuccess(TOAST_STRINGS.NOTES_DELETED);
   dispatch(setLoading(false));
 };
 
@@ -330,7 +330,7 @@ export async function uploadImage(
   dispatch: AppDispatch
 ) {
   if (imageURL === null) {
-    toastError('Please select an image');
+    toastError(TOAST_STRINGS.SELECT_IMAGE);
     return;
   }
   const imageRef = ref(storage, `${uid}/userPhoto/userPhoto`);
@@ -343,10 +343,10 @@ export async function uploadImage(
         photoURL: uploadedImageURL,
       });
     }
-    toastSuccess('Image updated successfully');
+    toastSuccess(TOAST_STRINGS.IMAGE_UPDATED);
     dispatch(setLoading(false));
   } catch (error) {
-    toastError('Error uploading image');
+    toastError(TOAST_STRINGS.ERROR_UPLOADING_IMAGE);
     dispatch(setLoading(false));
   }
 }

@@ -2,12 +2,17 @@ import { Form, Formik } from 'formik';
 import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { AUTHENTICATION, ROUTES, STRINGS } from '../../Shared/Constants';
+import {
+  AUTHENTICATION,
+  ROUTES,
+  STRINGS,
+  TOAST_STRINGS,
+} from '../../Shared/Constants';
 import { createUser } from '../../Shared/Firebase Utils';
 import { toastError, toastSuccess } from '../../Shared/Utils';
+import { setLoading } from '../../Store/Loader';
 import CustomInput from './Custom Component/Custom Input';
 import { SignupSchema } from './Utils';
-import { setLoading } from '../../Store/Loader';
 
 function SignUp(): JSX.Element {
   const navigate = useNavigate();
@@ -29,16 +34,16 @@ function SignUp(): JSX.Element {
           dispatch
         )
           .then(() => {
-            toastSuccess(STRINGS.SIGNUP_MESSAGE);
+            toastSuccess(TOAST_STRINGS.SIGNUP_MESSAGE);
             navigate('/login');
           })
           .catch(() => {
-            toastError('Signup failed');
+            toastError(TOAST_STRINGS.SIGNUP_FAILED);
             dispatch(setLoading(false));
           });
       }
     } catch (e) {
-      toastError('Some issues please try again');
+      toastError(STRINGS.ERROR);
       dispatch(setLoading(false));
     }
   };
