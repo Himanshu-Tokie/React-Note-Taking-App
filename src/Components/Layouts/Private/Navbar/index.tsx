@@ -11,6 +11,7 @@ import { setLoading } from '../../../../Store/Loader';
 import { stateType } from '../../../../Views/Dashboard/types';
 import ICONS from '../../../../assets';
 import { noteNavbarProps } from './types';
+import { useDebounce } from '../../../../Shared/CustomHooks';
 
 function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [isCrossVisible, setIsCrossVisible] = useState(false);
   const appNameRef = useRef(null);
+  const searchInputElementRef = useRef<HTMLInputElement | null>(null);
   const themeElementRef = useRef<HTMLDivElement | null>(null);
   const themeModalRef = useRef<HTMLDivElement | null>(null);
   const profileElementRef = useRef<HTMLDivElement | null>(null);
@@ -138,6 +140,12 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   useEffect(() => {
     setSearchQuery(searchParams.get('search') ?? '');
   }, [searchParams]);
+  useEffect(() => {
+    if (location.pathname !== ROUTES.HOMEPAGE) {
+      if (searchInputElementRef.current)
+        searchInputElementRef.current.value = '';
+    }
+  }, [location.pathname]);
   const [isExpanded, setIsExpanded] = useState(false);
   const onClickHandler = () => {
     setIsExpanded(!isExpanded);
@@ -187,13 +195,15 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
             <input
               placeholder="Search"
               className="outline-0 px-3 w-96 py-3 dark:bg-[#333333] dark:text-gray-300 "
-              onChange={search}
+              onChange={useDebounce(search, 500)}
               onFocus={searchFocusHandler}
-              value={isCrossVisible ? searchQuery : ''}
+              ref={searchInputElementRef}
             />
             <div className="h-6 w-6">
               <button
                 onClick={() => {
+                  if (searchInputElementRef.current)
+                    searchInputElementRef.current.value = '';
                   setIsCrossVisible(false);
                   setSearchQuery('');
                   navigate(ROUTES.HOMEPAGE);
