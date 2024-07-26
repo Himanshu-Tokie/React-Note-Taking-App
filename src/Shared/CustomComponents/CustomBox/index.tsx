@@ -2,9 +2,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { stateType } from '../../../Views/Dashboard/types';
-import { STRINGS } from '../../Constants';
+import { STRINGS, TOAST_STRINGS } from '../../Constants';
 import { deleteNotes } from '../../Firebase Utils';
 import { customBoxProps } from './types';
+import { toastError, toastSuccess } from '../../Utils';
 
 function HtmlStringComponent({ htmlString }: { htmlString: string }) {
   const modifyHtmlString = (html: string) => {
@@ -119,7 +120,13 @@ function CustomBox({
                   className="flex flex-1 justify-center "
                   onClick={(e) => {
                     e.stopPropagation();
-                    deleteNotes(uid, noteId);
+                    deleteNotes(uid, noteId)
+                      .then(() => {
+                        toastSuccess(TOAST_STRINGS.NOTES_DELETED);
+                      })
+                      .catch(() => {
+                        toastError(STRINGS.ERROR);
+                      });
                   }}
                   onKeyDown={handleKeyDownDelete}
                   type="button"

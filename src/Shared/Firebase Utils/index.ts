@@ -310,7 +310,7 @@ export const deleteLabel = async (
   });
   await batch.commit();
   await deleteDoc(labelRef);
-  toastSuccess(TOAST_STRINGS.NOTES_DELETED);
+  // toastSuccess(TOAST_STRINGS.NOTES_DELETED);
   dispatch(setLoading(false));
 };
 
