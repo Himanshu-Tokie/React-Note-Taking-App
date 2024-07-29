@@ -12,6 +12,7 @@ export default function EditNotes({
   setShowNoteEditor,
   activeNoteId,
   handleToggle,
+  setChanges,
 }: editNoteProps) {
   const [notesData, setNotesData] = useState<DocumentData>();
   const uid = useSelector((state: stateType) => state.common.uid);
@@ -58,6 +59,7 @@ export default function EditNotes({
                 setShowNoteEditor={setShowNoteEditor}
                 noteId={activeNoteId ?? ''}
                 handleToggle={handleToggle}
+                setChanges={setChanges}
               />
             </div>
           )}

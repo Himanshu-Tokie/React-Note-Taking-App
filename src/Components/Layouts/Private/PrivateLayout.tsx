@@ -43,7 +43,7 @@ function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
       <div className="flex mt-14 sm:mt-20 dark:bg-[#1E1E1E]">
         <Sidebar />
         <div
-          className="flex-1 flex flex-col transition-all duration-300 ease-in-out dark:bg-[#252526] dark:border-[#5F6368] h-lvh px-4"
+          className="flex-1 flex flex-col transition-all duration-300 ease-in-out dark:bg-[#252526] dark:border-[#5F6368] h-lvh overflow-auto px-4"
           id="body"
         >
           <Notes />

@@ -34,6 +34,7 @@ function CustomBox({
   handleToggle,
   toggleNoteEditor,
   activeNoteId,
+  setChanges,
 }: customBoxProps) {
   const [show, setShow] = useState(isActive);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -123,6 +124,7 @@ function CustomBox({
                     deleteNotes(uid, noteId)
                       .then(() => {
                         toastSuccess(TOAST_STRINGS.NOTES_DELETED);
+                        if (setChanges) setChanges(true);
                       })
                       .catch(() => {
                         toastError(STRINGS.ERROR);

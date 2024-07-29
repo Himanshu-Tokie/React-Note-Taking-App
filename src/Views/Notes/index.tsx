@@ -27,6 +27,7 @@ function Notes({
   setShowNoteEditor,
   noteId,
   handleToggle,
+  setChanges,
 }: notesProps) {
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
@@ -39,6 +40,7 @@ function Notes({
     useState<{ id: string; labelId: string }[]>();
   const dispatch = useDispatch();
   const [currentLabel, setCurrentLabel] = useState('');
+  const selectRef = useRef<HTMLSelectElement>(null);
   useEffect(() => {
     if (noteTitle) {
       setTitle(noteTitle);
@@ -93,6 +95,7 @@ function Notes({
             setTitle('');
             if (handleToggle) handleToggle(noteId);
             dispatch(setLoading(false));
+            if (setChanges) setChanges(true);
             toastSuccess(TOAST_STRINGS.NOTES_UPDATED);
           })
           .catch(() => {
@@ -104,6 +107,8 @@ function Notes({
           .then(() => {
             setContent('');
             setTitle('');
+            if (selectRef.current)
+              selectRef.current.value = STRINGS.SELECT_LABEL;
             setShowEditor(false);
             dispatch(setLoading(false));
             toastSuccess(TOAST_STRINGS.NOTES_CREATED);
@@ -116,6 +121,7 @@ function Notes({
     } else {
       setContent('');
       setTitle('');
+      if (selectRef.current) selectRef.current.value = STRINGS.SELECT_LABEL;
       setShowEditor(false);
       toastError(TOAST_STRINGS.EMPTY_NOTES);
     }
@@ -123,6 +129,7 @@ function Notes({
   function onClickCancel() {
     setContent('');
     setTitle('');
+    if (selectRef.current) selectRef.current.value = STRINGS.SELECT_LABEL;
     if (setShowNoteEditor && noteId && handleToggle) {
       setShowNoteEditor(false);
       handleToggle(noteId);
@@ -161,8 +168,11 @@ function Notes({
               id="labelId"
               className="outline-none w-30 dark:bg-[#333333] dark:text-gray-300"
               onBlur={(event) => setLabel(event.target.value)}
+              ref={selectRef}
             >
-              <option value="">{STRINGS.SELECT_LABEL}</option>
+              <option value={STRINGS.SELECT_LABEL}>
+                {STRINGS.SELECT_LABEL}
+              </option>
               {labelData?.map((item) => (
                 <option value={item.labelId} key={item.labelId}>
                   {item.id}
@@ -182,7 +192,7 @@ function Notes({
           )}
           <div className="relative">
             <div className="absolute left-1 top-1 z-50">
-              <label className="inline-flex items-center px-1 py-1 text-sm font-medium text-center text-white bg-slate-500">
+              <label className="inline-flex items-center px-1 py-1 text-sm font-medium text-center text-white hover:bg-[#dcdcdc] dark:hover:bg-[#c0c0c0]">
                 <img src={ICONS.IMAGE} alt="pic" className="" />
                 <input
                   type="file"

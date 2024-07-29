@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { STRINGS } from '../../Shared/Constants';
 import CustomBox from '../../Shared/CustomComponents/CustomBox';
 import EditNotes from '../../Shared/CustomComponents/CustomModal/EditsNotes';
-import { useLabelUpdate, useUpdateNotes } from '../../Shared/CustomHooks';
+import {
+  useBodyScrollToogler,
+  useLabelUpdate,
+  useUpdateNotes,
+} from '../../Shared/CustomHooks';
 import { fetchNotesWithLabel } from '../../Shared/Firebase Utils';
 import { stateType } from '../Dashboard/types';
 import { labelProps } from './types';
-import { STRINGS } from '../../Shared/Constants';
 
 export default function Lable() {
   const params = useParams();
@@ -36,7 +40,7 @@ export default function Lable() {
         setNotesData(fetchedNotesData)
       );
   }, [params.labelId, uid]);
-
+  useBodyScrollToogler(showNoteEditor);
   useUpdateNotes(uid, setNotesData, params.labelId ?? '');
   useLabelUpdate(dispatch, params.labelId ?? '');
 
