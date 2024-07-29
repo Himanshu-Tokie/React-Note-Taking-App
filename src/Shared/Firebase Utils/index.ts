@@ -5,6 +5,7 @@ import {
 } from 'firebase/auth';
 import {
   addDoc,
+  arrayRemove,
   arrayUnion,
   collection,
   deleteDoc,
@@ -21,7 +22,12 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from 'firebase/storage';
 import { auth, db, storage } from '../../Services/Config/Firebase/firebase';
 import { AppDispatch } from '../../Store';
 import { setLoading } from '../../Store/Loader';
@@ -362,6 +368,7 @@ export async function uploadImage(
     toastError(TOAST_STRINGS.SELECT_IMAGE);
     return;
   }
+
   const uniqueId = new Date();
   const imageRef = ref(storage, `${uid}/${noteId}/${uniqueId}`);
   dispatch(setLoading(true));
@@ -384,4 +391,35 @@ export async function uploadImage(
     toastError(TOAST_STRINGS.ERROR_UPLOADING_IMAGE);
     dispatch(setLoading(false));
   }
+}
+
+export async function deletePhotos(
+  imageURL: string,
+  uid: string,
+  noteId: string
+) {
+  if (imageURL === null || !noteId) {
+    toastError(TOAST_STRINGS.SELECT_IMAGE);
+    return;
+  }
+  const imageRef = ref(storage, imageURL);
+  await deleteObject(imageRef).catch(() => {
+    toastError(STRINGS.ERROR);
+  });
+  const noteRef = doc(
+    db,
+    FIREBASE_STRINGS.USER,
+    uid,
+    FIREBASE_STRINGS.NOTES,
+    noteId
+  );
+  await updateDoc(noteRef, {
+    url: arrayRemove(imageURL),
+  })
+    .then(() => {
+      toastSuccess('Image deleted successfully');
+    })
+    .catch(() => {
+      toastError(STRINGS.ERROR);
+    });
 }

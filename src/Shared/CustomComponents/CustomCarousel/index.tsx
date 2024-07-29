@@ -1,6 +1,16 @@
 import Masonry from 'react-masonry-css';
+import { useSelector } from 'react-redux';
+import ICONS from '../../../assets';
+import { deletePhotos } from '../../Firebase Utils';
+import { stateType } from '../../../Views/Dashboard/types';
 
-export default function Carousel({ imageList }: { imageList: string[] }) {
+export default function Carousel({
+  imageList,
+  noteId,
+}: {
+  imageList: string[];
+  noteId: string;
+}) {
   // const numberOfImageInColoumn = Math.ceil(images.length / 3);
   // function splitArrayIntoGroups(arr, groupSize) {
   //   let result = [];
@@ -15,8 +25,7 @@ export default function Carousel({ imageList }: { imageList: string[] }) {
     1100: 2,
     700: 1,
   };
-  console.log(imageList);
-
+  const uid = useSelector((state: stateType) => state.common.uid);
   return (
     // <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
     //   {f.map((imageColumn) => {
@@ -42,11 +51,22 @@ export default function Carousel({ imageList }: { imageList: string[] }) {
       className="my-masonry-grid"
       columnClassName="my-masonry-grid_column"
     >
-      {/* {imageList.map((item, index) => (
-        <div key={index} className="masonry-item">
-          <img src={item} alt="" />
+      {imageList.map((item) => (
+        <div key={item} className="relative">
+          <div className="masonry-item">
+            <img src={item} alt="" />
+          </div>
+          <div className="absolute bottom-0 right-0">
+            <button
+              type="button"
+              onClick={() => deletePhotos(item, uid, noteId)}
+              aria-label="delete photo"
+            >
+              <img src={ICONS.DELETE} alt="noteImage" />
+            </button>
+          </div>
         </div>
-      ))} */}
+      ))}
     </Masonry>
   );
 }

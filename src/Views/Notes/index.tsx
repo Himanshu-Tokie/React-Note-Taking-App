@@ -32,7 +32,7 @@ function Notes({
   const [title, setTitle] = useState('');
   const [label, setLabel] = useState('');
   const theme = useSelector(
-    (state: stateType) => state.common.theme.toLowerCase() ?? 'light'
+    (state: stateType) => state.common.theme?.toLowerCase() ?? 'light'
   );
   // const [confirmationModal, setConfirmationModal] = useState(false);
   const [labelData, setLabelData] =
@@ -152,15 +152,6 @@ function Notes({
             maxLength={30}
           />
         </div>
-        <label className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-          <img src={ICONS.IMAGE} alt="pic" className="" />
-          <input
-            type="file"
-            className="hidden"
-            accept="image/*"
-            onChange={handleImageAsFile}
-          />
-        </label>
         <div className="px-2">
           {labelId ? (
             <p className="dark:text-gray-300">{currentLabel}</p>
@@ -186,22 +177,36 @@ function Notes({
         <div>
           {imageList && (
             <div>
-              <Carousel imageList={imageList} />
+              <Carousel imageList={imageList} noteId={noteId ?? ''} />
             </div>
           )}
-          <div id="joditEditor">
-            <JoditEditor
-              ref={editorRef}
-              value={content}
-              config={{
-                ...editorConfig,
-                theme,
-              }}
-              onBlur={(text) => {
-                setContent(text);
-              }}
-            />
+          <div className="relative">
+            <div className="absolute left-1 top-1 z-50">
+              <label className="inline-flex items-center px-1 py-1 text-sm font-medium text-center text-white bg-slate-500">
+                <img src={ICONS.IMAGE} alt="pic" className="" />
+                <input
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleImageAsFile}
+                />
+              </label>
+            </div>
+            <div id="joditEditor">
+              <JoditEditor
+                ref={editorRef}
+                value={content}
+                config={{
+                  ...editorConfig,
+                  theme,
+                }}
+                onBlur={(text) => {
+                  setContent(text);
+                }}
+              />
+            </div>
           </div>
+
           <div className="text-center p-4">
             <button
               type="button"
