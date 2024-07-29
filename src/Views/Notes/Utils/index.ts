@@ -1,4 +1,6 @@
 export const buttons = [
+  ' ',
+  '|',
   'bold',
   'strikethrough',
   'underline',
