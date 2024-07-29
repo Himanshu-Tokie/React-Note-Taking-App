@@ -5,4 +5,5 @@ export interface notesProps {
   noteId?: string;
   handleToggle?: (noteId: string) => void;
   imageList?: string[];
+  setChanges?:(key:boolean)=>void;
 }

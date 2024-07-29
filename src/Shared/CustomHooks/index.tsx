@@ -125,3 +125,13 @@ export function useDebounce<T extends SomeFunction>(
   }
   return debouncedFunction;
 }
+
+export function useBodyScrollToogler(show: boolean) {
+  useEffect(() => {
+    if (show) {
+      document.body.classList.add('overflow-y-hidden');
+    } else {
+      document.body.classList.remove('overflow-y-hidden');
+    }
+  }, [show]);
+}
