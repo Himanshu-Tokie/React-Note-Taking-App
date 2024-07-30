@@ -6,6 +6,7 @@ import Notes from '../../../Views/Notes';
 import { AppLayoutProps } from '../AppLayout.d';
 import NoteNavbar from './Navbar';
 import Sidebar from './Sidebar';
+import { useBodyScrollToogler } from '../../../Shared/CustomHooks';
 
 function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
       setShowModal((prevShowModal) => !prevShowModal);
     }
   };
+  useBodyScrollToogler(showModal);
   useEffect(() => {
     const tag = document.getElementById('sidebar');
     tag?.addEventListener('click', handleClick);

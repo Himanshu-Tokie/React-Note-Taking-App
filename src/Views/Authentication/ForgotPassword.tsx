@@ -59,14 +59,6 @@ function ForgotPassword(): JSX.Element {
             </Link>
           </p>
         </div>
-        <div className="flex place-content-center">
-          <p className="text-[#475467] text-sm pb-2 dark:text-gray-300">
-            {STRINGS.DONT_HAVE_ACCOUNT}
-            <Link to={ROUTES.SIGN_UP} className="text-[#7F56D9] font-medium">
-              {STRINGS.SIGN_UP}
-            </Link>
-          </p>
-        </div>
       </div>
     </div>
   );

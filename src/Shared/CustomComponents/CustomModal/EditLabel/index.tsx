@@ -59,7 +59,8 @@ function CustomModal({ setShowModal }: CustomModalProps) {
   const saveLabel = (e: React.FocusEvent<HTMLInputElement>) => {
     const labelName = e.currentTarget.value;
     const labelId = e.currentTarget.name;
-    if (labelName)
+    const regex = /^[\s\u00A0\xA0]*$/;
+    if (!regex.test(labelName))
       updateLabel(uid, labelName, labelId, dispatch)
         .then(() => {
           toastSuccess(TOAST_STRINGS.LABEL_EDIT);
@@ -86,26 +87,28 @@ function CustomModal({ setShowModal }: CustomModalProps) {
   const handleTickClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     const targetElement = event.target as Element;
     const inputElement = targetElement.closest('div')?.querySelector('input');
-    if (inputElement?.value) {
-      const label = inputElement.value;
-      const isExists = data?.filter((item) => item.id === label);
-      if (!isExists?.length) {
-        createLabel(uid, label)
-          .then(() => {
-            toastSuccess(TOAST_STRINGS.LABEL_CREATED);
-          })
-          .catch(() => {
-            toastError(STRINGS.ERROR);
-          });
-        setToggler(false);
-        setIsEmpty(false);
+    const regex = /^[\s\u00A0\xA0]*$/;
+    if (inputElement?.value)
+      if (!regex.test(inputElement?.value)) {
+        const label = inputElement.value;
+        const isExists = data?.filter((item) => item.id === label);
+        if (!isExists?.length) {
+          createLabel(uid, label)
+            .then(() => {
+              toastSuccess(TOAST_STRINGS.LABEL_CREATED);
+            })
+            .catch(() => {
+              toastError(STRINGS.ERROR);
+            });
+          setToggler(false);
+          setIsEmpty(false);
+          setIsLabelExist(false);
+          inputElement.value = '';
+        } else setIsLabelExist(true);
+      } else {
+        setIsEmpty(true);
         setIsLabelExist(false);
-        inputElement.value = '';
-      } else setIsLabelExist(true);
-    } else {
-      setIsEmpty(true);
-      setIsLabelExist(false);
-    }
+      }
   };
   const handleCloseClick: MouseEventHandler<HTMLButtonElement> = () => {
     const target = document.getElementById('labelInput') as HTMLInputElement;

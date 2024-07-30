@@ -130,11 +130,52 @@ export async function deleteNotes(uid: string, noteId: string) {
     await updateDoc(labelRef, { count: increment(-1) });
   }
 }
+
+export async function uploadImages(
+  uid: string,
+  imageURL: File[],
+  dispatch: AppDispatch,
+  noteId: string
+) {
+  if (!imageURL || imageURL.length === 0) {
+    return;
+  }
+  dispatch(setLoading(true));
+  try {
+    const uploadedImageURLs = await Promise.all(
+      imageURL.map(async (image) => {
+        const uniqueId = `${new Date().getTime()}-${image.name}`;
+        const imageRef = ref(storage, `${uid}/${noteId}/${uniqueId}`);
+        const snapshot = await uploadBytes(imageRef, image);
+        return getDownloadURL(snapshot.ref);
+      })
+    );
+    if (auth.currentUser) {
+      const noteRef = doc(
+        db,
+        FIREBASE_STRINGS.USER,
+        uid,
+        FIREBASE_STRINGS.NOTES,
+        noteId
+      );
+      await updateDoc(noteRef, { url: arrayUnion(...uploadedImageURLs) });
+    }
+
+    toastSuccess(TOAST_STRINGS.IMAGE_UPDATED);
+  } catch (error) {
+    toastError(TOAST_STRINGS.ERROR_UPLOADING_IMAGE);
+  } finally {
+    dispatch(setLoading(false));
+  }
+}
+
 export const createNote = async (
   uid: string,
   content: string,
   labelId: string,
-  title: string
+  title: string,
+  imageURL: File[],
+  dispatch: AppDispatch
 ) => {
   const labelRef = doc(
     db,
@@ -149,13 +190,14 @@ export const createNote = async (
     uid,
     FIREBASE_STRINGS.NOTES
   );
-  await addDoc(noteRef, {
+  const newNoteRef = await addDoc(noteRef, {
     content,
     label: labelRef,
     title,
     time_stamp: serverTimestamp(),
   });
   await updateDoc(labelRef, { count: increment(1) });
+  await uploadImages(uid, imageURL, dispatch, newNoteRef.id);
 };
 
 export const updateNote = async (

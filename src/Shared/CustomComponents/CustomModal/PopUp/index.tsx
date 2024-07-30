@@ -8,7 +8,7 @@ export default function PopUpMessage({
 }: PopUpProps) {
   return (
     <>
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-50" />
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-[1100]" />
       <div
         id="popup-modal"
         className="flex inset-0 overflow-y-auto overflow-x-hidden fixed  z-[5000] justify-center items-center w-full max-h-full h-[calc(100%-1rem)]"

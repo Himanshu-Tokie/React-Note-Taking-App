@@ -114,7 +114,7 @@ export default function Sidebar() {
 
       <div
         className="flex items-center py-3 rounded-r-full cursor-pointer hover:bg-gray-100"
-        id="Edit Labels"
+        id={STRINGS.EDIT_LABELS}
       >
         {theme === THEME.DARK ? (
           <img src={ICONS.EDIT} alt="edit" className="pl-4 sm:pl-6 p-2" />
