@@ -69,8 +69,8 @@ export const logInUser = async (
       }
     );
   } catch (error: unknown) {
-    console.log(error);
-    
+    // console.log(error);
+
     dispatch(setLoading(false));
     switch ((error as FirebaseError).code) {
       case FIREBASE_STRINGS.ERROR.INVALID_CREDENTIALS:
