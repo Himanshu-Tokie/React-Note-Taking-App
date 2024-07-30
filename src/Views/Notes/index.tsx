@@ -35,6 +35,16 @@ function Notes({
   const theme = useSelector(
     (state: stateType) => state.common.theme?.toLowerCase() ?? 'light'
   );
+  const [cachedImage, setCachedImage] = useState<File[]>([]);
+  const [cachedImageUrl, setCachedImageUrl] = useState<string[]>([]);
+
+  useEffect(() => {
+    const newFile = cachedImage.at(-1);
+    if (newFile) {
+      const url = URL.createObjectURL(newFile);
+      setCachedImageUrl((urls) => [...urls, url]);
+    }
+  }, [cachedImage]);
   // const [confirmationModal, setConfirmationModal] = useState(false);
   const [labelData, setLabelData] =
     useState<{ id: string; labelId: string }[]>();
@@ -103,10 +113,19 @@ function Notes({
             toastError(STRINGS.ERROR);
           });
       } else {
-        createNote(uid, content, label, title)
+        if (selectRef.current)
+          if (selectRef.current.value === STRINGS.SELECT_LABEL) {
+            toastError(TOAST_STRINGS.EMPTY_LABEL);
+            dispatch(setLoading(false));
+            return;
+          }
+        createNote(uid, content, label, title, cachedImage, dispatch)
           .then(() => {
             setContent('');
             setTitle('');
+            cachedImageUrl.forEach((url) => URL.revokeObjectURL(url));
+            setCachedImage([]);
+            setCachedImageUrl([]);
             if (selectRef.current)
               selectRef.current.value = STRINGS.SELECT_LABEL;
             setShowEditor(false);
@@ -121,6 +140,9 @@ function Notes({
     } else {
       setContent('');
       setTitle('');
+      cachedImageUrl.forEach((url) => URL.revokeObjectURL(url));
+      setCachedImage([]);
+      setCachedImageUrl([]);
       if (selectRef.current) selectRef.current.value = STRINGS.SELECT_LABEL;
       setShowEditor(false);
       toastError(TOAST_STRINGS.EMPTY_NOTES);
@@ -129,6 +151,9 @@ function Notes({
   function onClickCancel() {
     setContent('');
     setTitle('');
+    cachedImageUrl.forEach((url) => URL.revokeObjectURL(url));
+    setCachedImage([]);
+    setCachedImageUrl([]);
     if (selectRef.current) selectRef.current.value = STRINGS.SELECT_LABEL;
     if (setShowNoteEditor && noteId && handleToggle) {
       setShowNoteEditor(false);
@@ -136,9 +161,17 @@ function Notes({
     } else setShowEditor(false);
   }
   function handleImageAsFile(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.files && noteId)
-      uploadImage(uid, e.target.files[0], dispatch, noteId);
-    else toastError(STRINGS.ERROR);
+    const files = e.target.files ?? null;
+
+    if (files && files.length > 0) {
+      if (noteId) {
+        uploadImage(uid, files[0], dispatch, noteId);
+      } else {
+        setCachedImage((val) => [...val, files[0]]);
+      }
+    } else {
+      toastError(STRINGS.ERROR);
+    }
   }
   return (
     <div
@@ -188,6 +221,16 @@ function Notes({
           {imageList && (
             <div>
               <Carousel imageList={imageList} noteId={noteId ?? ''} />
+            </div>
+          )}
+          {cachedImage && (
+            <div>
+              <Carousel
+                imageList={cachedImageUrl}
+                noteId={noteId ?? ''}
+                setCachedImage={setCachedImage}
+                setCachedImageURL={setCachedImageUrl}
+              />
             </div>
           )}
           <div className="relative">

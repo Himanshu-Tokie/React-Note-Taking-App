@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   AUTHENTICATION,
+  ERROR,
   ROUTES,
   STRINGS,
   TOAST_STRINGS,
@@ -37,8 +38,14 @@ function SignUp(): JSX.Element {
             toastSuccess(TOAST_STRINGS.SIGNUP_MESSAGE);
             navigate('/login');
           })
-          .catch(() => {
-            toastError(TOAST_STRINGS.SIGNUP_FAILED);
+          .catch((e) => {
+            switch (e.code) {
+              case ERROR.EMAIL_IN_USE:
+                toastError(TOAST_STRINGS.EMAIL_IN_USE);
+                break;
+              default:
+                toastError(TOAST_STRINGS.SIGNUP_FAILED);
+            }
             dispatch(setLoading(false));
           });
       }
@@ -49,7 +56,7 @@ function SignUp(): JSX.Element {
   };
   return (
     <div>
-      <div className="flex flex-col flex-wrap place-content-center px-8 md:px-16 py-4">
+      <div className="flex flex-col flex-wrap place-content-center md:px-12 py-4 overflow-auto">
         <h1 className="font-bold self-center text-3xl dark:text-white">
           {STRINGS.WELCOME2}
         </h1>

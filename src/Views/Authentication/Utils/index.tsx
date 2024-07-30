@@ -1,14 +1,12 @@
 import { FirebaseError } from 'firebase/app';
 import {
+  GoogleAuthProvider,
   getAdditionalUserInfo,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from 'firebase/auth';
 import * as Yup from 'yup';
-import {
-  auth,
-  googleProvider,
-} from '../../../Services/Config/Firebase/firebase';
+import { auth } from '../../../Services/Config/Firebase/firebase';
 import { ERROR, FIREBASE_STRINGS } from '../../../Shared/Constants';
 import { signUpUser } from '../../../Shared/Firebase Utils';
 import { toastError } from '../../../Shared/Utils';
@@ -71,6 +69,8 @@ export const logInUser = async (
       }
     );
   } catch (error: unknown) {
+    console.log(error);
+    
     dispatch(setLoading(false));
     switch ((error as FirebaseError).code) {
       case FIREBASE_STRINGS.ERROR.INVALID_CREDENTIALS:
@@ -85,7 +85,11 @@ export const logInUser = async (
 export const signInWithGoogle = async (dispatch: AppDispatch) => {
   try {
     dispatch(setLoading(true));
-    const userDetail = await signInWithPopup(auth, googleProvider)
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({
+      prompt: 'select_account',
+    });
+    const userDetail = await signInWithPopup(auth, provider)
       .then(async (user) => {
         const isNewUser: boolean =
           getAdditionalUserInfo(user)?.isNewUser || false;

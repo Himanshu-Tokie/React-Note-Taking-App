@@ -71,6 +71,7 @@ enum THEME {
 const ERROR = {
   INVALID_CREDENTIALS: 'Invalid Credentials',
   POPUP_CLOSED: 'Sign-in interrupted.',
+  EMAIL_IN_USE: 'auth/email-already-in-use',
 };
 
 const STRINGS = {
@@ -79,7 +80,7 @@ const STRINGS = {
   LOG_OUT_MESSAGE: 'Are you sure you want to logout?',
   TAKE_NOTE: 'Take a note',
   PROFILE: 'Profile Picture',
-  SELECT_FILE: 'Select a file',
+  SELECT_IMAGE: 'Select image',
   ERROR: 'Some error occured please try again',
   PROFILE_INSTRUCTION: 'Personalize your notes with a new profile image.',
   EDIT: 'Change Photo',
@@ -139,6 +140,8 @@ const TOAST_STRINGS = {
   SIGNUP_FAILED: 'Signup failed',
   SIGNUP_MESSAGE: 'Welcome! Your sign-up is successful!',
   ERROR_UPLOADING_IMAGE: 'Error uploading image',
+  EMAIL_IN_USE: 'Email already used',
+  EMPTY_LABEL: 'Label is empty',
 };
 const FIREBASE_STRINGS = {
   USER: 'user',

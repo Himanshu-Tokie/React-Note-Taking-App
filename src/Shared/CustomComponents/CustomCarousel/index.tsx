@@ -7,9 +7,13 @@ import { stateType } from '../../../Views/Dashboard/types';
 export default function Carousel({
   imageList,
   noteId,
+  setCachedImage,
+  setCachedImageURL,
 }: {
   imageList: string[];
   noteId: string;
+  setCachedImage?: (val: File[] | ((val: File[]) => File[])) => void;
+  setCachedImageURL?: (val: string[] | ((val: string[]) => string[])) => void;
 }) {
   // const numberOfImageInColoumn = Math.ceil(images.length / 3);
   // function splitArrayIntoGroups(arr, groupSize) {
@@ -26,6 +30,22 @@ export default function Carousel({
     700: 1,
   };
   const uid = useSelector((state: stateType) => state.common.uid);
+  const handleDelete = (item: string, index: number) => {
+    if (setCachedImage && setCachedImageURL) {
+      setCachedImage((val: File[]) => {
+        const updatedVal = [...val];
+        updatedVal.splice(index, 1);
+        return updatedVal;
+      });
+      setCachedImageURL((val: string[]) => {
+        const updatedVal = [...val];
+        updatedVal.splice(index, 1);
+        return updatedVal;
+      });
+    } else {
+      deletePhotos(item, uid, noteId);
+    }
+  };
   return (
     // <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
     //   {f.map((imageColumn) => {
@@ -51,7 +71,7 @@ export default function Carousel({
       className="my-masonry-grid"
       columnClassName="my-masonry-grid_column"
     >
-      {imageList.map((item) => (
+      {imageList.map((item, index) => (
         <div key={item} className="relative">
           <div className="masonry-item">
             <img src={item} alt="" />
@@ -59,7 +79,7 @@ export default function Carousel({
           <div className="absolute bottom-0 right-0">
             <button
               type="button"
-              onClick={() => deletePhotos(item, uid, noteId)}
+              onClick={() => handleDelete(item, index)}
               aria-label="delete photo"
             >
               <img src={ICONS.DELETE} alt="noteImage" />
@@ -70,3 +90,8 @@ export default function Carousel({
     </Masonry>
   );
 }
+
+Carousel.defaultProps = {
+  setCachedImage: undefined,
+  setCachedImageURL: undefined,
+};
