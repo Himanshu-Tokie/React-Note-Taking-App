@@ -34,7 +34,7 @@ export default function Cards({ name, user, signOut }: cardsProps) {
             </span>
           </li>
           <li className="flex decoration-gray-500 justify-center">
-            <span className="text-base font-normal text-gray-500 ms-3">
+            <span className="text-base font-normal text-gray-500 dark:text-gray-200 ms-3">
               {user}
             </span>
           </li>

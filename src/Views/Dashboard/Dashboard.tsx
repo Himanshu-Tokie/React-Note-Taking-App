@@ -1,30 +1,35 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import CustomBox from '../../Shared/CustomComponents/CustomBox';
-import { useLabelUpdate } from '../../Shared/CustomHooks';
-import { fetchSearchNotes } from '../../Shared/Firebase Utils';
-import { notesDataProps, stateType } from './types';
 import { STRINGS } from '../../Shared/Constants';
+import CustomBox from '../../Shared/CustomComponents/CustomBox';
 import EditNotes from '../../Shared/CustomComponents/CustomModal/EditsNotes';
+import { useLabelUpdate, useUpdateNotes } from '../../Shared/CustomHooks';
+import { fetchSearchNotes } from '../../Shared/Firebase Utils';
+import { RootState } from '../../Store';
+import { notesDataProps, stateType } from './types';
 
 export default function Dashboard() {
   const location = useLocation();
+  const [notesSearchData, setNotesSearchData] = useState<notesDataProps[]>();
   const [notesData, setNotesData] = useState<notesDataProps[]>();
   const [changes, setChanges] = useState<boolean>(false);
   const [showNoteEditor, setShowNoteEditor] = useState(false);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const uid = useSelector((state: stateType) => state.common.uid);
+  const defaultLabelId = useSelector(
+    (state: RootState) => state.label.defaultLabelId
+  );
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get(STRINGS.SEARCH);
   useEffect(() => {
     if (searchQuery) {
       fetchSearchNotes(uid, searchQuery).then((data) => {
-        setNotesData(data);
+        setNotesSearchData(data);
         setChanges(false);
       });
     } else {
-      setNotesData([]);
+      setNotesSearchData([]);
       setChanges(false);
     }
   }, [searchQuery, uid, changes]);
@@ -42,10 +47,12 @@ export default function Dashboard() {
     setActiveNoteId(e.currentTarget?.id);
     setShowNoteEditor((val) => !val);
   };
+  // useLabelUpdate(dispatch, defaultLabelId);
+  useUpdateNotes(uid, setNotesData, defaultLabelId);
   return (
-    <div className="flex flex-wrap place-content-center">
-      {notesData?.length
-        ? notesData?.map((note) => (
+    <div className="flex flex-wrap ">
+      {notesSearchData?.length
+        ? notesSearchData?.map((note) => (
             <div
               id={note.noteId}
               className="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-[#333333] dark:border-gray-700 m-4"
@@ -67,7 +74,28 @@ export default function Dashboard() {
               />
             </div>
           ))
-        : null}
+        : notesData?.map((note) => (
+            <div
+              id={note.noteId}
+              className="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-[#333333] dark:border-gray-700 m-4"
+              key={note.noteId}
+              onClick={noteIdSetter}
+              onKeyDown={noteIdSetter}
+              tabIndex={0}
+              role="button"
+              aria-label="label"
+            >
+              <CustomBox
+                title={note.title}
+                content={note.content}
+                noteId={note.noteId}
+                isActive={activeNoteId === note.noteId}
+                handleToggle={handleToggle}
+                toggleNoteEditor={toggleNoteEditor}
+                setChanges={setChanges}
+              />
+            </div>
+          ))}
       {showNoteEditor && (
         <EditNotes
           setShowNoteEditor={setShowNoteEditor}

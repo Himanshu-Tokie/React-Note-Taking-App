@@ -1,26 +1,48 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { ROUTES, STRINGS, THEME } from '../../../../Shared/Constants';
 import { useUpdateLabel } from '../../../../Shared/CustomHooks';
 import { fetchLabels } from '../../../../Shared/Firebase Utils';
 import { stateType } from '../../../../Views/Dashboard/types';
 import ICONS from '../../../../assets';
+import { setDefaultLabelId } from '../../../../Store/Label';
+import { RootState } from '../../../../Store';
 
 export default function Sidebar() {
   const [data, setData] = useState<{ id: string; labelId: string }[]>();
   const uid = useSelector((state: stateType) => state.common.uid);
   const theme = useSelector((state: stateType) => state.common.theme);
+  const defalutLabel = useSelector(
+    (state: RootState) => state.label.defaultLabelId
+  );
+  const dispatch = useDispatch();
+  const [filteredData, setFilteredData] = useState<
+    {
+      labelId: string | undefined;
+      id: string;
+    }[]
+  >();
   useEffect(() => {
-    fetchLabels(uid).then((label) => setData(label));
-  }, [uid]);
+    fetchLabels(uid).then((label) => {
+      setData(label);
+      const defaultLabel = label.filter((item) => item.id === 'Others');
+      dispatch(setDefaultLabelId(defaultLabel[0].labelId));
+    });
+  }, [dispatch, uid]);
+  useEffect(() => {
+    if (data) {
+      const filtered = data.filter((item) => defalutLabel !== item.labelId);
+      setFilteredData(filtered);
+    }
+  }, [data, defalutLabel]);
   useUpdateLabel(uid, setData);
   return (
     <div
       className="flex-1 pb-24 z-20 bg-white dark:bg-[#252526] overflow-hidden md:w-[250px] pt-4 w-2/4 transition-all duration-300 ease-in-out fixed hover:overflow-y-scroll h-dvh"
       id="sidebar"
     >
-      <div className="rounded-r-full cursor-pointer hover:bg-gray-100">
+      <div className="rounded-r-full cursor-pointer hover:bg-gray-100 hover:dark:bg-opacity-20">
         <NavLink
           to={ROUTES.HOMEPAGE}
           className={({ isActive }) =>
@@ -59,7 +81,7 @@ export default function Sidebar() {
         </NavLink>
       </div>
       {/* <div
-        className="rounded-r-full cursor-pointer hover:bg-gray-100"
+        className="rounded-r-full cursor-pointer hover:bg-gray-100 hover:dark:bg-opacity-20" 
         id="Reminders"
       >
         <NavLink
@@ -75,7 +97,7 @@ export default function Sidebar() {
         </NavLink>
       </div> */}
 
-      {data?.map((item) => (
+      {filteredData?.map((item) => (
         <NavLink
           key={item.id}
           to={`/label/${item.labelId}`}
@@ -83,7 +105,7 @@ export default function Sidebar() {
           className={({ isActive }) =>
             isActive
               ? 'bg-[#7F56D9] flex items-center py-3 rounded-r-full text-white'
-              : 'flex items-center py-3 hover:bg-gray-100 rounded-r-full'
+              : 'flex items-center py-3 hover:bg-gray-100 hover:dark:bg-opacity-20  rounded-r-full'
           }
         >
           {({ isActive }) => {
@@ -113,7 +135,7 @@ export default function Sidebar() {
       ))}
 
       <div
-        className="flex items-center py-3 rounded-r-full cursor-pointer hover:bg-gray-100"
+        className="flex items-center py-3 rounded-r-full cursor-pointer hover:bg-gray-100 hover:dark:bg-opacity-20"
         id={STRINGS.EDIT_LABELS}
       >
         {theme === THEME.DARK ? (

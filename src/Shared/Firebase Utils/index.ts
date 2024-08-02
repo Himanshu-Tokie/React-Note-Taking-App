@@ -33,6 +33,7 @@ import { AppDispatch } from '../../Store';
 import { setLoading } from '../../Store/Loader';
 import { FIREBASE_STRINGS, NOTES, STRINGS, TOAST_STRINGS } from '../Constants';
 import { toastError, toastSuccess } from '../Utils';
+import { setDefaultLabelId } from '../../Store/Label';
 
 export async function fetchNotesWithLabel(labelId: string, userId: string) {
   const labelDocRef = doc(
@@ -175,14 +176,15 @@ export const createNote = async (
   labelId: string,
   title: string,
   imageURL: File[],
-  dispatch: AppDispatch
+  dispatch: AppDispatch,
+  defaultLabel: string
 ) => {
   const labelRef = doc(
     db,
     FIREBASE_STRINGS.USER,
     uid,
     FIREBASE_STRINGS.LABELS,
-    labelId
+    labelId === '' ? defaultLabel : labelId
   );
   const noteRef = collection(
     db,
@@ -464,4 +466,22 @@ export async function deletePhotos(
     .catch(() => {
       toastError(STRINGS.ERROR);
     });
+}
+
+export async function fetchDefaultLabelId(
+  uid: string | null,
+  dispatch: AppDispatch
+) {
+  if (uid) {
+    const labelRef = collection(
+      db,
+      FIREBASE_STRINGS.USER,
+      uid,
+      FIREBASE_STRINGS.LABELS
+    );
+    const q = query(labelRef, where(FIREBASE_STRINGS.LABEL, '==', 'Others'));
+    const defaultLabel = await getDocs(q);
+    const data = defaultLabel.docs.map((item) => item.id);
+    if (data.length > 0) dispatch(setDefaultLabelId(data[0]));
+  }
 }
