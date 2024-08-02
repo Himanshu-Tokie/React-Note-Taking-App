@@ -39,11 +39,11 @@ export default function Lable() {
       fetchNotesWithLabel(params.labelId, uid).then((fetchedNotesData) =>
         setNotesData(fetchedNotesData)
       );
+    window.scrollTo(0, 0);
   }, [params.labelId, uid]);
   useBodyScrollToogler(showNoteEditor);
   useUpdateNotes(uid, setNotesData, params.labelId ?? '');
   useLabelUpdate(dispatch, params.labelId ?? '');
-
   return (
     <div className="flex flex-wrap sm:pl-8">
       {notesData?.length ? (

@@ -72,11 +72,11 @@ export default function Carousel({
       columnClassName="my-masonry-grid_column"
     >
       {imageList.map((item, index) => (
-        <div key={item} className="relative">
+        <div key={item} className="relative group">
           <div className="masonry-item">
             <img src={item} alt="" />
           </div>
-          <div className="absolute bottom-0 right-0">
+          <div className="absolute bottom-0 right-0 opacity-0 group-hover:opacity-100">
             <button
               type="button"
               onClick={() => handleDelete(item, index)}

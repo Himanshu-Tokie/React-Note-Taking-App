@@ -100,7 +100,7 @@ function CustomBox({
           <div
             id={noteId}
             ref={menuRef}
-            className="text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute block top-14 right-2 customBox"
+            className="text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute block top-14 right-2 customBox z-10"
           >
             <ul className="py-2" aria-labelledby="dropdownButton">
               <li className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">

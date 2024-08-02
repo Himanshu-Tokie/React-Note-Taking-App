@@ -1,15 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import CustomModal from '../../../Shared/CustomComponents/CustomModal/EditLabel';
+import { useBodyScrollToogler } from '../../../Shared/CustomHooks';
+import { fetchDefaultLabelId } from '../../../Shared/Firebase Utils';
 import Notes from '../../../Views/Notes';
 import { AppLayoutProps } from '../AppLayout.d';
 import NoteNavbar from './Navbar';
 import Sidebar from './Sidebar';
-import { useBodyScrollToogler } from '../../../Shared/CustomHooks';
+import { RootState } from '../../../Store';
 
 function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [sidebarWidth, setSidebarWidth] = useState<string>('250px');
@@ -19,6 +23,7 @@ function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
       setShowModal((prevShowModal) => !prevShowModal);
     }
   };
+  const uid = useSelector((state: RootState) => state.common.uid);
   useBodyScrollToogler(showModal);
   useEffect(() => {
     const tag = document.getElementById('sidebar');
@@ -39,6 +44,7 @@ function PrivateLayout({ children }: AppLayoutProps): JSX.Element {
       replace: true,
     });
   };
+  fetchDefaultLabelId(uid, dispatch);
   return (
     <>
       <NoteNavbar setSidebarWidth={setSidebarWidth} search={search} />

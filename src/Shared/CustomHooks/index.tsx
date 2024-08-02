@@ -42,29 +42,32 @@ export const useUpdateNotes = (
   labelId: string
 ) => {
   useEffect(() => {
-    const parentDocRef = doc(db, 'user', uid);
-    const nestedCollectionRef = collection(parentDocRef, 'notes');
-    const labelRef = doc(parentDocRef, 'labels', labelId);
-    const q = query(
-      nestedCollectionRef,
-      where('label', '==', labelRef),
-      orderBy('time_stamp', 'desc')
-    );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const notes = querySnapshot.docs.map((note) => {
-        return {
-          noteId: note.id,
-          content: note.data().content,
-          label: note.data().label,
-          title: note.data().title,
-          time_stamp: note.data().time_stamp,
-        };
+    if (labelId) {
+      const parentDocRef = doc(db, 'user', uid);
+      const nestedCollectionRef = collection(parentDocRef, 'notes');
+      const labelRef = doc(parentDocRef, 'labels', labelId);
+      const q = query(
+        nestedCollectionRef,
+        where('label', '==', labelRef),
+        orderBy('time_stamp', 'desc')
+      );
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const notes = querySnapshot.docs.map((note) => {
+          return {
+            noteId: note.id,
+            content: note.data().content,
+            label: note.data().label,
+            title: note.data().title,
+            time_stamp: note.data().time_stamp,
+          };
+        });
+        setData(notes);
       });
-      setData(notes);
-    });
-    return () => {
-      unsubscribe();
-    };
+      return () => {
+        unsubscribe();
+      };
+    }
+    return undefined;
   }, [labelId, setData, uid]);
 };
 

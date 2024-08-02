@@ -19,6 +19,7 @@ import { notesProps } from './types';
 import { toastError, toastSuccess } from '../../Shared/Utils';
 import ICONS from '../../assets';
 import Carousel from '../../Shared/CustomComponents/CustomCarousel';
+import { RootState } from '../../Store';
 
 function Notes({
   imageList,
@@ -57,7 +58,9 @@ function Notes({
     }
     if (noteContent) setContent(noteContent);
   }, [noteContent, noteTitle]);
-
+  const defaultLabel = useSelector(
+    (state: RootState) => state.label.defaultLabelId
+  );
   const [showEditor, setShowEditor] = useState(false);
   const uid = useSelector((state: stateType) => state.common.uid);
   const labelId = useSelector(
@@ -113,24 +116,31 @@ function Notes({
             toastError(STRINGS.ERROR);
           });
       } else {
-        if (selectRef.current)
-          if (selectRef.current.value === STRINGS.SELECT_LABEL) {
-            toastError(TOAST_STRINGS.EMPTY_LABEL);
-            dispatch(setLoading(false));
-            return;
-          }
-        createNote(uid, content, label, title, cachedImage, dispatch)
+        createNote(
+          uid,
+          content,
+          label,
+          title,
+          cachedImage,
+          dispatch,
+          defaultLabel
+        )
           .then(() => {
             setContent('');
             setTitle('');
             cachedImageUrl.forEach((url) => URL.revokeObjectURL(url));
             setCachedImage([]);
             setCachedImageUrl([]);
-            if (selectRef.current)
-              selectRef.current.value = STRINGS.SELECT_LABEL;
             setShowEditor(false);
             dispatch(setLoading(false));
-            toastSuccess(TOAST_STRINGS.NOTES_CREATED);
+            if (selectRef.current) {
+              const index = selectRef.current.selectedIndex;
+              const labelName = selectRef.current[index].textContent;
+              if (labelName !== STRINGS.SELECT_LABEL)
+                toastSuccess(`${TOAST_STRINGS.NOTES_CREATED} in ${labelName}`);
+              else toastSuccess(TOAST_STRINGS.NOTES_CREATED);
+              selectRef.current.value = STRINGS.SELECT_LABEL;
+            } else toastSuccess(TOAST_STRINGS.NOTES_CREATED);
           })
           .catch(() => {
             dispatch(setLoading(false));

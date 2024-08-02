@@ -4,9 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '../../../../Store/Loader';
 import { stateType } from '../../../../Views/Dashboard/types';
 import Notes from '../../../../Views/Notes';
-import { useUpdateNote } from '../../../CustomHooks';
 import { fetchNote } from '../../../Firebase Utils';
 import { editNoteProps } from './type';
+import { setLabel } from '../../../../Store/Label';
+import { useUpdateNote } from '../../../CustomHooks';
 
 export default function EditNotes({
   setShowNoteEditor,
@@ -21,6 +22,7 @@ export default function EditNotes({
     dispatch(setLoading(true));
     fetchNote(uid, activeNoteId).then((note) => {
       setNotesData(note?.data());
+      dispatch(setLabel(note?.data()?.label.id));
       dispatch(setLoading(false));
     });
   }, [uid, activeNoteId, dispatch]);
@@ -33,6 +35,7 @@ export default function EditNotes({
   const closeEditor = (e: React.MouseEvent<HTMLDivElement>) => {
     const element = document.getElementById('editNotes');
     if (e.target === element) setShowNoteEditor(false);
+    dispatch(setLabel(''));
   };
   return (
     <div>

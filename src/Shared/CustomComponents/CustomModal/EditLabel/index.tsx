@@ -13,6 +13,7 @@ import {
 import PopUpMessage from '../PopUp';
 import { CustomModalProps } from './types';
 import { toastError, toastSuccess } from '../../../Utils';
+import { RootState } from '../../../../Store';
 
 function CustomModal({ setShowModal }: CustomModalProps) {
   const [confirmationModal, setConfirmationModal] = useState(false);
@@ -23,8 +24,18 @@ function CustomModal({ setShowModal }: CustomModalProps) {
   const [isLabelExist, setIsLabelExist] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState<string | undefined>();
   const uid = useSelector((state: stateType) => state.common.uid);
+  const defalutLabel = useSelector(
+    (state: RootState) => state.label.defaultLabelId
+  );
+
   // const tickRef = useRef<HTMLImageElement>(null);
   const [data, setData] = useState<
+    {
+      labelId: string | undefined;
+      id: string;
+    }[]
+  >();
+  const [filteredData, setFilteredData] = useState<
     {
       labelId: string | undefined;
       id: string;
@@ -42,6 +53,12 @@ function CustomModal({ setShowModal }: CustomModalProps) {
     fetchLabels(uid).then((label) => setData(label));
   }, [uid]);
   useUpdateLabel(uid, setData);
+  useEffect(() => {
+    if (data) {
+      const filtered = data.filter((item) => defalutLabel !== item.labelId);
+      setFilteredData(filtered);
+    }
+  }, [data, defalutLabel]);
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.key === 'Enter' || event.key === ' ') {
       setShowModal(false);
@@ -208,11 +225,11 @@ function CustomModal({ setShowModal }: CustomModalProps) {
                   </p>
                 )}
               </div>
-              {data?.map((label) => (
+              {filteredData?.map((label) => (
                 // <EditLabelRow name={label.labelId} value={label.id} />
                 <div
                   key={label.id}
-                  className="flex justify-between items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 group hover:shadow dark:bg-[#333333] dark:text-white"
+                  className="flex justify-between items-center  p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 group hover:shadow dark:bg-[#333333] dark:text-white"
                 >
                   <img
                     src={theme === THEME.DARK ? ICONS.LABEL : ICONS.LABEL_DARK}
@@ -221,7 +238,7 @@ function CustomModal({ setShowModal }: CustomModalProps) {
                   <input
                     name={label.labelId}
                     defaultValue={label.id}
-                    className="bg-gray-50 hover:bg-gray-100 outline-none dark:text-gray-50 dark:bg-[#333333]"
+                    className="bg-gray-50 hover:bg-gray-100 outline-none dark:text-gray-50 dark:bg-[#333333] w-20 sm:w-full sm:pl-2"
                     onFocus={() => {
                       setIsActive(label.id);
                       setIsInputLabelEmpty(false);
@@ -239,14 +256,15 @@ function CustomModal({ setShowModal }: CustomModalProps) {
                       setSelectedLabel(label.labelId);
                       setConfirmationModal(true);
                     }}
-                    className="hover:bg-red-600 cursor-pointer rounded-full p-1"
+                    className="hover:bg-red-600 cursor-pointer rounded-full sm:p-1"
                   >
                     <img src={ICONS.DELETE} alt="delete" />
                   </button>
+
                   <button
                     type="button"
                     onClick={handleEditClick}
-                    className="hover:bg-gray-200 cursor-pointer rounded-full p-1"
+                    className="hover:bg-gray-200 cursor-pointer rounded-full sm:p-1"
                   >
                     {isActive === label.id ? (
                       <img src={ICONS.TICK} alt="tick" />
