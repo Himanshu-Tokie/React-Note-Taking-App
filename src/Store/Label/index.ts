@@ -4,7 +4,7 @@ const loader = createSlice({
   name: 'label',
   initialState: { labelId: '', defaultLabelId: '' },
   reducers: {
-    setLabel: (state, action) => ({
+    setUpdatedLabel: (state, action) => ({
       ...state,
       labelId: action.payload,
     }),
@@ -15,6 +15,6 @@ const loader = createSlice({
   },
 });
 
-export const { setLabel, setDefaultLabelId } = loader.actions;
+export const { setUpdatedLabel, setDefaultLabelId } = loader.actions;
 
 export default loader.reducer;

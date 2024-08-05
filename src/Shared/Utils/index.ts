@@ -15,7 +15,7 @@ import { toast } from 'react-toastify';
 //   } as T;
 // }
 
-export const toastWarning = (message: string) =>
+export const toastWarning = (message: string, theme: string) =>
   toast.warn(message, {
     position: 'top-right',
     autoClose: 3000,
@@ -24,9 +24,10 @@ export const toastWarning = (message: string) =>
     pauseOnHover: false,
     draggable: true,
     progress: undefined,
+    theme,
   });
 
-export const toastSuccess = (message: string) => {
+export const toastSuccess = (message: string, theme: string) => {
   toast.success(message, {
     position: 'top-right',
     autoClose: 3000,
@@ -35,9 +36,10 @@ export const toastSuccess = (message: string) => {
     pauseOnHover: false,
     draggable: true,
     progress: undefined,
+    theme,
   });
 };
-export const toastError = (message: string) => {
+export const toastError = (message: string, theme: string) => {
   toast.error(message, {
     position: 'top-right',
     autoClose: 3000,
@@ -46,5 +48,6 @@ export const toastError = (message: string) => {
     pauseOnHover: false,
     draggable: true,
     progress: undefined,
+    theme,
   });
 };

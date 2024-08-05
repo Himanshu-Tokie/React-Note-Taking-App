@@ -5,13 +5,18 @@ import { STRINGS } from '../../../Constants';
 import { uploadUserImage } from '../../../Firebase Utils';
 import { toastError } from '../../../Utils';
 import { changePhotoProps } from './types';
+import { RootState } from '../../../../Store';
 
 function ChangePhoto({ photoURL, setIsVisible }: changePhotoProps) {
   const uid = useSelector((state: stateType) => state.common.uid);
   const dispatch = useDispatch();
+  const theme = useSelector((state: RootState) =>
+    state.common.theme.toLowerCase()
+  );
   function handleImageAsFile(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.files) uploadUserImage(uid, e.target.files[0], dispatch);
-    else toastError(STRINGS.ERROR);
+    if (e.target.files)
+      uploadUserImage(uid, e.target.files[0], dispatch, theme);
+    else toastError(STRINGS.ERROR, theme);
   }
   return (
     <div className="z-50">

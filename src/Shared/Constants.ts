@@ -72,6 +72,7 @@ const ERROR = {
   INVALID_CREDENTIALS: 'Invalid Credentials',
   POPUP_CLOSED: 'Sign-in interrupted.',
   EMAIL_IN_USE: 'auth/email-already-in-use',
+  TIME_OUT: 'Timed out',
 };
 
 const STRINGS = {
@@ -89,7 +90,7 @@ const STRINGS = {
   TITLE: 'Title',
   EMPTY: 'temporarily empty',
   SEARCH: 'search',
-  CREATE_NOTES: 'Create new notes.....',
+  CREATE_NOTES: 'Add notes',
   SELECT_LABEL: 'Select Label',
   SAVE: 'Save',
   CANCEL: 'Cancel',
@@ -152,6 +153,7 @@ const FIREBASE_STRINGS = {
     INVALID_CREDENTIALS: 'auth/invalid-credential',
     DEFAULT: 'Some error occured please try again',
     POPUP_CLOSED: 'auth/popup-closed-by-user',
+    TIME_OUT: 'Promise timed out',
   },
 };
 

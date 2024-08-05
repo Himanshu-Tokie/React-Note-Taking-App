@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -22,6 +23,9 @@ export default function Dashboard() {
   );
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get(STRINGS.SEARCH);
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
     if (searchQuery) {
       fetchSearchNotes(uid, searchQuery).then((data) => {
@@ -33,26 +37,30 @@ export default function Dashboard() {
       setChanges(false);
     }
   }, [searchQuery, uid, changes]);
-  const dispatch = useDispatch();
+
   useLabelUpdate(dispatch, '');
+  useUpdateNotes(uid, setNotesData, defaultLabelId);
+
   const toggleNoteEditor = () => {
     setShowNoteEditor((val) => !val);
   };
+
   const handleToggle = (noteId: string) => {
     setActiveNoteId((prevNoteId) => (prevNoteId === noteId ? null : noteId));
   };
+
   const noteIdSetter = (
     e: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>
   ) => {
     setActiveNoteId(e.currentTarget?.id);
     setShowNoteEditor((val) => !val);
   };
-  // useLabelUpdate(dispatch, defaultLabelId);
-  useUpdateNotes(uid, setNotesData, defaultLabelId);
+
   return (
-    <div className="flex flex-wrap ">
-      {notesSearchData?.length
-        ? notesSearchData?.map((note) => (
+    <div className="flex flex-wrap">
+      {searchQuery ? (
+        notesSearchData?.length ? (
+          notesSearchData.map((note) => (
             <div
               id={note.noteId}
               className="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-[#333333] dark:border-gray-700 m-4"
@@ -74,28 +82,35 @@ export default function Dashboard() {
               />
             </div>
           ))
-        : notesData?.map((note) => (
-            <div
-              id={note.noteId}
-              className="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-[#333333] dark:border-gray-700 m-4"
-              key={note.noteId}
-              onClick={noteIdSetter}
-              onKeyDown={noteIdSetter}
-              tabIndex={0}
-              role="button"
-              aria-label="label"
-            >
-              <CustomBox
-                title={note.title}
-                content={note.content}
-                noteId={note.noteId}
-                isActive={activeNoteId === note.noteId}
-                handleToggle={handleToggle}
-                toggleNoteEditor={toggleNoteEditor}
-                setChanges={setChanges}
-              />
-            </div>
-          ))}
+        ) : (
+          <div className="flex-1 text-center content-center h-screen pb-40">
+            <p className="dark:text-gray-300">No data found</p>
+          </div>
+        )
+      ) : (
+        notesData?.map((note) => (
+          <div
+            id={note.noteId}
+            className="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-[#333333] dark:border-gray-700 m-4"
+            key={note.noteId}
+            onClick={noteIdSetter}
+            onKeyDown={noteIdSetter}
+            tabIndex={0}
+            role="button"
+            aria-label="label"
+          >
+            <CustomBox
+              title={note.title}
+              content={note.content}
+              noteId={note.noteId}
+              isActive={activeNoteId === note.noteId}
+              handleToggle={handleToggle}
+              toggleNoteEditor={toggleNoteEditor}
+              setChanges={setChanges}
+            />
+          </div>
+        ))
+      )}
       {showNoteEditor && (
         <EditNotes
           setShowNoteEditor={setShowNoteEditor}

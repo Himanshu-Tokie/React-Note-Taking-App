@@ -6,7 +6,7 @@ import { stateType } from '../../../../Views/Dashboard/types';
 import Notes from '../../../../Views/Notes';
 import { fetchNote } from '../../../Firebase Utils';
 import { editNoteProps } from './type';
-import { setLabel } from '../../../../Store/Label';
+import { setUpdatedLabel } from '../../../../Store/Label';
 import { useUpdateNote } from '../../../CustomHooks';
 
 export default function EditNotes({
@@ -22,7 +22,7 @@ export default function EditNotes({
     dispatch(setLoading(true));
     fetchNote(uid, activeNoteId).then((note) => {
       setNotesData(note?.data());
-      dispatch(setLabel(note?.data()?.label.id));
+      dispatch(setUpdatedLabel(note?.data()?.label.id));
       dispatch(setLoading(false));
     });
   }, [uid, activeNoteId, dispatch]);
@@ -35,7 +35,7 @@ export default function EditNotes({
   const closeEditor = (e: React.MouseEvent<HTMLDivElement>) => {
     const element = document.getElementById('editNotes');
     if (e.target === element) setShowNoteEditor(false);
-    dispatch(setLabel(''));
+    // dispatch(setUpdatedLabel(''));
   };
   return (
     <div>

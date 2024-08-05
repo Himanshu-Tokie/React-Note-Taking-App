@@ -58,7 +58,7 @@ export default function Sidebar() {
                   <img
                     src={ICONS.LIGHTBULB}
                     alt="label"
-                    className="pl-4 sm:pl-6 p-2"
+                    className="pl-2  sm:pl-6 p-2"
                   />
                   <p className="pl-6 text-base dark:text-gray-300">
                     {STRINGS.NOTES}
@@ -70,7 +70,7 @@ export default function Sidebar() {
                 <img
                   src={ICONS.LIGHTBULB_DARK}
                   alt="label"
-                  className="pl-4 sm:pl-6 p-2"
+                  className="pl-2 sm:pl-6 p-2"
                 />
                 <p className="pl-6 text-base dark:text-gray-300">
                   {STRINGS.NOTES}
@@ -97,42 +97,51 @@ export default function Sidebar() {
         </NavLink>
       </div> */}
 
-      {filteredData?.map((item) => (
-        <NavLink
-          key={item.id}
-          to={`/label/${item.labelId}`}
-          state={{ label: item.id }}
-          className={({ isActive }) =>
-            isActive
-              ? 'bg-[#7F56D9] flex items-center py-3 rounded-r-full text-white'
-              : 'flex items-center py-3 hover:bg-gray-100 hover:dark:bg-opacity-20  rounded-r-full'
-          }
-        >
-          {({ isActive }) => {
-            if (isActive || theme === THEME.DARK)
+      {filteredData?.map((item) => {
+        let labelName;
+        if (item.id.length > 15) labelName = `${item.id.slice(0, 15)}...`;
+        else labelName = item.id;
+        return (
+          <NavLink
+            key={item.id}
+            to={`/label/${item.labelId}`}
+            state={{ label: item.id }}
+            className={({ isActive }) =>
+              isActive
+                ? 'bg-[#7F56D9] flex items-center py-3 rounded-r-full text-white'
+                : 'flex items-center py-3 hover:bg-gray-100 hover:dark:bg-opacity-20  rounded-r-full'
+            }
+          >
+            {({ isActive }) => {
+              if (isActive || theme === THEME.DARK)
+                return (
+                  <>
+                    <img
+                      src={ICONS.LABEL}
+                      alt="label"
+                      className="pl-2 sm:pl-6 p-2"
+                    />
+                    <p className="pl-6 text-base dark:text-gray-300">
+                      {labelName}
+                    </p>
+                  </>
+                );
               return (
                 <>
                   <img
-                    src={ICONS.LABEL}
+                    src={ICONS.LABEL_DARK}
                     alt="label"
-                    className="pl-4 sm:pl-6 p-2"
+                    className="pl-2 sm:pl-6 p-2"
                   />
-                  <p className="pl-6 text-base dark:text-gray-300">{item.id}</p>
+                  <p className="pl-6 text-base dark:text-gray-300">
+                    {labelName}
+                  </p>
                 </>
               );
-            return (
-              <>
-                <img
-                  src={ICONS.LABEL_DARK}
-                  alt="label"
-                  className="pl-4 sm:pl-6 p-2"
-                />
-                <p className="pl-6 text-base dark:text-gray-300">{item.id}</p>
-              </>
-            );
-          }}
-        </NavLink>
-      ))}
+            }}
+          </NavLink>
+        );
+      })}
 
       <div
         className="flex items-center py-3 rounded-r-full cursor-pointer hover:bg-gray-100 hover:dark:bg-opacity-20"

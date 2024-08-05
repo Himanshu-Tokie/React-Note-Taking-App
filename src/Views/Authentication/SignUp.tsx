@@ -1,6 +1,6 @@
 import { Form, Formik } from 'formik';
 import { useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   AUTHENTICATION,
@@ -14,10 +14,14 @@ import { toastError, toastSuccess } from '../../Shared/Utils';
 import { setLoading } from '../../Store/Loader';
 import CustomInput from './Custom Component/Custom Input';
 import { SignupSchema } from './Utils';
+import { RootState } from '../../Store';
 
 function SignUp(): JSX.Element {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const theme = useSelector((state: RootState) =>
+    state.common.theme.toLowerCase()
+  );
   const formValues = useRef<{
     firstName: string;
     lastName: string;
@@ -35,22 +39,22 @@ function SignUp(): JSX.Element {
           dispatch
         )
           .then(() => {
-            toastSuccess(TOAST_STRINGS.SIGNUP_MESSAGE);
+            toastSuccess(TOAST_STRINGS.SIGNUP_MESSAGE, theme);
             navigate('/login');
           })
           .catch((e) => {
             switch (e.code) {
               case ERROR.EMAIL_IN_USE:
-                toastError(TOAST_STRINGS.EMAIL_IN_USE);
+                toastError(TOAST_STRINGS.EMAIL_IN_USE, theme);
                 break;
               default:
-                toastError(TOAST_STRINGS.SIGNUP_FAILED);
+                toastError(TOAST_STRINGS.SIGNUP_FAILED, theme);
             }
             dispatch(setLoading(false));
           });
       }
     } catch (e) {
-      toastError(STRINGS.ERROR);
+      toastError(STRINGS.ERROR, theme);
       dispatch(setLoading(false));
     }
   };

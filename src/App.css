@@ -89,9 +89,11 @@
     }
   }
 }
+
 [aria-label='Insert file'] {
   display: none !important;
 }
+
 :root {
   --link-color: #61c;
 }

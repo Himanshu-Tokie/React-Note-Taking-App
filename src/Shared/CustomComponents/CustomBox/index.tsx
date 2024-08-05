@@ -6,6 +6,7 @@ import { STRINGS, TOAST_STRINGS } from '../../Constants';
 import { deleteNotes } from '../../Firebase Utils';
 import { customBoxProps } from './types';
 import { toastError, toastSuccess } from '../../Utils';
+import { RootState } from '../../../Store';
 
 function HtmlStringComponent({ htmlString }: { htmlString: string }) {
   const modifyHtmlString = (html: string) => {
@@ -43,7 +44,9 @@ function CustomBox({
     setShow((val) => !val);
   }
   const uid = useSelector((state: stateType) => state.common.uid);
-  // const theme = useSelector((state: stateType) => state.common.theme);
+  const theme = useSelector((state: RootState) =>
+    state.common.theme.toLowerCase()
+  );
   function handleKeyDownDelete(event: React.KeyboardEvent<HTMLButtonElement>) {
     if (event.key === 'Enter' || event.key === ' ') {
       deleteNotes(uid, noteId);
@@ -54,6 +57,7 @@ function CustomBox({
       toggleNoteEditor();
     }
   }
+
   useEffect(() => {
     const box = document.getElementById(activeNoteId ?? '');
     document.addEventListener('click', (e) => {
@@ -102,10 +106,10 @@ function CustomBox({
             ref={menuRef}
             className="text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute block top-14 right-2 customBox z-10"
           >
-            <ul className="py-2" aria-labelledby="dropdownButton">
-              <li className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+            <ul className="py-0" aria-labelledby="dropdownButton">
+              <li className="flex text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                 <button
-                  className="flex flex-1 justify-center "
+                  className="flex flex-1 justify-center px-4 py-2"
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleNoteEditor();
@@ -116,18 +120,18 @@ function CustomBox({
                   <p>{STRINGS.EDIT_NOTES}</p>
                 </button>
               </li>
-              <li className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+              <li className="flex text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                 <button
-                  className="flex flex-1 justify-center "
+                  className="flex flex-1 justify-center px-4 py-2"
                   onClick={(e) => {
                     e.stopPropagation();
                     deleteNotes(uid, noteId)
                       .then(() => {
-                        toastSuccess(TOAST_STRINGS.NOTES_DELETED);
+                        toastSuccess(TOAST_STRINGS.NOTES_DELETED, theme);
                         if (setChanges) setChanges(true);
                       })
                       .catch(() => {
-                        toastError(STRINGS.ERROR);
+                        toastError(STRINGS.ERROR, theme);
                       });
                   }}
                   onKeyDown={handleKeyDownDelete}

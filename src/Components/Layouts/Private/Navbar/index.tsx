@@ -6,12 +6,12 @@ import { auth } from '../../../../Services/Config/Firebase/firebase';
 import { ROUTES, STRINGS, THEME } from '../../../../Shared/Constants';
 import Cards from '../../../../Shared/CustomComponents/CustomCards';
 import PopUpMessage from '../../../../Shared/CustomComponents/CustomModal/PopUp';
+import { useDebounce } from '../../../../Shared/CustomHooks';
 import { updateAuthTokenRedux, updateTheme } from '../../../../Store/Common';
 import { setLoading } from '../../../../Store/Loader';
 import { stateType } from '../../../../Views/Dashboard/types';
 import ICONS from '../../../../assets';
 import { noteNavbarProps } from './types';
-import { useDebounce } from '../../../../Shared/CustomHooks';
 
 function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   const dispatch = useDispatch();
@@ -160,7 +160,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
         />
       )}
       <div className="fixed w-full bg-white top-0 z-[35] dark:bg-[#1E1E1E]">
-        <header className="flex justify-between pr-2 sm:pr-5 pl-4 sm:pt-2 border-b-2 dark:border-[#5F6368]">
+        <header className="flex justify-between pr-2 sm:pr-5 sm:pl-4 pl-2 sm:pt-2 border-b-2 dark:border-[#5F6368]">
           <div className="flex py-2 items-center">
             <div
               onClick={toggleSidebar}
@@ -179,7 +179,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
               />
             </Link>
             <p
-              className={`md:pl-2 place-content-center text-sm sm:text-lg font-bold dark:text-white ${isExpanded ? 'hidden' : 'block'} md:block`}
+              className={`md:pl-2 place-content-center text-sm sm:text-lg font-bold dark:text-white ${isExpanded ? 'hidden' : 'hidden min-[320px]:block'} md:block`}
               ref={appNameRef}
             >
               <Link to={ROUTES.HOMEPAGE}>

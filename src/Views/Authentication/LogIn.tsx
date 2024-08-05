@@ -1,14 +1,18 @@
 import { Form, Formik } from 'formik';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { AUTHENTICATION, ROUTES, STRINGS } from '../../Shared/Constants';
 import ICONS from '../../assets';
 import CustomGoogleButton from './Custom Component/Custom Google Button';
 import CustomInput from './Custom Component/Custom Input';
 import { LogInSchema, logInUser } from './Utils';
+import { RootState } from '../../Store';
 
 function Login(): JSX.Element {
   const dispatch = useDispatch();
+  const theme = useSelector((state: RootState) =>
+    state.common.theme.toLowerCase()
+  );
   return (
     <div className="px-10 bg-opacity-40 py-10">
       <div className="flex flex-col flex-wrap place-content-center">
@@ -31,7 +35,7 @@ function Login(): JSX.Element {
             initialValues={{ email: '', password: '' }}
             validationSchema={LogInSchema}
             onSubmit={(values) => {
-              logInUser(values.email, values.password, dispatch);
+              logInUser(values.email, values.password, dispatch, theme);
             }}
           >
             <Form>

@@ -3,8 +3,8 @@ const YUP_STRINGS = {
   INVALID_PASSWORD:
     'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.',
   PASSWORD_NOT_MATCH: "Password and confirm password doesn't match",
-  INVALID_FIRST_NAME: 'Invalid first name',
-  INVALID_LAST_NAME: 'Invalid last name',
+  INVALID_FIRST_NAME: 'Letters only, no spaces or numbers.',
+  INVALID_LAST_NAME: 'Letters only, no spaces or numbers.',
   ENTER_EMAIL: 'Please enter your email',
   ENTER_PASSWORD: 'Please enter your password',
   PHONE_NUMBER_WARNING1: 'Number must be exactly 10 digits',
