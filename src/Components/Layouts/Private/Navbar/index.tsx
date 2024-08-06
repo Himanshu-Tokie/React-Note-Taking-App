@@ -10,8 +10,8 @@ import { useDebounce } from '../../../../Shared/CustomHooks';
 import { updateAuthTokenRedux, updateTheme } from '../../../../Store/Common';
 import { setLoading } from '../../../../Store/Loader';
 import { stateType } from '../../../../Views/Dashboard/types';
-import ICONS from '../../../../assets';
 import { noteNavbarProps } from './types';
+import ICONS from '../../../../assets';
 
 function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
   const dispatch = useDispatch();
@@ -132,9 +132,6 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
     }
     setIsCrossVisible(true);
   };
-  // const searchBlurHandler = () => {
-  //   setTimeout(() => navigate(-2), 0);
-  // };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchParams = new URLSearchParams(location.search);
   useEffect(() => {
@@ -144,6 +141,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
     if (location.pathname !== ROUTES.HOMEPAGE) {
       if (searchInputElementRef.current)
         searchInputElementRef.current.value = '';
+      setIsCrossVisible(false);
     }
   }, [location.pathname]);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -159,7 +157,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
           confirmationFunction={logOut}
         />
       )}
-      <div className="fixed w-full bg-white top-0 z-[35] dark:bg-[#1E1E1E]">
+      <div className="fixed w-full bg-white top-0 z-[45] dark:bg-[#1E1E1E]">
         <header className="flex justify-between pr-2 sm:pr-5 sm:pl-4 pl-2 sm:pt-2 border-b-2 dark:border-[#5F6368]">
           <div className="flex py-2 items-center">
             <div
@@ -194,7 +192,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
             <img src={ICONS.SEARCH} alt="settings" className="h-6" />
             <input
               placeholder="Search"
-              className="outline-0 px-3 w-96 py-3 dark:bg-[#333333] dark:text-gray-300 "
+              className="outline-none px-3 w-96 py-3 dark:bg-[#333333] dark:text-gray-300 "
               onChange={useDebounce(search, 500)}
               onFocus={searchFocusHandler}
               ref={searchInputElementRef}
@@ -303,19 +301,6 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
                 <p className="pl-2 dark:text-gray-300">Dark</p>
               </div>
             </li>
-            {/* <li className="py-2 hover:bg-gray-100 cursor-pointer px-5">
-              <div
-                className="flex"
-                id={THEME.SYSTEM}
-                onClick={themeToggler}
-                onKeyDown={handleKeyDown}
-                role="button"
-                tabIndex={0}
-              >
-                <img src={ICONS.COMPUTER} alt="system" />
-                <p className="pl-2 dark:text-gray-300">System</p>
-              </div>
-            </li> */}
           </ul>
         </div>
       )}

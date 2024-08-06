@@ -76,6 +76,7 @@ const ERROR = {
 };
 
 const STRINGS = {
+  NO_DATA: 'No matching results.',
   NOTES: 'Notes',
   EDIT_LABELS: 'Edit Labels',
   LOG_OUT_MESSAGE: 'Are you sure you want to logout?',

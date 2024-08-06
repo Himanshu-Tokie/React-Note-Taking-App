@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { auth } from '../../../Services/Config/Firebase/firebase';
-import ICONS from '../../../assets';
 import { STRINGS } from '../../Constants';
 import ChangePhoto from '../CustomModal/ChangePhoto';
 import { cardsProps } from './types';
+import ICONS from '../../../assets';
 
 export default function Cards({ name, user, signOut }: cardsProps) {
   const userPhoto = auth.currentUser?.photoURL;

@@ -84,7 +84,9 @@ export default function Dashboard() {
           ))
         ) : (
           <div className="flex-1 text-center content-center h-screen pb-40">
-            <p className="dark:text-gray-300">No data found</p>
+            <p className="dark:text-gray-300 text-gray-600">
+              {STRINGS.NO_DATA}
+            </p>
           </div>
         )
       ) : (
