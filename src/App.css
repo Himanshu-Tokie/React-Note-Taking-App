@@ -89,9 +89,21 @@
     }
   }
 }
+
+.jodit-ui-block__className{
+  display: none;
+}
+.jodit-ui-form__target{
+  display: none;
+}
+.jodit-ui-form__nofollow{
+  display: none;
+}
+
 [aria-label='Insert file'] {
   display: none !important;
 }
+
 :root {
   --link-color: #61c;
 }
@@ -106,11 +118,12 @@ body.dark {
     text-decoration: underline;
   }
   ul {
-    list-style: inside !important;
+    padding-left: 1rem;
+    list-style-type: disc;
   }
   ol {
-    list-style: inside !important;
-    list-style-type: number !important;
+    padding-left: 1rem;
+    list-style-type: number;
   }
   td {
     border: solid 2px;
@@ -132,4 +145,10 @@ body.dark {
 .masonry-item {
   margin-bottom: 15px;
   /* Add more styles if necessary */
+}
+
+::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  position: absolute;
+  right: 0;
 }

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import ICONS from '../../../assets';
 import { deletePhotos } from '../../Firebase Utils';
 import { stateType } from '../../../Views/Dashboard/types';
+import { RootState } from '../../../Store';
 
 export default function Carousel({
   imageList,
@@ -29,6 +30,9 @@ export default function Carousel({
     1100: 2,
     700: 1,
   };
+  const theme = useSelector((state: RootState) =>
+    state.common.theme.toLowerCase()
+  );
   const uid = useSelector((state: stateType) => state.common.uid);
   const handleDelete = (item: string, index: number) => {
     if (setCachedImage && setCachedImageURL) {
@@ -43,7 +47,7 @@ export default function Carousel({
         return updatedVal;
       });
     } else {
-      deletePhotos(item, uid, noteId);
+      deletePhotos(item, uid, noteId, theme);
     }
   };
   return (
@@ -76,7 +80,7 @@ export default function Carousel({
           <div className="masonry-item">
             <img src={item} alt="" />
           </div>
-          <div className="absolute bottom-0 right-0 opacity-0 group-hover:opacity-100">
+          <div className="absolute bottom-0 right-0 opacity-0 group-hover:opacity-100 bg-slate-300">
             <button
               type="button"
               onClick={() => handleDelete(item, index)}

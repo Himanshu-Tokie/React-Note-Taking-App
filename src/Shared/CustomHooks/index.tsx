@@ -10,7 +10,7 @@ import {
 import { useEffect, useRef } from 'react';
 import { db } from '../../Services/Config/Firebase/firebase';
 import { AppDispatch } from '../../Store';
-import { setLabel } from '../../Store/Label';
+import { setUpdatedLabel } from '../../Store/Label';
 import { labelProps } from '../../Views/Label/types';
 import { FIREBASE_STRINGS } from '../Constants';
 
@@ -73,7 +73,7 @@ export const useUpdateNotes = (
 
 export const useLabelUpdate = (dispatch: AppDispatch, labelId: string) => {
   useEffect(() => {
-    dispatch(setLabel(labelId));
+    dispatch(setUpdatedLabel(labelId));
   }, [dispatch, labelId]);
 };
 

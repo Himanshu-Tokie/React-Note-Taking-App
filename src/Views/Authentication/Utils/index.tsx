@@ -55,7 +55,8 @@ export const LogInSchema = Yup.object({
 export const logInUser = async (
   email: string,
   password: string,
-  dispatch: AppDispatch
+  dispatch: AppDispatch,
+  theme: string
 ) => {
   try {
     dispatch(setLoading(true));
@@ -74,15 +75,18 @@ export const logInUser = async (
     dispatch(setLoading(false));
     switch ((error as FirebaseError).code) {
       case FIREBASE_STRINGS.ERROR.INVALID_CREDENTIALS:
-        toastError(ERROR.INVALID_CREDENTIALS);
+        toastError(ERROR.INVALID_CREDENTIALS, theme);
         break;
       default:
-        toastError(FIREBASE_STRINGS.ERROR.DEFAULT);
+        toastError(FIREBASE_STRINGS.ERROR.DEFAULT, theme);
     }
   }
 };
 
-export const signInWithGoogle = async (dispatch: AppDispatch) => {
+export const signInWithGoogle = async (
+  dispatch: AppDispatch,
+  theme: string
+) => {
   try {
     dispatch(setLoading(true));
     const provider = new GoogleAuthProvider();
@@ -100,10 +104,10 @@ export const signInWithGoogle = async (dispatch: AppDispatch) => {
         dispatch(setLoading(false));
         switch (error.code) {
           case FIREBASE_STRINGS.ERROR.POPUP_CLOSED:
-            toastError(ERROR.POPUP_CLOSED);
+            toastError(ERROR.POPUP_CLOSED, theme);
             break;
           default:
-            toastError(FIREBASE_STRINGS.ERROR.DEFAULT);
+            toastError(FIREBASE_STRINGS.ERROR.DEFAULT, theme);
         }
       });
     if (userDetail) {
@@ -115,7 +119,7 @@ export const signInWithGoogle = async (dispatch: AppDispatch) => {
     dispatch(setLoading(false));
   } catch (error) {
     dispatch(setLoading(false));
-    toastError(FIREBASE_STRINGS.ERROR.DEFAULT);
+    toastError(FIREBASE_STRINGS.ERROR.DEFAULT, theme);
     // console.log(error.code);
   }
 };
