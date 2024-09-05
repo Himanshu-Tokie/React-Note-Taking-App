@@ -40,3 +40,115 @@
 .read-the-docs {
   color: #888;
 } */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+::-webkit-scrollbar-track {
+  background: #888;
+}
+
+.toast-container {
+  background-color: rgba(87, 78, 78, 0.5);
+}
+
+#joditEditor {
+  .jodit-wysiwyg {
+    ul {
+      padding-left: 1.5rem;
+      list-style: inside;
+    }
+    ol {
+      padding-left: 1.5rem;
+      list-style: inside;
+      list-style-type: number;
+    }
+  }
+  .jodit-react-container {
+    .jodit_theme_dark {
+      a {
+        color: rgb(156 163 175);
+        text-decoration: underline;
+      }
+    }
+    .jodit_theme_light {
+      a {
+        color: #61c;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.jodit-ui-block__className{
+  display: none;
+}
+.jodit-ui-form__target{
+  display: none;
+}
+.jodit-ui-form__nofollow{
+  display: none;
+}
+
+[aria-label='Insert file'] {
+  display: none !important;
+}
+
+:root {
+  --link-color: #61c;
+}
+
+body.dark {
+  --link-color: rgb(156, 163, 175);
+}
+
+#noteBox {
+  a {
+    color: var(--link-color);
+    text-decoration: underline;
+  }
+  ul {
+    padding-left: 1rem;
+    list-style-type: disc;
+  }
+  ol {
+    padding-left: 1rem;
+    list-style-type: number;
+  }
+  td {
+    border: solid 2px;
+  }
+}
+
+/* MasonryGrid.css */
+.my-masonry-grid {
+  display: flex;
+  margin-left: -15px; /* gutter size offset */
+  width: auto;
+}
+.my-masonry-grid_column {
+  padding-left: 15px; /* gutter size */
+  background-clip: padding-box;
+}
+
+/* Style your individual items */
+.masonry-item {
+  margin-bottom: 15px;
+  /* Add more styles if necessary */
+}
+
+::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  position: absolute;
+  right: 0;
+}

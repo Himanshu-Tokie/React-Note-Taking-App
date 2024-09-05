@@ -1,4 +1,6 @@
-export interface CustomInputProps {
+export interface signUpInputProps{
     labelName:string;
-    placeholderName:string;
+    id:string;
+    placeholder:string;
+    type?:'text'|string;
 }

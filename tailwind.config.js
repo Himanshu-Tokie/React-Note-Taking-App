@@ -5,7 +5,15 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'custom-bg': "url('/src/assets/BG_design.png')",
+      },
+    },
+    scale:{
+      'miniPhone':'310px',
+    }
   },
   plugins: [],
+  darkMode:'class'
 }
