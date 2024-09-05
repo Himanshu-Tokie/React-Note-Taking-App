@@ -70,8 +70,10 @@ export default function Lable() {
           </div>
         ))
       ) : (
-        <div className="flex flex-1 justify-center">
-          <p className="dark:text-gray-300">{STRINGS.CREATE_NOTES}</p>
+        <div className="flex flex-1 justify-center items-center h-screen sm:pb-28 pb-32">
+          <p className="dark:text-gray-300 text-xl sm:text-2xl">
+            {STRINGS.CREATE_NOTES}
+          </p>
         </div>
       )}
       {showNoteEditor && (

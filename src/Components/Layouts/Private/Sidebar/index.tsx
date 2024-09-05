@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import ICONS from '../../../../assets';
 import { ROUTES, STRINGS, THEME } from '../../../../Shared/Constants';
 import { useUpdateLabel } from '../../../../Shared/CustomHooks';
 import { fetchLabels } from '../../../../Shared/Firebase Utils';
-import { stateType } from '../../../../Views/Dashboard/types';
-import ICONS from '../../../../assets';
-import { setDefaultLabelId } from '../../../../Store/Label';
 import { RootState } from '../../../../Store';
+import { setDefaultLabelId } from '../../../../Store/Label';
+import { stateType } from '../../../../Views/Dashboard/types';
 
 export default function Sidebar() {
   const [data, setData] = useState<{ id: string; labelId: string }[]>();
@@ -39,7 +39,7 @@ export default function Sidebar() {
   useUpdateLabel(uid, setData);
   return (
     <div
-      className="flex-1 pb-24 z-20 bg-white dark:bg-[#252526] overflow-hidden md:w-[250px] pt-4 w-2/4 transition-all duration-300 ease-in-out fixed hover:overflow-y-scroll h-dvh"
+      className="flex-1 pb-24 z-20 bg-white dark:bg-[#252526] md:w-[250px] pt-4 w-2/4 transition-all duration-300 ease-in-out fixed overflow-y-auto h-dvh"
       id="sidebar"
     >
       <div className="rounded-r-full cursor-pointer hover:bg-gray-100 hover:dark:bg-opacity-20">

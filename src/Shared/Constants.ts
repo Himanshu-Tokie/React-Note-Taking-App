@@ -89,7 +89,7 @@ const STRINGS = {
   TITLE: 'Title',
   EMPTY: 'temporarily empty',
   SEARCH: 'search',
-  CREATE_NOTES: 'Create new notes.....',
+  CREATE_NOTES: 'No notes with this label yet',
   SELECT_LABEL: 'Select Label',
   SAVE: 'Save',
   CANCEL: 'Cancel',
