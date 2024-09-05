@@ -72,9 +72,11 @@ const ERROR = {
   INVALID_CREDENTIALS: 'Invalid Credentials',
   POPUP_CLOSED: 'Sign-in interrupted.',
   EMAIL_IN_USE: 'auth/email-already-in-use',
+  TIME_OUT: 'Timed out',
 };
 
 const STRINGS = {
+  NO_DATA: 'No matching results.',
   NOTES: 'Notes',
   EDIT_LABELS: 'Edit Labels',
   LOG_OUT_MESSAGE: 'Are you sure you want to logout?',
@@ -90,6 +92,7 @@ const STRINGS = {
   EMPTY: 'temporarily empty',
   SEARCH: 'search',
   CREATE_NOTES: 'No notes with this label yet',
+  // CREATE_NOTES: 'Add notes',
   SELECT_LABEL: 'Select Label',
   SAVE: 'Save',
   CANCEL: 'Cancel',
@@ -152,6 +155,7 @@ const FIREBASE_STRINGS = {
     INVALID_CREDENTIALS: 'auth/invalid-credential',
     DEFAULT: 'Some error occured please try again',
     POPUP_CLOSED: 'auth/popup-closed-by-user',
+    TIME_OUT: 'Promise timed out',
   },
 };
 
@@ -176,14 +180,11 @@ const AUTHENTICATION = {
   },
 };
 export {
-  AUTHENTICATION,
-  FIREBASE_STRINGS,
+  AUTHENTICATION, ERROR, FIREBASE_STRINGS,
   NOTES,
   ROUTES,
   ROUTES_CONFIG,
   STRINGS,
-  THEME,
-  WILDCARD_ROUTES,
-  ERROR,
-  TOAST_STRINGS,
+  THEME, TOAST_STRINGS, WILDCARD_ROUTES
 };
+

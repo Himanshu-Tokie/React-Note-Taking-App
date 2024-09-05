@@ -136,7 +136,8 @@ export async function uploadImages(
   uid: string,
   imageURL: File[],
   dispatch: AppDispatch,
-  noteId: string
+  noteId: string,
+  theme: string
 ) {
   if (!imageURL || imageURL.length === 0) {
     return;
@@ -162,9 +163,9 @@ export async function uploadImages(
       await updateDoc(noteRef, { url: arrayUnion(...uploadedImageURLs) });
     }
 
-    toastSuccess(TOAST_STRINGS.IMAGE_UPDATED);
+    toastSuccess(TOAST_STRINGS.IMAGE_UPDATED, theme);
   } catch (error) {
-    toastError(TOAST_STRINGS.ERROR_UPLOADING_IMAGE);
+    toastError(TOAST_STRINGS.ERROR_UPLOADING_IMAGE, theme);
   } finally {
     dispatch(setLoading(false));
   }
@@ -177,7 +178,8 @@ export const createNote = async (
   title: string,
   imageURL: File[],
   dispatch: AppDispatch,
-  defaultLabel: string
+  defaultLabel: string,
+  theme: string
 ) => {
   const labelRef = doc(
     db,
@@ -199,7 +201,7 @@ export const createNote = async (
     time_stamp: serverTimestamp(),
   });
   await updateDoc(labelRef, { count: increment(1) });
-  await uploadImages(uid, imageURL, dispatch, newNoteRef.id);
+  await uploadImages(uid, imageURL, dispatch, newNoteRef.id, theme);
 };
 
 export const updateNote = async (
@@ -365,23 +367,24 @@ export const deleteLabel = async (
   dispatch(setLoading(false));
 };
 
-export function resetPassword(email: string) {
+export function resetPassword(email: string, theme: string) {
   sendPasswordResetEmail(auth, email)
     .then(() => {
-      toastSuccess(STRINGS.RESET_LINK);
+      toastSuccess(STRINGS.RESET_LINK, theme);
     })
     .catch(() => {
-      toastError(STRINGS.RESET_LINK_FAILED);
+      toastError(STRINGS.RESET_LINK_FAILED, theme);
     });
 }
 
 export async function uploadUserImage(
   uid: string,
   imageURL: File,
-  dispatch: AppDispatch
+  dispatch: AppDispatch,
+  theme: string
 ) {
   if (imageURL === null) {
-    toastError(TOAST_STRINGS.SELECT_IMAGE);
+    toastError(TOAST_STRINGS.SELECT_IMAGE, theme);
     return;
   }
   const imageRef = ref(storage, `${uid}/userPhoto/userPhoto`);
@@ -394,10 +397,10 @@ export async function uploadUserImage(
         photoURL: uploadedImageURL,
       });
     }
-    toastSuccess(TOAST_STRINGS.IMAGE_UPDATED);
+    toastSuccess(TOAST_STRINGS.IMAGE_UPDATED, theme);
     dispatch(setLoading(false));
   } catch (error) {
-    toastError(TOAST_STRINGS.ERROR_UPLOADING_IMAGE);
+    toastError(TOAST_STRINGS.ERROR_UPLOADING_IMAGE, theme);
     dispatch(setLoading(false));
   }
 }
@@ -406,10 +409,11 @@ export async function uploadImage(
   uid: string,
   imageURL: File,
   dispatch: AppDispatch,
-  noteId: string
+  noteId: string,
+  theme: string
 ) {
   if (imageURL === null) {
-    toastError(TOAST_STRINGS.SELECT_IMAGE);
+    toastError(TOAST_STRINGS.SELECT_IMAGE, theme);
     return;
   }
 
@@ -429,10 +433,10 @@ export async function uploadImage(
       );
       updateDoc(noteRef, { url: arrayUnion(uploadedImageURL) });
     }
-    toastSuccess(TOAST_STRINGS.IMAGE_UPDATED);
+    toastSuccess(TOAST_STRINGS.IMAGE_UPDATED, theme);
     dispatch(setLoading(false));
   } catch (error) {
-    toastError(TOAST_STRINGS.ERROR_UPLOADING_IMAGE);
+    toastError(TOAST_STRINGS.ERROR_UPLOADING_IMAGE, theme);
     dispatch(setLoading(false));
   }
 }
@@ -440,15 +444,16 @@ export async function uploadImage(
 export async function deletePhotos(
   imageURL: string,
   uid: string,
-  noteId: string
+  noteId: string,
+  theme: string
 ) {
   if (imageURL === null || !noteId) {
-    toastError(TOAST_STRINGS.SELECT_IMAGE);
+    toastError(TOAST_STRINGS.SELECT_IMAGE, theme);
     return;
   }
   const imageRef = ref(storage, imageURL);
   await deleteObject(imageRef).catch(() => {
-    toastError(STRINGS.ERROR);
+    toastError(STRINGS.ERROR, theme);
   });
   const noteRef = doc(
     db,
@@ -461,10 +466,10 @@ export async function deletePhotos(
     url: arrayRemove(imageURL),
   })
     .then(() => {
-      toastSuccess('Image deleted successfully');
+      toastSuccess('Image deleted successfully', theme);
     })
     .catch(() => {
-      toastError(STRINGS.ERROR);
+      toastError(STRINGS.ERROR, theme);
     });
 }
 

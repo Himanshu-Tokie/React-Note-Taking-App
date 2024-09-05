@@ -27,8 +27,8 @@ function RootRouter() {
         pauseOnFocusLoss={false}
         draggable
         pauseOnHover
-        theme={theme}
-        toastClassName="toast-container"
+        theme={theme.toLowerCase()}
+        // toastClassName="toast-container"
         toastStyle={{ zIndex: 100 }}
       />
       <DocumentTitle isAuthenticated={isAuthenticated} />

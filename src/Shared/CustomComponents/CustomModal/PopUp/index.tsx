@@ -11,11 +11,11 @@ export default function PopUpMessage({
       <div className="fixed inset-0 bg-black bg-opacity-50 z-[1100]" />
       <div
         id="popup-modal"
-        className="flex inset-0 overflow-y-auto overflow-x-hidden fixed  z-[5000] justify-center items-center w-full max-h-full h-[calc(100%-1rem)]"
+        className="flex inset-0 overflow-y-auto overflow-x-hidden fixed z-[5000] justify-center items-center max-h-full h-[calc(100%-1rem)]"
       >
-        <div className="relative p-4 w-full max-w-md max-h-full">
+        <div className="relative p-1 w-full max-w-sm max-h-full">
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-            <div className="p-4 md:p-5 text-center">
+            <div className="p-4 md:p-2 text-center">
               <svg
                 className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
                 aria-hidden="true"

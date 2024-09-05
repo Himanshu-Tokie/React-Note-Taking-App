@@ -42,6 +42,9 @@ function CustomModal({ setShowModal }: CustomModalProps) {
     }[]
   >();
   const dispatch = useDispatch();
+  const theme = useSelector((state: stateType) =>
+    state.common.theme.toLowerCase()
+  );
 
   const isActiveRef = useRef('');
 
@@ -80,10 +83,10 @@ function CustomModal({ setShowModal }: CustomModalProps) {
     if (!regex.test(labelName))
       updateLabel(uid, labelName, labelId, dispatch)
         .then(() => {
-          toastSuccess(TOAST_STRINGS.LABEL_EDIT);
+          toastSuccess(TOAST_STRINGS.LABEL_EDIT, theme);
         })
         .catch(() => {
-          toastError(STRINGS.ERROR);
+          toastError(STRINGS.ERROR, theme);
         });
     else setIsInputLabelEmpty(true);
   };
@@ -91,16 +94,15 @@ function CustomModal({ setShowModal }: CustomModalProps) {
     if (selectedLabel) {
       deleteLabel(uid, selectedLabel, dispatch)
         .then(() => {
-          toastSuccess(TOAST_STRINGS.LABEL_DELETED);
+          toastSuccess(TOAST_STRINGS.LABEL_DELETED, theme);
         })
         .catch(() => {
-          toastError(STRINGS.ERROR);
+          toastError(STRINGS.ERROR, theme);
         });
       setConfirmationModal(false);
       setSelectedLabel(undefined);
     }
   };
-  const theme = useSelector((state: stateType) => state.common.theme);
   const handleTickClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     const targetElement = event.target as Element;
     const inputElement = targetElement.closest('div')?.querySelector('input');
@@ -112,10 +114,10 @@ function CustomModal({ setShowModal }: CustomModalProps) {
         if (!isExists?.length) {
           createLabel(uid, label)
             .then(() => {
-              toastSuccess(TOAST_STRINGS.LABEL_CREATED);
+              toastSuccess(TOAST_STRINGS.LABEL_CREATED, theme);
             })
             .catch(() => {
-              toastError(STRINGS.ERROR);
+              toastError(STRINGS.ERROR, theme);
             });
           setToggler(false);
           setIsEmpty(false);
@@ -180,7 +182,7 @@ function CustomModal({ setShowModal }: CustomModalProps) {
                   {STRINGS.LABLE_NOT_EMPTY}
                 </p>
               )}
-              <div className="justify-between items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 group hover:shadow dark:bg-[#333333] dark:text-white">
+              <div className="justify-between items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 group hover:shadow dark:bg-[#333333] dark:text-white mb-0.5">
                 <div className="flex justify-between items-center">
                   <button
                     type="button"
@@ -229,7 +231,7 @@ function CustomModal({ setShowModal }: CustomModalProps) {
                 // <EditLabelRow name={label.labelId} value={label.id} />
                 <div
                   key={label.id}
-                  className="flex justify-between items-center  p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 group hover:shadow dark:bg-[#333333] dark:text-white"
+                  className="my-0.5 flex justify-between items-center  p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 group hover:shadow-lg dark:bg-[#333333] dark:text-white"
                 >
                   <img
                     src={theme === THEME.DARK ? ICONS.LABEL : ICONS.LABEL_DARK}

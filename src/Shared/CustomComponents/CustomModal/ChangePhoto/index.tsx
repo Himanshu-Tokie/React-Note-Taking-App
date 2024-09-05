@@ -1,17 +1,22 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { stateType } from '../../../../Views/Dashboard/types';
-import ICONS from '../../../../assets';
 import { STRINGS } from '../../../Constants';
 import { uploadUserImage } from '../../../Firebase Utils';
 import { toastError } from '../../../Utils';
 import { changePhotoProps } from './types';
+import { RootState } from '../../../../Store';
+import ICONS from '../../../../assets';
 
 function ChangePhoto({ photoURL, setIsVisible }: changePhotoProps) {
   const uid = useSelector((state: stateType) => state.common.uid);
   const dispatch = useDispatch();
+  const theme = useSelector((state: RootState) =>
+    state.common.theme.toLowerCase()
+  );
   function handleImageAsFile(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.files) uploadUserImage(uid, e.target.files[0], dispatch);
-    else toastError(STRINGS.ERROR);
+    if (e.target.files)
+      uploadUserImage(uid, e.target.files[0], dispatch, theme);
+    else toastError(STRINGS.ERROR, theme);
   }
   return (
     <div className="z-50">
@@ -22,7 +27,7 @@ function ChangePhoto({ photoURL, setIsVisible }: changePhotoProps) {
         tabIndex={-1}
         onClick={() => setIsVisible(false)}
       />
-      <div className="pt-6 fixed z-[500] place-self-center inset-0 w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      <div className="pt-6 fixed z-[500] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 inset-0 w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 h-fit">
         <div className="flex flex-col items-center pb-10">
           <img
             className="w-24 h-24 mb-3 rounded-full shadow-lg"
@@ -41,7 +46,7 @@ function ChangePhoto({ photoURL, setIsVisible }: changePhotoProps) {
               <input
                 type="file"
                 className="hidden"
-                accept="image/*"
+                accept=".jpeg,.png,.jpg"
                 onChange={handleImageAsFile}
               />
             </label>

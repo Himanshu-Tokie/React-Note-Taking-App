@@ -2,9 +2,12 @@ import { doc, getDoc } from 'firebase/firestore';
 import JoditEditor from 'jodit-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import ICONS from '../../assets';
 import { db } from '../../Services/Config/Firebase/firebase';
-import { STRINGS, TOAST_STRINGS } from '../../Shared/Constants';
+import { ROUTES, STRINGS, THEME, TOAST_STRINGS } from '../../Shared/Constants';
+import Carousel from '../../Shared/CustomComponents/CustomCarousel';
 import { useLabelUpdate, useUpdateLabel } from '../../Shared/CustomHooks';
 import {
   createNote,
@@ -12,14 +15,13 @@ import {
   updateNote,
   uploadImage,
 } from '../../Shared/Firebase Utils';
+import { toastError, toastSuccess } from '../../Shared/Utils';
+import { RootState } from '../../Store';
+import { setUpdatedLabel } from '../../Store/Label';
 import { setLoading } from '../../Store/Loader';
 import { stateType } from '../Dashboard/types';
-import { editorConfig } from './Utils';
 import { notesProps } from './types';
-import { toastError, toastSuccess } from '../../Shared/Utils';
-import ICONS from '../../assets';
-import Carousel from '../../Shared/CustomComponents/CustomCarousel';
-import { RootState } from '../../Store';
+import { editorConfig } from './Utils';
 
 function Notes({
   imageList,
@@ -33,6 +35,7 @@ function Notes({
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
   const [label, setLabel] = useState('');
+  const location = useLocation();
   const theme = useSelector(
     (state: stateType) => state.common.theme?.toLowerCase() ?? 'light'
   );
@@ -63,9 +66,7 @@ function Notes({
   );
   const [showEditor, setShowEditor] = useState(false);
   const uid = useSelector((state: stateType) => state.common.uid);
-  const labelId = useSelector(
-    (state: { label: { labelId: string } }) => state.label.labelId
-  );
+  const labelId = useSelector((state: RootState) => state.label.labelId);
   const editorRef = useRef(null);
   useLabelUpdate(dispatch, labelId ?? '');
   useEffect(() => {
@@ -98,7 +99,11 @@ function Notes({
     const regexContent = /^[\s\u00A0\xA0]*$/;
     const regexTitle = /^\s*$/;
     const textContent = content.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ');
-    if (!regexTitle.test(title) || !regexContent.test(textContent)) {
+    if (
+      !regexTitle.test(title) ||
+      !regexContent.test(textContent) ||
+      cachedImage.length > 0
+    ) {
       dispatch(setLoading(true));
       if (noteId && setShowNoteEditor) {
         updateNote(uid, noteId, content, title)
@@ -109,11 +114,11 @@ function Notes({
             if (handleToggle) handleToggle(noteId);
             dispatch(setLoading(false));
             if (setChanges) setChanges(true);
-            toastSuccess(TOAST_STRINGS.NOTES_UPDATED);
+            toastSuccess(TOAST_STRINGS.NOTES_UPDATED, theme);
           })
           .catch(() => {
             dispatch(setLoading(false));
-            toastError(STRINGS.ERROR);
+            toastError(STRINGS.ERROR, theme);
           });
       } else {
         createNote(
@@ -123,7 +128,8 @@ function Notes({
           title,
           cachedImage,
           dispatch,
-          defaultLabel
+          defaultLabel,
+          theme
         )
           .then(() => {
             setContent('');
@@ -137,14 +143,17 @@ function Notes({
               const index = selectRef.current.selectedIndex;
               const labelName = selectRef.current[index].textContent;
               if (labelName !== STRINGS.SELECT_LABEL)
-                toastSuccess(`${TOAST_STRINGS.NOTES_CREATED} in ${labelName}`);
-              else toastSuccess(TOAST_STRINGS.NOTES_CREATED);
+                toastSuccess(
+                  `${TOAST_STRINGS.NOTES_CREATED} in ${labelName}`,
+                  theme
+                );
+              else toastSuccess(TOAST_STRINGS.NOTES_CREATED, theme);
               selectRef.current.value = STRINGS.SELECT_LABEL;
-            } else toastSuccess(TOAST_STRINGS.NOTES_CREATED);
+            } else toastSuccess(TOAST_STRINGS.NOTES_CREATED, theme);
           })
           .catch(() => {
             dispatch(setLoading(false));
-            toastError(STRINGS.ERROR);
+            toastError(STRINGS.ERROR, theme);
           });
       }
     } else {
@@ -155,8 +164,9 @@ function Notes({
       setCachedImageUrl([]);
       if (selectRef.current) selectRef.current.value = STRINGS.SELECT_LABEL;
       setShowEditor(false);
-      toastError(TOAST_STRINGS.EMPTY_NOTES);
+      toastError(TOAST_STRINGS.EMPTY_NOTES, theme);
     }
+    if (location.pathname === ROUTES.HOMEPAGE) dispatch(setUpdatedLabel(''));
   }
   function onClickCancel() {
     setContent('');
@@ -169,20 +179,31 @@ function Notes({
       setShowNoteEditor(false);
       handleToggle(noteId);
     } else setShowEditor(false);
+    if (location.pathname === ROUTES.HOMEPAGE) dispatch(setUpdatedLabel(''));
   }
   function handleImageAsFile(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files ?? null;
 
     if (files && files.length > 0) {
       if (noteId) {
-        uploadImage(uid, files[0], dispatch, noteId);
+        uploadImage(uid, files[0], dispatch, noteId, theme);
       } else {
         setCachedImage((val) => [...val, files[0]]);
       }
     } else {
-      toastError(STRINGS.ERROR);
+      toastError(STRINGS.ERROR, theme);
     }
   }
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => setIsHovered(false);
+  const handleTouchStart = () => setIsHovered(true);
+  const handleTouchEnd = () => setIsHovered(false);
+  const isLightTheme = theme === THEME.LIGHT.toLowerCase();
+  const darkImageSrc = isHovered ? ICONS.IMAGE : ICONS.IMAGE_DARK;
+  const imageSrc = isLightTheme ? ICONS.IMAGE : darkImageSrc;
+
   return (
     <div
       className="w-full self-center mt-8 max-w-xl dark:bg-[#252526]"
@@ -206,27 +227,34 @@ function Notes({
           {labelId ? (
             <p className="dark:text-gray-300">{currentLabel}</p>
           ) : (
-            <select
-              name="label"
-              id="labelId"
-              className="outline-none w-30 dark:bg-[#333333] dark:text-gray-300"
-              onBlur={(event) => setLabel(event.target.value)}
-              ref={selectRef}
-            >
-              <option value={STRINGS.SELECT_LABEL}>
-                {STRINGS.SELECT_LABEL}
-              </option>
-              {labelData?.map((item) => (
-                <option value={item.labelId} key={item.labelId}>
-                  {item.id}
+            <div className="relative inline-block w-30">
+              <select
+                name="label"
+                id="labelId"
+                className="outline-none w-30 dark:bg-[#333333] dark:text-gray-300 appearance-none pr-6 text-end bg-white"
+                onBlur={(event) => setLabel(event.target.value)}
+                ref={selectRef}
+              >
+                <option value={STRINGS.SELECT_LABEL}>
+                  {STRINGS.SELECT_LABEL}
                 </option>
-              ))}
-            </select>
+                {labelData?.map((item) => (
+                  <option value={item.labelId} key={item.labelId}>
+                    {item.id}
+                  </option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
+                <svg className="fill-current h-4 w-4" viewBox="0 0 20 20">
+                  <path d="M7 10l5 5 5-5H7z" />
+                </svg>
+              </div>
+            </div>
           )}
         </div>
       </div>
 
-      {(showEditor || noteTitle || noteContent) && (
+      {(showEditor || noteTitle || noteContent || imageList) && (
         <div>
           {imageList && (
             <div>
@@ -244,13 +272,19 @@ function Notes({
             </div>
           )}
           <div className="relative">
-            <div className="absolute left-1 top-1 z-50">
-              <label className="inline-flex items-center px-1 py-1 text-sm font-medium text-center text-white hover:bg-[#dcdcdc] dark:hover:bg-[#c0c0c0]">
-                <img src={ICONS.IMAGE} alt="pic" className="" />
+            <div
+              className="absolute left-1 top-1 z-30"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+              <label className="inline-flex items-center px-1 py-1 text-sm font-medium text-center text-white hover:bg-[#dcdcdc] dark:hover:bg-[#c0c0c0] cursor-pointer">
+                <img src={imageSrc} alt="pic" className="" />
                 <input
                   type="file"
                   className="hidden"
-                  accept="image/*"
+                  accept=".jpg,.jpeg,.png"
                   onChange={handleImageAsFile}
                 />
               </label>
