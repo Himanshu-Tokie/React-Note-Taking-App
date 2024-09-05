@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import ICONS from '../../../../assets';
 import { ROUTES, STRINGS, THEME } from '../../../../Shared/Constants';
 import { useUpdateLabel } from '../../../../Shared/CustomHooks';
 import { fetchLabels } from '../../../../Shared/Firebase Utils';
 import { RootState } from '../../../../Store';
 import { setDefaultLabelId } from '../../../../Store/Label';
 import { stateType } from '../../../../Views/Dashboard/types';
-import ICONS from '../../../../assets';
 
 export default function Sidebar() {
   const [data, setData] = useState<{ id: string; labelId: string }[]>();

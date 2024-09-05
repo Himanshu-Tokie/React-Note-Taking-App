@@ -199,7 +199,7 @@ function CustomModal({ setShowModal }: CustomModalProps) {
                     id="labelInput"
                     name="label"
                     placeholder="Create Label"
-                    className="bg-gray-50 hover:bg-gray-100 outline-none dark:bg-[#333333] flex-1 pl-5"
+                    className="bg-gray-50 hover:bg-gray-100 outline-none dark:bg-[#333333] flex-1 pl-2 sm:pl-5 w-20 sm:w-full"
                     maxLength={30}
                     onFocus={() => {
                       setToggler(true);

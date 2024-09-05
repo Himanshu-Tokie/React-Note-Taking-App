@@ -91,7 +91,8 @@ const STRINGS = {
   TITLE: 'Title',
   EMPTY: 'temporarily empty',
   SEARCH: 'search',
-  CREATE_NOTES: 'Add notes',
+  CREATE_NOTES: 'No notes with this label yet',
+  // CREATE_NOTES: 'Add notes',
   SELECT_LABEL: 'Select Label',
   SAVE: 'Save',
   CANCEL: 'Cancel',
@@ -179,14 +180,11 @@ const AUTHENTICATION = {
   },
 };
 export {
-  AUTHENTICATION,
-  FIREBASE_STRINGS,
+  AUTHENTICATION, ERROR, FIREBASE_STRINGS,
   NOTES,
   ROUTES,
   ROUTES_CONFIG,
   STRINGS,
-  THEME,
-  WILDCARD_ROUTES,
-  ERROR,
-  TOAST_STRINGS,
+  THEME, TOAST_STRINGS, WILDCARD_ROUTES
 };
+

@@ -48,7 +48,7 @@ function NoteNavbar({ setSidebarWidth, search }: noteNavbarProps) {
         setShowSidebar(false);
         sidebar.style.width = '60px';
         setSidebarWidth('60px');
-        sidebar.style.overflow = 'hidden';
+        // sidebar.style.overflow = 'hidden';
       } else {
         sidebar.style.width = '250px';
         setShowSidebar(true);
